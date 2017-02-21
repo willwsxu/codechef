@@ -71,5 +71,9 @@ class ChairSeating {
     public static void main(String[] args)
     {
         out.println(new ChairSeating().chairMoving("0100"));
+        out.println(new ChairSeating().chairMoving("10100"));
+        out.println(new ChairSeating().chairMoving("10101"));
+        out.println(new ChairSeating().chairMoving("00101"));
+        out.println(new ChairSeating().chairMoving("100010011101"));
     }
 }
