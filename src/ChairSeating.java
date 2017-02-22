@@ -1,5 +1,6 @@
 
 import static java.lang.System.out;
+import java.util.Scanner;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -43,7 +44,7 @@ class ChairSeating {
                 empty++;
             }
         }
-        out.println("start "+seating.start+" end "+seating.end+" empty "+seating.empties);
+        //out.println("start "+seating.start+" end "+seating.end+" empty "+seating.empties);
         return seating;
     }
     
@@ -70,10 +71,22 @@ class ChairSeating {
     
     public static void main(String[] args)
     {
+        Scanner scan = new Scanner(System.in);
+        int TC = scan.nextInt();
+        for (int i=0; i<TC; i++) {
+            ChairSeating chairs = new ChairSeating();
+            int N = scan.nextInt();
+            String ch = scan.nextLine();
+            if (ch.length()<N)
+                ch = scan.nextLine();
+            out.println(chairs.chairMoving(ch));
+        }
+        /*
         out.println(new ChairSeating().chairMoving("0100"));
         out.println(new ChairSeating().chairMoving("10100"));
         out.println(new ChairSeating().chairMoving("10101"));
         out.println(new ChairSeating().chairMoving("00101"));
         out.println(new ChairSeating().chairMoving("100010011101"));
+*/
     }
 }
