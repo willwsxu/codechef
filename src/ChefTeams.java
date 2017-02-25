@@ -2,6 +2,7 @@
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,75 @@ class ChefTeams2 {
     } 
 }
 
+
+class ChefTeams3 {
+    class IntPair{
+        int     key;    // age
+        int     value;  // rating
+        IntPair(int k, int v)
+        {
+            key=k;
+            value=v;
+        }
+        int getKey() {
+            return key;
+        }
+    }
+    List<IntPair> youngTeam = new LinkedList<>();
+    List<IntPair> oldTeam = new LinkedList<>();
+    int rating1=0;
+    int rating2=0;
+    
+    void insert(List<IntPair> team, int age, int rating)
+    {
+        IntPair pair = new IntPair(age, rating);
+        Comparator<IntPair> cmp1=Comparator.comparing(IntPair::getKey);
+        int loc = Collections.binarySearch(team, pair, cmp1);
+        team.add((-1)*loc-1, pair);        
+    }
+    void addChef(int age, int rating)
+    {
+        if(youngTeam.isEmpty()) {
+            youngTeam.add(new IntPair(age, rating));
+            rating1 = rating;
+        } else {
+            int size1 = youngTeam.size();
+            if (size1 == oldTeam.size()) {
+                if ( age <oldTeam.get(0).key) { // insert to first half
+                    insert(youngTeam, age, rating);
+                    rating1 += rating;
+                } else {
+                    insert(oldTeam, age, rating);
+                    int shift = oldTeam.get(0).value;
+                    rating1 += shift;
+                    rating2 -= shift;
+                    rating2 += rating;
+                    youngTeam.add(size1, oldTeam.get(0));
+                    oldTeam.remove(0);
+                    //out.println("even add. shift left "+shift);
+                }
+            } else {
+                if ( age > youngTeam.get(size1-1).key) { // insert to second half
+                    insert(oldTeam, age, rating);
+                    rating2 += rating;
+                } else {
+                    insert(youngTeam, age, rating);
+                    rating1 += rating;
+                    int shift = youngTeam.get(size1).value;
+                    rating1 -= shift;
+                    rating2 += shift;
+                    oldTeam.add(0, youngTeam.get(size1));
+                    youngTeam.remove(size1);
+                    //out.println("odd add. shift right "+shift);
+                }
+            }
+        }
+        //out.println(rating1+":"+rating2);
+        int dif = rating1>rating2?rating1-rating2:rating2-rating1;
+        out.println(dif);
+    }
+}
+
 class ChefTeams {
     Map<Integer,Integer> chefs = new TreeMap<>();
     List<Integer> diffs = new ArrayList<>();
@@ -95,7 +165,7 @@ class ChefTeams {
     // output 3 4 5 4 9
     static void manualTest()
     {
-        ChefTeams2 team = new ChefTeams2();
+        ChefTeams3 team = new ChefTeams3();
         team.addChef(2,3);
         team.addChef(1,7);
         team.addChef(5,5);
