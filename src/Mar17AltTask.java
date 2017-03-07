@@ -2,16 +2,14 @@
 import static java.lang.System.out;
 import java.util.Scanner;
 
-
+// XENTASK easy
 // minimal time need to complete all tasks altertively
-class Mar17AltTask {
-    
+class Mar17AltTask {    
     static Scanner scan = new Scanner(System.in);
     static void fillArray(int [] a)
     {
         for (int i=0; i<a.length; i++)
-                a[i] = scan.nextInt();
-        
+            a[i] = scan.nextInt();        
     }
     public static void main(String[] args)
     {
