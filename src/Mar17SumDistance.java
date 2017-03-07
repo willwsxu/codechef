@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 
-public class Mar17SumDistance {
+class Mar17SumDistance {
     
     static Scanner scan = new Scanner(System.in);
     static void fillArray(int [] a)
@@ -45,6 +45,18 @@ public class Mar17SumDistance {
             dist.add(d>dist3[i]?dist3[i]:d);
         }
         alldist.add(dist);
+        // case t-s from 4 to N-1
+        for (int ts=4; ts <=N-1; ts++) {
+            dist = new ArrayList<>();
+            for (int i=0; i<N-ts; i++) {
+                int d1 = alldist.get(ts-2).get(i)+alldist.get(0).get(i+ts-1);
+                int d2 = alldist.get(ts-3).get(i)+alldist.get(1).get(i+ts-2);
+                int d = d1>d2?d2:d1;
+                int d3 = alldist.get(ts-4).get(i)+alldist.get(2).get(i+ts-3);
+                dist.add(d>d3?d3:d);
+            }
+            alldist.add(dist);
+        }
         long total=0;
         for(int i=0; i<N-1; i++) {
             for (int j=0; j<alldist.get(i).size(); j++)
