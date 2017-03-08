@@ -90,16 +90,18 @@ class Mar17SumDistance {
         alldist.add(dist3);
         
         // case t-s from 4 to N-1
+        int []dist;
         for (int ts=4; ts <=N-1; ts++) {
-            int []dist = new int[N-ts];
-            for (int i=0; i<N-ts; i++) {
-                int d = minDistance(alldist, i, ts);
-                total += d;
-                dist[i]=d;
+            int size = N-ts;
+            if ( ts>7 )
+                dist = alldist.get(ts-5); // reuse memory as we only need first 3 rows and last three rows
+            else
+                dist = new int[size];
+            for (int i=0; i<size; i++) {
+                dist[i] = minDistance(alldist, i, ts);
+                total += dist[i];
             }
             alldist.add(dist);
-            if ( ts>7 )
-                alldist.set(ts-5, null); // clear memory as we only need first 3 rows and last three rows
         }
         /*
         for(int i=0; i<N-1; i++) {
@@ -119,13 +121,14 @@ class Mar17SumDistance {
     static void perfTest()
     {
         Instant start = Instant.now();
-        new Mar17SumDistance(100000, true);
+        new Mar17SumDistance(50000, true);
         Instant end = Instant.now();
         out.println("usec "+ChronoUnit.MICROS.between(start, end));        
     }
     public static void main(String[] args)
     {
-        autoTest();
+        //autoTest();
+        perfTest();
     }    
 }
 /*
