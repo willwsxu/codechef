@@ -16,21 +16,7 @@ class Mar17SumDistance {
             a[i] = scan.nextInt();  // between 1 and 10^4
         }
     }
-    // find out smallest distance from node s to t, ts=t-s
-    int minDistance2(List<List<Integer>> alldist, int s, int ts)
-    {
-        int t = s+ts;
-        // step one node back
-        int d = alldist.get(ts-2).get(s)+alldist.get(0).get(t-1);        
-        // step two nodes back
-        int d2 = alldist.get(ts-3).get(s)+alldist.get(1).get(t-2);
-        if ( d>d2 )
-            d = d2;       
-        // step three nodes back
-        int d3 = alldist.get(ts-4).get(s)+alldist.get(2).get(t-3);
-        return d>d3?d3:d;
-    }
-        
+    // find out smallest distance from node s to t, ts=t-s        
     int minDistance(List<int[]> alldist, int s, int ts)
     {
         int t = s+ts;
@@ -91,22 +77,40 @@ class Mar17SumDistance {
         
         // case t-s from 4 to N-1
         int []dist;
-        for (int ts=4; ts <=N-1; ts++) {
-            int size = N-ts;
-            if ( ts>7 )
-                dist = alldist.get(ts-5); // reuse memory as we only need first 3 rows and last three rows
-            else
-                dist = new int[size];
-            for (int i=0; i<size; i++) {
-                dist[i] = minDistance(alldist, i, ts);
-                total += dist[i];
+        //if ( N<10 )
+        {
+            for (int ts=4; ts <=N-1; ts++) {
+                int size = N-ts;
+                if ( ts>7 )
+                    dist = alldist.get(ts-5); // reuse memory as we only need first 3 rows and last three rows
+                else
+                    dist = new int[size];
+                for (int i=0; i<size; i++) {
+                    dist[i] = minDistance(alldist, i, ts);
+                    total += dist[i];
+                }
+                alldist.add(dist);
             }
-            alldist.add(dist);
-        }
-        /*
-        for(int i=0; i<N-1; i++) {
-            for (int j=0; j<alldist.get(i).size(); j++)
-                total += alldist.get(i).get(j);
+        } 
+        /*else {  // this change made performance worse, why?
+            for (int ts=4; ts < 8; ts++) {
+                int size = N-ts;
+                dist = new int[size];
+                for (int i=0; i<size; i++) {
+                    dist[i] = minDistance(alldist, i, ts);
+                    total += dist[i];
+                }
+                alldist.add(dist);
+            }
+            for (int ts=8; ts <=N-1; ts++) {
+                int size = N-ts;
+                dist = alldist.get(ts-5); // reuse memory as we only need first 3 rows and last three rows
+                for (int i=0; i<size; i++) {
+                    dist[i] = minDistance(alldist, i, ts);
+                    total += dist[i];
+                }
+                alldist.add(dist);
+            }
         }*/
         out.println(total);
     }
@@ -121,7 +125,7 @@ class Mar17SumDistance {
     static void perfTest()
     {
         Instant start = Instant.now();
-        new Mar17SumDistance(50000, true);
+        new Mar17SumDistance(100000, true);
         Instant end = Instant.now();
         out.println("usec "+ChronoUnit.MICROS.between(start, end));        
     }
