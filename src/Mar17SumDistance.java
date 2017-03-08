@@ -16,28 +16,54 @@ class Mar17SumDistance {
             a[i] = scan.nextInt();  // between 1 and 10^4
         }
     }
+    int dist1[];
+    int [] dist2;
+    int [] dist3;
+    int [][] alldist;
     // find out smallest distance from node s to t, ts=t-s        
-    int minDistance(int[][] alldist, int s, int ts)
+    int minDistance(int[] dist_1, int[] dist_2, int dist_3[], int s, int ts)
     {
         int t = s+ts;
         // step one node back
-        //int d = alldist.get(ts-2)[s]+alldist.get(0)[t-1];   
-        int d = alldist[ts-2][s]+alldist[0][t-1];        
+        int d = dist_1[s]+dist1[t-1]; 
         // step two nodes back
-        //int d2 = alldist.get(ts-3)[s]+alldist.get(1)[t-2];
-        int d2 = alldist[ts-3][s]+alldist[1][t-2];
+        int d2 = dist_2[s]+dist2[t-2];
         if ( d>d2 )
-            d = d2;       
+            d = d2; 
         // step three nodes back
-        //int d3 = alldist.get(ts-4)[s]+alldist.get(2)[t-3];
-        int d3 = alldist[ts-4][s]+alldist[2][t-3];
+        int d3 = dist_3[s]+dist3[t-3];
+        return d>d3?d3:d;
+    }      
+    int minDistance2(int[][] alldist, int s, int ts)
+    {
+        int t = s+ts;
+        // step one node back
+        int d = alldist[ts-2][s]+dist1[t-1]; 
+        // step two nodes back
+        int d2 = alldist[ts-3][s]+dist2[t-2];
+        if ( d>d2 )
+            d = d2; 
+        // step three nodes back
+        int d3 = alldist[ts-4][s]+dist3[t-3];
+        return d>d3?d3:d;
+    }   
+    int minDistance3(int next1, int next2, int next3, int r1, int r2, int r3, int s, int ts)
+    {
+        // step one node back
+        int d = next1+r1; 
+        // step two nodes back
+        int d2 = next2+r2;
+        if ( d>d2 )
+            d = d2; 
+        // step three nodes back
+        int d3 = next3+r3;
         return d>d3?d3:d;
     }
     Mar17SumDistance(int N, boolean biglytest)
     {
-        int [] dist1 = new int[N-1];  // weight from node 1 to 2, etc
-        int [] dist2 = new int[N-2];  // weight from node 1 to 3, etc
-        int [] dist3 = new int[N-3];  // weight from node 1 to 4, etc
+        dist1 = new int[N-1];  // weight from node 1 to 2, etc
+        dist2 = new int[N-2];  // weight from node 1 to 3, etc
+        dist3 = new int[N-3];  // weight from node 1 to 4, etc
         if (biglytest) {
             for (int i=0; i<dist1.length; i++)
                 dist1[i]=i+1;
@@ -53,12 +79,11 @@ class Mar17SumDistance {
         long total=0;
         // smallest distance between note s and t
         //List<int[]> alldist = new ArrayList<>(N-1);
-        int [][] alldist = new int[N-1][];
+        alldist = new int[N-1][];
         // case t-s=1
         for (int i=0; i<N-1; i++) {
             total += dist1[i];
         }
-        //alldist.add(dist1);
         alldist[0] = dist1;
         // case t-s=2
         for (int i=0; i<N-2; i++) {
@@ -67,12 +92,9 @@ class Mar17SumDistance {
                 dist2[i] = d;  // update and reuse dist2
             total += dist2[i];
         }
-        //alldist.add(dist2);
         alldist[1] = dist2;
         // case t-s=3
         for (int i=0; i<N-3; i++) {
-            //int d = alldist.get(1)[i]+alldist.get(0)[i+2];
-            //int d2 = alldist.get(0)[i]+alldist.get(1)[i+1];
             int d = alldist[1][i]+alldist[0][i+2];
             int d2 = alldist[0][i]+alldist[1][i+1];
             if ( d>d2)
@@ -81,23 +103,24 @@ class Mar17SumDistance {
                 dist3[i]=d;
             total += dist3[i];
         }
-        //alldist.add(dist3);
         alldist[2] = dist3;
         
         // case t-s from 4 to N-1
-        for (int ts=3; ts <7; ts++)
+        for (int ts=3; ts <7; ts++) {
+            if (ts>N-2)
+                break;
             alldist[ts] = new int[N-ts];
-        //if ( N<10 )
-        {
-            for (int ts=4; ts <=N-1; ts++) {
-                if ( ts>7 )
-                    alldist[ts-1] = alldist[ts-5]; // reuse memory as we only need first 3 rows and last three rows
-                for (int i=0; i<N-ts; i++) {
-                    alldist[ts-1][i] = minDistance(alldist, i, ts);  // minDistance take 9 sec when N=100000
-                    total += alldist[ts-1][i];
-                }
+        }
+        for (int ts=4; ts <=N-1; ts++) {
+            if ( ts>7 )
+                alldist[ts-1] = alldist[ts-5]; // reuse memory as we only need first 3 rows and last three rows
+            for (int i=0; i<N-ts; i++) {  
+                //alldist[ts-1][i] = minDistance2(alldist, i, ts); // minDistance take 9 sec when N=100000
+                int t = ts+i;
+                alldist[ts-1][i] = minDistance3(alldist[ts-2][i], alldist[ts-3][i], alldist[ts-4][i], dist1[t-1], dist2[t-2], dist3[t-3], i, ts);
+                total += alldist[ts-1][i];
             }
-        } 
+        }
         /*else {  // this change made performance worse, why?
             for (int ts=4; ts < 8; ts++) {
                 int size = N-ts;
@@ -137,7 +160,6 @@ class Mar17SumDistance {
     }
     public static void main(String[] args)
     {
-        //autoTest();
         perfTest();
     }    
 }
