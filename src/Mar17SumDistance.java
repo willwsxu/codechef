@@ -17,17 +17,20 @@ class Mar17SumDistance {
         }
     }
     // find out smallest distance from node s to t, ts=t-s        
-    int minDistance(List<int[]> alldist, int s, int ts)
+    int minDistance(int[][] alldist, int s, int ts)
     {
         int t = s+ts;
         // step one node back
-        int d = alldist.get(ts-2)[s]+alldist.get(0)[t-1];        
+        //int d = alldist.get(ts-2)[s]+alldist.get(0)[t-1];   
+        int d = alldist[ts-2][s]+alldist[0][t-1];        
         // step two nodes back
-        int d2 = alldist.get(ts-3)[s]+alldist.get(1)[t-2];
+        //int d2 = alldist.get(ts-3)[s]+alldist.get(1)[t-2];
+        int d2 = alldist[ts-3][s]+alldist[1][t-2];
         if ( d>d2 )
             d = d2;       
         // step three nodes back
-        int d3 = alldist.get(ts-4)[s]+alldist.get(2)[t-3];
+        //int d3 = alldist.get(ts-4)[s]+alldist.get(2)[t-3];
+        int d3 = alldist[ts-4][s]+alldist[2][t-3];
         return d>d3?d3:d;
     }
     Mar17SumDistance(int N, boolean biglytest)
@@ -49,12 +52,14 @@ class Mar17SumDistance {
         }
         long total=0;
         // smallest distance between note s and t
-        List<int[]> alldist = new ArrayList<>(N-1);
+        //List<int[]> alldist = new ArrayList<>(N-1);
+        int [][] alldist = new int[N-1][];
         // case t-s=1
         for (int i=0; i<N-1; i++) {
             total += dist1[i];
         }
-        alldist.add(dist1);
+        //alldist.add(dist1);
+        alldist[0] = dist1;
         // case t-s=2
         for (int i=0; i<N-2; i++) {
             int d = dist1[i]+dist1[i+1];
@@ -62,34 +67,35 @@ class Mar17SumDistance {
                 dist2[i] = d;  // update and reuse dist2
             total += dist2[i];
         }
-        alldist.add(dist2);
+        //alldist.add(dist2);
+        alldist[1] = dist2;
         // case t-s=3
         for (int i=0; i<N-3; i++) {
-            int d = alldist.get(1)[i]+alldist.get(0)[i+2];
-            int d2 = alldist.get(0)[i]+alldist.get(1)[i+1];
+            //int d = alldist.get(1)[i]+alldist.get(0)[i+2];
+            //int d2 = alldist.get(0)[i]+alldist.get(1)[i+1];
+            int d = alldist[1][i]+alldist[0][i+2];
+            int d2 = alldist[0][i]+alldist[1][i+1];
             if ( d>d2)
                 d=d2;
             if ( d < dist3[i])
                 dist3[i]=d;
             total += dist3[i];
         }
-        alldist.add(dist3);
+        //alldist.add(dist3);
+        alldist[2] = dist3;
         
         // case t-s from 4 to N-1
-        int []dist;
+        for (int ts=3; ts <7; ts++)
+            alldist[ts] = new int[N-ts];
         //if ( N<10 )
         {
             for (int ts=4; ts <=N-1; ts++) {
-                int size = N-ts;
                 if ( ts>7 )
-                    dist = alldist.get(ts-5); // reuse memory as we only need first 3 rows and last three rows
-                else
-                    dist = new int[size];
-                for (int i=0; i<size; i++) {
-                    dist[i] = minDistance(alldist, i, ts);
-                    total += dist[i];
+                    alldist[ts-1] = alldist[ts-5]; // reuse memory as we only need first 3 rows and last three rows
+                for (int i=0; i<N-ts; i++) {
+                    alldist[ts-1][i] = minDistance(alldist, i, ts);  // minDistance take 9 sec when N=100000
+                    total += alldist[ts-1][i];
                 }
-                alldist.add(dist);
             }
         } 
         /*else {  // this change made performance worse, why?
