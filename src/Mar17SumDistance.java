@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
+// ArrayList of Interger is very slow comparing to int array
 class Mar17SumDistance {
     
     static Scanner scan = new Scanner(System.in);
@@ -17,7 +17,7 @@ class Mar17SumDistance {
         }
     }
     // find out smallest distance from node s to t, ts=t-s
-    int minDistance(List<List<Integer>> alldist, int s, int ts)
+    int minDistance2(List<List<Integer>> alldist, int s, int ts)
     {
         int t = s+ts;
         // step one node back
@@ -28,6 +28,20 @@ class Mar17SumDistance {
             d = d2;       
         // step three nodes back
         int d3 = alldist.get(ts-4).get(s)+alldist.get(2).get(t-3);
+        return d>d3?d3:d;
+    }
+        
+    int minDistance(List<int[]> alldist, int s, int ts)
+    {
+        int t = s+ts;
+        // step one node back
+        int d = alldist.get(ts-2)[s]+alldist.get(0)[t-1];        
+        // step two nodes back
+        int d2 = alldist.get(ts-3)[s]+alldist.get(1)[t-2];
+        if ( d>d2 )
+            d = d2;       
+        // step three nodes back
+        int d3 = alldist.get(ts-4)[s]+alldist.get(2)[t-3];
         return d>d3?d3:d;
     }
     Mar17SumDistance(int N, boolean biglytest)
@@ -49,57 +63,43 @@ class Mar17SumDistance {
         }
         long total=0;
         // smallest distance between note s and t
-        List<List<Integer>> alldist = new ArrayList<>();
-        Instant start = Instant.now();
+        List<int[]> alldist = new ArrayList<>(N-1);
         // case t-s=1
-        List<Integer> dist = new ArrayList<>(N-1);
         for (int i=0; i<N-1; i++) {
-            dist.add(dist1[i]);
             total += dist1[i];
         }
-        alldist.add(dist);
-        Instant end = Instant.now();
-        out.println("calc first 1 row takes "+ChronoUnit.MICROS.between(start, end));
+        alldist.add(dist1);
         // case t-s=2
-        dist = new ArrayList<>(N-2);
         for (int i=0; i<N-2; i++) {
             int d = dist1[i]+dist1[i+1];
-            if ( d>dist2[i])
-                d = dist2[i];
-            total += d;
-            dist.add(d);
+            if ( d<dist2[i])
+                dist2[i] = d;  // update and reuse dist2
+            total += dist2[i];
         }
-        alldist.add(dist);
+        alldist.add(dist2);
         // case t-s=3
-        dist = new ArrayList<>(N-3);
         for (int i=0; i<N-3; i++) {
-            int d = alldist.get(1).get(i)+alldist.get(0).get(i+2);
-            int d2 = alldist.get(0).get(i)+alldist.get(1).get(i+1);
+            int d = alldist.get(1)[i]+alldist.get(0)[i+2];
+            int d2 = alldist.get(0)[i]+alldist.get(1)[i+1];
             if ( d>d2)
                 d=d2;
-            if ( d > dist3[i])
-                d = dist3[i];
-            total += d;
-            dist.add(d);
+            if ( d < dist3[i])
+                dist3[i]=d;
+            total += dist3[i];
         }
-        alldist.add(dist);
-        // free memory
-        dist1=null;
-        dist2=null;
-        dist3=null;
+        alldist.add(dist3);
+        
         // case t-s from 4 to N-1
         for (int ts=4; ts <=N-1; ts++) {
-            dist = new ArrayList<>();
+            int []dist = new int[N-ts];
             for (int i=0; i<N-ts; i++) {
                 int d = minDistance(alldist, i, ts);
                 total += d;
-                dist.add(d);
+                dist[i]=d;
             }
             alldist.add(dist);
             if ( ts>7 )
-                alldist.get(ts-5).clear(); // clear memory as we only need first 3 rows and last three rows
-            if ( ts %1000==0 )
-                out.println(ts);
+                alldist.set(ts-5, null); // clear memory as we only need first 3 rows and last three rows
         }
         /*
         for(int i=0; i<N-1; i++) {
@@ -116,9 +116,16 @@ class Mar17SumDistance {
             new Mar17SumDistance(N, false);
         }        
     }
+    static void perfTest()
+    {
+        Instant start = Instant.now();
+        new Mar17SumDistance(100000, true);
+        Instant end = Instant.now();
+        out.println("usec "+ChronoUnit.MICROS.between(start, end));        
+    }
     public static void main(String[] args)
     {
-        new Mar17SumDistance(100000, true);
+        autoTest();
     }    
 }
 /*
@@ -135,5 +142,4 @@ class Mar17SumDistance {
 1 2 3 4 5
 2 3 4 5
 3 4 5
-4 5
 */
