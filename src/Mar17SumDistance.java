@@ -76,7 +76,8 @@ class Mar17SumDistance {
             fillArray(dist2);
             fillArray(dist3);
         }
-        calcByInterval(N);
+        //calcByInterval(N);
+        calcByStartingNode(N);
     }
     
     void calcByInterval(int N)
@@ -174,20 +175,20 @@ class Mar17SumDistance {
                 total += dist[s+2];
             }
             for (int t=s+4; t<N; t++) // node 5 to N
-            {
-                int 
-                dist[s+2] = dist[s+1]+dist1[s+2];
-                int d2 = dist1[s]+dist2[s+1];
-                int d3 = dist1[s]+dist1[s+1]+dist1[s+2];
-                if (dist[s+2]>d2)
-                    dist[s+2] = d2;
-                if (dist[s+2]>d3)
-                    dist[s+2] = d3;
-                if ( dist[s+2]>dist3[s])
-                    dist[s+2]=dist3[s];
-                total += dist[s+2];                
+            {   //clac dist[t-1]
+                dist[t-1] = dist[t-2]+dist1[t-1];
+                int d2 = dist1[t-3]+dist2[t-2];
+                int d3 = dist1[t-3]+dist1[t-2]+dist1[t-1];
+                if (dist[t-1]>d2)
+                    dist[t-1] = d2;
+                if (dist[t-1]>d3)
+                    dist[t-1] = d3;
+                if ( dist[t-1]>dist3[s])
+                    dist[t-1]=dist3[s];
+                total += dist[t-1];                
             }
         }
+        out.println(total);
     }
     static void autoTest()
     {        
@@ -206,7 +207,8 @@ class Mar17SumDistance {
     }
     public static void main(String[] args)
     {
-        perfTest();
+        //perfTest();
+        autoTest();
     }    
 }
 /*
