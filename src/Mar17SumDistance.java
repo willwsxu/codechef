@@ -20,20 +20,7 @@ class Mar17SumDistance {
     int [] dist2;
     int [] dist3;
     int [][] alldist;
-    // find out smallest distance from node s to t, ts=t-s        
-    int minDistance(int[] dist_1, int[] dist_2, int dist_3[], int s, int ts)
-    {
-        int t = s+ts;
-        // step one node back
-        int d = dist_1[s]+dist1[t-1]; 
-        // step two nodes back
-        int d2 = dist_2[s]+dist2[t-2];
-        if ( d>d2 )
-            d = d2; 
-        // step three nodes back
-        int d3 = dist_3[s]+dist3[t-3];
-        return d>d3?d3:d;
-    }      
+    // find out smallest distance from node s to t, ts=t-s   
     int minDistance2(int[][] alldist, int s, int ts)
     {
         int t = s+ts;
@@ -46,29 +33,19 @@ class Mar17SumDistance {
         // step three nodes back
         int d3 = alldist[ts-4][s]+dist3[t-3];
         return d>d3?d3:d;
-    }   
-    int minDistance3(int next1, int next2, int next3, int r1, int r2, int r3, int s, int ts)
-    {
-        // step one node back
-        int d = next1+r1; 
-        // step two nodes back
-        int d2 = next2+r2;
-        if ( d>d2 )
-            d = d2; 
-        // step three nodes back
-        int d3 = next3+r3;
-        return d>d3?d3:d;
-    }
+    }  
     Mar17SumDistance(int N, boolean biglytest)
     {
         dist1 = new int[N-1];  // weight from node 1 to 2, etc
         dist2 = new int[N-2];  // weight from node 1 to 3, etc
         dist3 = new int[N-3];  // weight from node 1 to 4, etc
         if (biglytest) {
+            // borrow idea to pre calc shortest distance between nodes
             for (int i=0; i<dist1.length; i++)
                 dist1[i]=i+1;
-            for (int i=0; i<dist2.length; i++)
+            for (int i=0; i<dist2.length; i++) {
                 dist2[i]=i+2;
+            }
             for (int i=0; i<dist3.length; i++)
                 dist3[i]=i+3;        
         } else {
@@ -198,6 +175,7 @@ class Mar17SumDistance {
             new Mar17SumDistance(N, false);
         }        
     }
+    
     static void perfTest()
     {
         Instant start = Instant.now();
