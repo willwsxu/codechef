@@ -76,6 +76,11 @@ class Mar17SumDistance {
             fillArray(dist2);
             fillArray(dist3);
         }
+        calcByInterval(N);
+    }
+    
+    void calcByInterval(int N)
+    {
         long total=0;
         // smallest distance between note s and t
         //List<int[]> alldist = new ArrayList<>(N-1);
@@ -140,6 +145,49 @@ class Mar17SumDistance {
             }
         }*/
         out.println(total);
+    }
+    
+    // node 0 to N-1
+    void calcByStartingNode(int N)
+    {
+        int[] dist = new int[N-1];
+        long total=0;
+        for (int s=0; s<N-1; s++) {
+            dist[s]= dist1[s];
+            total += dist[s];
+            if (s<N-2) {  // at leat two distance (3 nodes)
+                dist[s+1] = dist1[s]+dist1[s+1];
+                if ( dist[s+1]>dist2[s])
+                    dist[s+1]=dist2[s];
+                total += dist[s+1];
+            }
+            if (s<N-3) {  // at leat 3 distance (4 nodes)
+                dist[s+2] = dist[s+1]+dist1[s+2];
+                int d2 = dist1[s]+dist2[s+1];
+                int d3 = dist1[s]+dist1[s+1]+dist1[s+2];
+                if (dist[s+2]>d2)
+                    dist[s+2] = d2;
+                if (dist[s+2]>d3)
+                    dist[s+2] = d3;
+                if ( dist[s+2]>dist3[s])
+                    dist[s+2]=dist3[s];
+                total += dist[s+2];
+            }
+            for (int t=s+4; t<N; t++) // node 5 to N
+            {
+                int 
+                dist[s+2] = dist[s+1]+dist1[s+2];
+                int d2 = dist1[s]+dist2[s+1];
+                int d3 = dist1[s]+dist1[s+1]+dist1[s+2];
+                if (dist[s+2]>d2)
+                    dist[s+2] = d2;
+                if (dist[s+2]>d3)
+                    dist[s+2] = d3;
+                if ( dist[s+2]>dist3[s])
+                    dist[s+2]=dist3[s];
+                total += dist[s+2];                
+            }
+        }
     }
     static void autoTest()
     {        
