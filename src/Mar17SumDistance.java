@@ -115,9 +115,7 @@ class Mar17SumDistance {
             if ( ts>7 )
                 alldist[ts-1] = alldist[ts-5]; // reuse memory as we only need first 3 rows and last three rows
             for (int i=0; i<N-ts; i++) {  
-                //alldist[ts-1][i] = minDistance2(alldist, i, ts); // minDistance take 9 sec when N=100000
-                int t = ts+i;
-                alldist[ts-1][i] = minDistance3(alldist[ts-2][i], alldist[ts-3][i], alldist[ts-4][i], dist1[t-1], dist2[t-2], dist3[t-3], i, ts);
+                alldist[ts-1][i] = minDistance2(alldist, i, ts); // minDistance take 9 sec when N=100000
                 total += alldist[ts-1][i];
             }
         }
