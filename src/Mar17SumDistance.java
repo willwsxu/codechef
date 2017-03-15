@@ -42,12 +42,12 @@ class Mar17SumDistance {
         if (biglytest) {
             // borrow idea to pre calc shortest distance between nodes
             for (int i=0; i<dist1.length; i++)
-                dist1[i]=i+1;
+                dist1[i]=1;
             for (int i=0; i<dist2.length; i++) {
-                dist2[i]=i+2;
+                dist2[i]=1;
             }
             for (int i=0; i<dist3.length; i++)
-                dist3[i]=i+3;        
+                dist3[i]=1;        
         } else {
             fillArray(dist1);
             fillArray(dist2);
@@ -67,6 +67,7 @@ class Mar17SumDistance {
         for (int i=0; i<N-1; i++) {
             total += dist1[i];
         }
+        out.println(total);
         alldist[0] = dist1;
         // case t-s=2
         for (int i=0; i<N-2; i++) {
@@ -75,6 +76,7 @@ class Mar17SumDistance {
                 dist2[i] = d;  // update and reuse dist2
             total += dist2[i];
         }
+        out.println(total);
         alldist[1] = dist2;
         // case t-s=3
         for (int i=0; i<N-3; i++) {
@@ -86,6 +88,7 @@ class Mar17SumDistance {
                 dist3[i]=d;
             total += dist3[i];
         }
+        out.println(total);
         alldist[2] = dist3;
         
         // case t-s from 4 to N-1
@@ -128,65 +131,72 @@ class Mar17SumDistance {
     // node 0 to N-1
     void calcByStartingNode(int N)
     {
-        int[] dist = new int[N-1];
+        // case t-s=2, pre calc shortest path from node s to s+2
+        for (int i=0; i<N-2; i++) {
+            int d = dist1[i]+dist1[i+1];
+            if ( d<dist2[i])
+                dist2[i] = d;  // update and reuse dist2
+        }
+        // case t-s=3, pre calc shortest path from node s to s+3
+        for (int i=0; i<N-3; i++) {
+            int d =  dist2[i]+dist1[i+2];
+            int d2 = dist1[i]+dist2[i+1];
+            if ( d>d2)
+                d=d2;
+            if ( d < dist3[i])
+                dist3[i]=d;
+        }
+        int[] dist = new int[N];
         long total=0;
         for (int s=0; s<N-1; s++) {
-            dist[s]= dist1[s];
-            total += dist[s];
+            dist[s+1]= dist1[s]; // diest from s to s+1
+            total += dist[s+1];
             if (s<N-2) {  // at leat two distance (3 nodes)
-                dist[s+1] = dist1[s]+dist1[s+1];
-                if ( dist[s+1]>dist2[s])
-                    dist[s+1]=dist2[s];
-                total += dist[s+1];
-            }
-            if (s<N-3) {  // at leat 3 distance (4 nodes)
-                dist[s+2] = dist[s+1]+dist1[s+2];
-                int d2 = dist1[s]+dist2[s+1];
-                int d3 = dist1[s]+dist1[s+1]+dist1[s+2];
-                if (dist[s+2]>d2)
-                    dist[s+2] = d2;
-                if (dist[s+2]>d3)
-                    dist[s+2] = d3;
-                if ( dist[s+2]>dist3[s])
-                    dist[s+2]=dist3[s];
+                dist[s+2]=dist2[s];
                 total += dist[s+2];
             }
+            if (s<N-3) {  // at leat 3 distance (4 nodes)
+                dist[s+3]=dist3[s];
+                total += dist[s+3];
+            }
             for (int t=s+4; t<N; t++) // node 5 to N
-            {   //clac dist[t-1]
-                dist[t-1] = dist[t-2]+dist1[t-1];
-                int d2 = dist1[t-3]+dist2[t-2];
-                int d3 = dist1[t-3]+dist1[t-2]+dist1[t-1];
-                if (dist[t-1]>d2)
-                    dist[t-1] = d2;
-                if (dist[t-1]>d3)
-                    dist[t-1] = d3;
-                if ( dist[t-1]>dist3[s])
-                    dist[t-1]=dist3[s];
-                total += dist[t-1];                
+            {
+                dist[t] = dist[t-1]+dist1[t-1];
+                int d2 = dist[t-2]+dist2[t-2];
+                int d3 = dist[t-3]+dist3[t-3];
+                if (dist[t]>d2)
+                    dist[t] = d2;
+                if (dist[t]>d3)
+                    dist[t] = d3;
+                total += dist[t];                
             }
         }
         out.println(total);
     }
     static void autoTest()
     {        
+        Instant start = Instant.now();
         int TC = scan.nextInt();  // between 1 and 10^4
         for (int i=0; i<TC; i++) {
             int N = scan.nextInt();  // between 4 and 10^5
             new Mar17SumDistance(N, false);
         }        
+        Instant end = Instant.now();
+        out.println("usec "+ChronoUnit.MICROS.between(start, end));     
     }
     
+    //  Mar 15: calcByStartingNode 21.4 sec, calcByInterval 35 sec, distance is 1 for all 3 types
     static void perfTest()
     {
         Instant start = Instant.now();
-        new Mar17SumDistance(100000, true);
+        new Mar17SumDistance(100001, true);
         Instant end = Instant.now();
         out.println("usec "+ChronoUnit.MICROS.between(start, end));        
     }
     public static void main(String[] args)
     {
-        //perfTest();
-        autoTest();
+        perfTest();
+        //autoTest();
     }    
 }
 /*

@@ -5,11 +5,14 @@
  */
 package codechef;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  *
@@ -22,7 +25,30 @@ public class CodeChef {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        genTestCase(new int[]{10,9,8}, 1, 10);
+        //genTestCase(new int[]{100000,99999,99998}, 1, 9);
+        genTestCase(new int[]{100000,99999,99998}, 1, 1);
+    }
+    
+    static Scanner scan = new Scanner(System.in);
+    static void fillArray(int [] a)
+    {
+        for (int i=0; i<a.length; i++) {
+            a[i] = scan.nextInt();  // between 1 and 10^4
+        }
+    }
+    static void fillArray(int [][] a, String file)
+    {
+        try (Scanner reader = new Scanner(
+        new FileReader(
+        new File(file)))) {
+            for (int i=0; i<a.length; i++)
+                for (int j=0; j<a[i].length; j++) {
+                    a[i][j]=reader.nextInt();
+                }
+        }
+        catch (IOException e)
+        {
+        }
     }
     
     static void genTestCase(int []linesize, int low, int high)
