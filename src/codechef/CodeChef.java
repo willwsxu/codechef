@@ -36,6 +36,16 @@ public class CodeChef {
             a[i] = scan.nextInt();  // between 1 and 10^4
         }
     }
+    public static Scanner getFileScanner(String file)
+    {
+        try {
+            return new Scanner( new FileReader( new File(file)));
+        }
+        catch (IOException e)
+        {
+        }
+        return new Scanner(System.in);
+    }
     static void fillArray(int [][] a, String file)
     {
         try (Scanner reader = new Scanner(

@@ -1,9 +1,6 @@
 
+import codechef.CodeChef;
 import static java.lang.System.out;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 // ArrayList of Interger is very slow comparing to int array
@@ -39,20 +36,11 @@ class Mar17SumDistance {
         dist1 = new int[N-1];  // weight from node 1 to 2, etc
         dist2 = new int[N-2];  // weight from node 1 to 3, etc
         dist3 = new int[N-3];  // weight from node 1 to 4, etc
-        if (biglytest) {
-            // borrow idea to pre calc shortest distance between nodes
-            for (int i=0; i<dist1.length; i++)
-                dist1[i]=1;
-            for (int i=0; i<dist2.length; i++) {
-                dist2[i]=1;
-            }
-            for (int i=0; i<dist3.length; i++)
-                dist3[i]=1;        
-        } else {
-            fillArray(dist1);
-            fillArray(dist2);
-            fillArray(dist3);
-        }
+        // borrow idea to pre calc shortest distance between nodes
+        fillArray(dist1);
+        fillArray(dist2);
+        fillArray(dist3);
+
         //calcByInterval(N);
         calcByStartingNode(N);
     }
@@ -67,7 +55,7 @@ class Mar17SumDistance {
         for (int i=0; i<N-1; i++) {
             total += dist1[i];
         }
-        out.println(total);
+        //out.println(total);
         alldist[0] = dist1;
         // case t-s=2
         for (int i=0; i<N-2; i++) {
@@ -76,7 +64,7 @@ class Mar17SumDistance {
                 dist2[i] = d;  // update and reuse dist2
             total += dist2[i];
         }
-        out.println(total);
+        //out.println(total);
         alldist[1] = dist2;
         // case t-s=3
         for (int i=0; i<N-3; i++) {
@@ -88,7 +76,7 @@ class Mar17SumDistance {
                 dist3[i]=d;
             total += dist3[i];
         }
-        out.println(total);
+        //out.println(total);
         alldist[2] = dist3;
         
         // case t-s from 4 to N-1
@@ -175,42 +163,21 @@ class Mar17SumDistance {
     }
     static void autoTest()
     {        
-        Instant start = Instant.now();
         int TC = scan.nextInt();  // between 1 and 10^4
         for (int i=0; i<TC; i++) {
             int N = scan.nextInt();  // between 4 and 10^5
             new Mar17SumDistance(N, false);
         }        
-        Instant end = Instant.now();
-        out.println("usec "+ChronoUnit.MICROS.between(start, end));     
     }
     
-    //  Mar 15: calcByStartingNode 21.4 sec, calcByInterval 35 sec, distance is 1 for all 3 types
-    static void perfTest()
-    {
-        Instant start = Instant.now();
-        new Mar17SumDistance(100001, true);
-        Instant end = Instant.now();
-        out.println("usec "+ChronoUnit.MICROS.between(start, end));        
-    }
+    // Mar 15 test3.txt: calcByStartingNode 21.4 sec, calcByInterval 35 sec, distance is 1 for all 3 types
+    // Mar 15 test2.txt: calcByStartingNode 48 sec
     public static void main(String[] args)
     {
-        perfTest();
-        //autoTest();
+        scan = codechef.CodeChef.getFileScanner("test2.txt");
+        //Instant start = Instant.now();
+        autoTest();
+        //Instant end = Instant.now();
+        //out.println("usec "+ChronoUnit.MICROS.between(start, end));       
     }    
 }
-/*
-3
-4
-1 1 1
-1 1
-1
-5
-1 2 3 4
-2 3 4
-3 4
-6
-1 2 3 4 5
-2 3 4 5
-3 4 5
-*/
