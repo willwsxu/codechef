@@ -134,16 +134,16 @@ class Mar17SumDistance {
             if ( d < dist3[i])
                 dist3[i]=d;
         }
-        int[] dist = new int[N];
+        int[] dist = new int[N];  // all distance from 0 to N
         long total=0;
         for (int s=0; s<N-1; s++) {
-            dist[s+1]= dist1[s]; // diest from s to s+1
+            dist[s+1]= dist1[s]; // dist from s to s+1
             total += dist[s+1];
-            if (s<N-2) {  // at leat two distance (3 nodes)
+            if (s<N-2) {  // at least two distance (3 nodes)
                 dist[s+2]=dist2[s];
                 total += dist[s+2];
             }
-            if (s<N-3) {  // at leat 3 distance (4 nodes)
+            if (s<N-3) {  // at least 3 distance (4 nodes)
                 dist[s+3]=dist3[s];
                 total += dist[s+3];
             }
