@@ -158,6 +158,8 @@ class Mar17SumDistance {
                     dist[t] = d3;
                 total += dist[t];                
             }
+            if (s<5)
+                codechef.CodeChef.writeFile(dist, 0, N, s>0);
         }
         out.println(total);
     }
@@ -174,7 +176,7 @@ class Mar17SumDistance {
     // Mar 15 test2.txt: calcByStartingNode 48 sec
     public static void main(String[] args)
     {
-        scan = codechef.CodeChef.getFileScanner("test2.txt");
+        scan = codechef.CodeChef.getFileScanner("test4.txt");
         //Instant start = Instant.now();
         autoTest();
         //Instant end = Instant.now();

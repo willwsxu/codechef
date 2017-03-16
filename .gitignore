@@ -21,3 +21,4 @@ nbproject/genfiles.properties
 *build/
 /nbproject/private/
 test.txt
+test.out.txt

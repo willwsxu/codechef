@@ -26,7 +26,8 @@ public class CodeChef {
     public static void main(String[] args) {
         // TODO code application logic here
         //genTestCase(new int[]{100000,99999,99998}, 1, 9);
-        genTestCase(new int[]{100000,99999,99998}, 1, 1);
+        //genTestCase(new int[]{100000,99999,99998}, 1, 1);
+        genTestCase(new int[]{99,98,97}, 1, 8);
     }
     
     static Scanner scan = new Scanner(System.in);
@@ -76,6 +77,27 @@ public class CodeChef {
                 }
                 writer.println();
             }
+        }
+        catch (IOException e)
+        {
+            
+        }        
+    }
+    
+    public static void writeFile(int []line, int start, int end, boolean append)
+    {
+        try (PrintWriter writer = 
+                new PrintWriter(
+                new FileWriter(
+                new File("test.out.txt"), append)); ) 
+        {
+            if (end>line.length)
+                end = line.length;
+            for (int i=start; i<end; i++) {
+                writer.print(line[i]);
+                writer.print(' ');
+            }
+            writer.println();
         }
         catch (IOException e)
         {
