@@ -98,6 +98,7 @@ public class CodeChef {
                 writer.print(' ');
             }
             writer.println();
+            writer.println();
         }
         catch (IOException e)
         {

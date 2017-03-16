@@ -1,5 +1,4 @@
 
-import codechef.CodeChef;
 import static java.lang.System.out;
 import java.util.Scanner;
 
@@ -116,7 +115,48 @@ class Mar17SumDistance {
         out.println(total);
     }
     
+    // find all distances from node s to N, i.e. s to s+1, s to s+2, etc
+    long calc(int dist[], int s, int N)
+    {    
+        long total=0;  // sub total
+        dist[s+1]= dist1[s]; // dist from s to s+1
+        total += dist[s+1];
+        if (s<N-2) {  // at least two distance (3 nodes)
+            dist[s+2]=dist2[s];
+            total += dist[s+2];
+        }
+        if (s<N-3) {  // at least 3 distance (4 nodes)
+            dist[s+3]=dist3[s];
+            total += dist[s+3];
+        }
+        for (int t=s+4; t<N; t++) // node 5 to N
+        {
+            dist[t] = dist[t-1]+dist1[t-1];
+            int d2 = dist[t-2]+dist2[t-2];
+            int d3 = dist[t-3]+dist3[t-3];
+            if (dist[t]>d2)
+                dist[t] = d2;
+            if (dist[t]>d3)
+                dist[t] = d3;
+            total += dist[t];
+            
+            if (s>0 && t-s>10 && t<N-10) {  // differene of distance to dist0 would become constant
+                long diff1 = dist[t]-dist0[t];  // don't use int as it will overflow
+                long diff2 = dist[t-1]-dist0[t-1];
+                long diff3 = dist[t-2]-dist0[t-2];
+                if ( diff1==diff2 && diff2==diff3) {
+                    total += sumDist0[t+1];
+                    total += diff3*(N-1-t);
+                    break;
+                }
+            }
+        }
+        return total;
+    }
+    
     // node 0 to N-1
+    int[] dist0;
+    long[] sumDist0; // sum of distance from back to front
     void calcByStartingNode(int N)
     {
         // case t-s=2, pre calc shortest path from node s to s+2
@@ -134,32 +174,22 @@ class Mar17SumDistance {
             if ( d < dist3[i])
                 dist3[i]=d;
         }
+        dist0 = new int[N];  // all distance from 0 to N
+        sumDist0 = new long[N];
         int[] dist = new int[N];  // all distance from 0 to N
         long total=0;
-        for (int s=0; s<N-1; s++) {
-            dist[s+1]= dist1[s]; // dist from s to s+1
-            total += dist[s+1];
-            if (s<N-2) {  // at least two distance (3 nodes)
-                dist[s+2]=dist2[s];
-                total += dist[s+2];
-            }
-            if (s<N-3) {  // at least 3 distance (4 nodes)
-                dist[s+3]=dist3[s];
-                total += dist[s+3];
-            }
-            for (int t=s+4; t<N; t++) // node 5 to N
-            {
-                dist[t] = dist[t-1]+dist1[t-1];
-                int d2 = dist[t-2]+dist2[t-2];
-                int d3 = dist[t-3]+dist3[t-3];
-                if (dist[t]>d2)
-                    dist[t] = d2;
-                if (dist[t]>d3)
-                    dist[t] = d3;
-                total += dist[t];                
-            }
-            if (s<5)
-                codechef.CodeChef.writeFile(dist, 0, N, s>0);
+        total += calc(dist0, 0, N);
+        sumDist0[N-1] = dist0[N-1];
+        for (int k=N-2; k>=0; k--)
+            sumDist0[k] = dist0[k]+sumDist0[k+1];
+        //codechef.CodeChef.writeFile(dist0, 0, N, true);
+        for (int s=1; s<N-1; s++) {
+            total += calc(dist, s, N);
+            /*if (s<5) {
+                for (int m=s; m<N; m++)
+                    dist[m] -= dist0[m];
+                codechef.CodeChef.writeFile(dist, 0, N, true);
+            }*/
         }
         out.println(total);
     }
@@ -176,7 +206,7 @@ class Mar17SumDistance {
     // Mar 15 test2.txt: calcByStartingNode 48 sec
     public static void main(String[] args)
     {
-        scan = codechef.CodeChef.getFileScanner("test4.txt");
+        scan = codechef.CodeChef.getFileScanner("test2.txt");
         //Instant start = Instant.now();
         autoTest();
         //Instant end = Instant.now();
