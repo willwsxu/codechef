@@ -7,6 +7,7 @@ public class SumDistanceVineet {
  
 	public static void main(String[] args) throws Exception {
 		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new FileReader("test3.txt"));  // 24 seconds on this test case
 		String str = br.readLine();
 		int T = Integer.parseInt(str);
 		for(int i = 0 ; i < T ; i++) {
