@@ -1,5 +1,7 @@
 
 import static java.lang.System.out;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 
 // ArrayList of Interger is very slow comparing to int array
@@ -227,7 +229,7 @@ class Mar17SumDistance {
             }*/
         }
         out.println(total);
-        //out.println("loops "+loops);
+        out.println("loops "+loops);
     }
     static void autoTest()
     {        
@@ -242,13 +244,13 @@ class Mar17SumDistance {
     //Mar 15 test2.txt: calcByStartingNode 48 sec
     //Mar 16 test2.txt: <1 sec after reduce unnecessary loops, 177105986880403, loops 470390
     //Mar 16 test3.txt: 12 sec after reduce unnecessary loops, 55558888938889, loops 3333233334
-    //Mar 16 test3.txt: 1 sec after checking repeat pattern of last 6, 55558888938889, loops 9828255      
+    //Mar 16 test3.txt: <1 sec after checking repeat pattern of last 6, 55558888938889, loops 599968      
     public static void main(String[] args)
     {
-        scan = codechef.CodeChef.getFileScanner("test2.txt");
-        //Instant start = Instant.now();
+        scan = codechef.CodeChef.getFileScanner("test5.txt");
+        Instant start = Instant.now();
         autoTest();
-        //Instant end = Instant.now();
-        //out.println("usec "+ChronoUnit.MICROS.between(start, end));       
+        Instant end = Instant.now();
+        out.println("usec "+ChronoUnit.MICROS.between(start, end));       
     }    
 }
