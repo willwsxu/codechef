@@ -26,7 +26,7 @@ public class CodeChef {
     public static void main(String[] args) {
         // TODO code application logic here
         //genTestCase(new int[]{100000,99999,99998}, 1, 9);
-        genTestCase(new int[]{99999,99998,99997}, 1, 3);
+        genTestCase(new int[]{99999,99998,99997}, 1, 10000);
         //genTestCase(new int[]{99,98,97}, 1, 8);
     }
     

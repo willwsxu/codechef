@@ -2,6 +2,8 @@
 import static java.lang.System.out;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 // ArrayList of Interger is very slow comparing to int array
@@ -131,6 +133,7 @@ class Mar17SumDistance {
             dist[s+3]=dist3[s];
             total += dist[s+3];
         }
+        Cache cache=null;
         for (int t=s+4; t<N; t++) // node 5 to N
         {
             dist[t] = dist[t-1]+dist1[t-1];
@@ -143,52 +146,52 @@ class Mar17SumDistance {
             total += dist[t];
             
             if (s>2 && t-s>6 && t<N-1) {  // differene of distance to dist0 would become constant
-                long diff1 = dist[t]-dist0N[t];  // don't use int as it will overflow
-                long diff2 = dist[t-1]-dist0N[t-1];
-                long diff3 = dist[t-2]-dist0N[t-2];
-                if ( diff1==diff2 && diff2==diff3) {
-                    total += sumDist0[t+1];
-                    total += diff3*(N-1-t);
-                    break;
+                long diff3=0;
+                for (int i=0; i< caches.size(); i++) {
+                    int dist0N[] = caches.get(i).dist;
+                    long diff1 = dist[t]-dist0N[t];  // don't use int as it will overflow
+                    long diff2 = dist[t-1]-dist0N[t-1];
+                    diff3 = dist[t-2]-dist0N[t-2];
+                    if ( diff1==diff2 && diff2==diff3) {
+                        cache = caches.get(i);
+                        break;
+                    }
                 }
-                diff1 = dist[t]-dist1N[t];
-                diff2 = dist[t-1]-dist1N[t-1];
-                diff3 = dist[t-2]-dist1N[t-2];
-                if ( diff1==diff2 && diff2==diff3) {
-                    total += sumDist1[t+1];
+                if (cache != null) {
+                    total += cache.sumDist[t+1];
                     total += diff3*(N-1-t);
-                    break;
-                }
-                diff1 = dist[t]-dist2N[t];
-                diff2 = dist[t-1]-dist2N[t-1];
-                diff3 = dist[t-2]-dist2N[t-2];
-                if ( diff1==diff2 && diff2==diff3) {
-                    total += sumDist2[t+1];
-                    total += diff3*(N-1-t);
-                    break;
+                    break;                    
                 }
             }
-            loops++;
+            //loops++;
+        }
+        if (cache==null && N-s>20) {
+            cache = new Cache();
+            cache.calcSum(dist);
+            caches.add(cache);
+            //out.println("add cache "+s);
         }
         return total;
     }
     
-    long calc3(int dist[], long[]sumDist, int start, int N)
-    {
-        long total = calc(dist, start, N);
-        sumDist[N-1] = dist[N-1];
-        for (int k=N-2; k>=0; k--)
-            sumDist[k] = dist[k]+sumDist[k+1];
-        return total;
+    //long    loops=0;
+    // save different patterns of distance difference, from 0 to N
+    class Cache{
+        int[]   dist;
+        long[]  sumDist;
+        
+        void calcSum(int[] d) {
+            int N = d.length;
+            this.dist = new int[N];
+            sumDist = new long[N];
+            for (int i=0; i<N; i++)
+                dist[i]=d[i];
+            sumDist[N-1] = dist[N-1];
+            for (int k=N-2; k>=0; k--)
+                sumDist[k] = dist[k]+sumDist[k+1];
+        }
     }
-    // node 0 to N-1
-    int[] dist0N;
-    int[] dist1N;
-    int[] dist2N;
-    long[] sumDist0; // sum of distance from back to front N to 0
-    long[] sumDist1; // sum of distance from back to front N to 1
-    long[] sumDist2; // sum of distance from back to front N to 2
-    long    loops=0;
+    List<Cache> caches = new ArrayList<>(10);
     void calcByStartingNode(int N)
     {
         // case t-s=2, pre calc shortest path from node s to s+2
@@ -206,21 +209,12 @@ class Mar17SumDistance {
             if ( d < dist3[i])
                 dist3[i]=d;
         }
-        dist0N = new int[N];  // all distance from 0 to N
-        dist1N = new int[N];  // all distance from 1 to N
-        dist2N = new int[N];  // all distance from 2 to N
-        sumDist0 = new long[N];
-        sumDist1 = new long[N];
-        sumDist2 = new long[N];
         int[] dist = new int[N];  // all distance from 0 to N
         long total=0;
-        total += calc3(dist0N, sumDist0, 0, N);        
-        total += calc3(dist1N, sumDist1, 1, N);                
-        total += calc3(dist2N, sumDist2, 2, N);
         
         //codechef.CodeChef.writeFile(dist0N, 0, N, false);
         //codechef.CodeChef.writeFile(dist1N, 0, N, true);
-        for (int s=3; s<N-1; s++) {
+        for (int s=0; s<N-1; s++) {
             total += calc(dist, s, N);
             /*if (s<4) {
                 for (int m=s; m<N; m++)
@@ -229,7 +223,7 @@ class Mar17SumDistance {
             }*/
         }
         out.println(total);
-        out.println("loops "+loops);
+        //out.println("loops "+loops+" caches "+caches.size());
     }
     static void autoTest()
     {        
@@ -247,10 +241,10 @@ class Mar17SumDistance {
     //Mar 16 test3.txt: <1 sec after checking repeat pattern of last 6, 55558888938889, loops 599968      
     public static void main(String[] args)
     {
-        scan = codechef.CodeChef.getFileScanner("test5.txt");
-        Instant start = Instant.now();
+        scan = codechef.CodeChef.getFileScanner("sumdist-t5.txt");
+        //Instant start = Instant.now();
         autoTest();
-        Instant end = Instant.now();
-        out.println("usec "+ChronoUnit.MICROS.between(start, end));       
+        //Instant end = Instant.now();
+        //out.println("usec "+ChronoUnit.MICROS.between(start, end));       
     }    
 }

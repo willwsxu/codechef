@@ -425,7 +425,7 @@ class CC_2017_Mar_SumDis {
 	static void process() throws Exception {
 		out = new BufferedWriter(new OutputStreamWriter(System.out));
 		//reader=new InputReader(System.in);
-		reader = new InputReader(new FileInputStream(new File("test5.txt")));
+		reader = new InputReader(new FileInputStream(new File("test6.txt")));
  
 		boolean TST=false;
 		if (TST){
