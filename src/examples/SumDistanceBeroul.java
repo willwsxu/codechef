@@ -180,7 +180,7 @@ class CC_2017_Mar_SumDis {
 	
 	
 	static int[] dist;
-	
+	static long count=0;
 	static long solveMass(){
 		// first we compute shortest path between node 0 and nodes 1,2,3
 		dist=new int[4];
@@ -259,7 +259,7 @@ class CC_2017_Mar_SumDis {
 			HashMap<Integer,Composite> tmp=new HashMap<Integer,Composite>();
 			// already existing elements
 			for (Entry<Integer,Composite> e:hm.entrySet()){
-				
+				count++;
 				Integer X=e.getKey();
 				Composite CC=e.getValue();
 				
@@ -358,7 +358,7 @@ class CC_2017_Mar_SumDis {
 		sum+=a[m-1];
 		
 		//log(sum);
-		
+		System.out.println("loop count "+count);
 		return sum;
 		
 		//output(sum);
