@@ -1,5 +1,6 @@
 
 import static java.lang.System.out;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -11,26 +12,37 @@ public class CookOffMar17Xor {
         }
     }
     static final int MOD = 1000000007;
-    
-    int count(int seq[], int idx, int b) {
-        if (idx+1==seq.length)
-            return 1;
-        int current = seq[idx]^b;
-        int cnt=0;
-        for (int j=b; j<=Integer.MAX_VALUE; j++)
-        {
-            int next = seq[idx+1]^j;
-            if ( next>=current )
-            cnt += count(seq, idx+1, j);
+    int [][][]dp;
+    int count(int seq[], int msk1, int msk2, int bit) {
+        if (bit == -1) return 1;
+        if (dp[bit][msk1][msk2] != -1) return dp[bit][msk1][msk2];
+        int res = 0;
+        outer:
+        for (int cur = 0; cur < 1 << seq.length; cur++) {
+            int nmsk1 = msk1, nmsk2 = msk2;
+            for (int i = 0; i + 1 < seq.length; i++) {
+                int b1 = (cur >> i) & 1, b2 = (cur >> (i + 1)) & 1;
+                if (b1 == 1 && b2 == 0 && ((msk1 >> i) & 1) == 0) continue outer;
+                int a1 = ((seq[i] >> bit) & 1) ^ b1, a2 = ((seq[i + 1] >> bit) & 1) ^ b2;
+                if (a1 == 1 && a2 == 0 && ((msk2 >> i) & 1) == 0) continue outer;
+
+                if (b1 == 0 && b2 == 1) nmsk1 |= 1 << i;
+                if (a1 == 0 && a2 == 1) nmsk2 |= 1 << i;
+            }
+            res += count(seq, nmsk1, nmsk2, bit - 1);
+            if (res >= MOD) res -= MOD;
         }
-        return cnt%MOD;
+        return dp[bit][msk1][msk2] = res;
     }
-    int count(int seq[])
+    int solve(int seq[])
     {
+        int masks = 1<<(seq.length-1);
+        dp = new int[31][masks][masks];
+        for (int[][] x : dp) for (int[] y : x) Arrays.fill(y, -1);
+        
         int cnt=0;
-        for (int b=0; b<=Integer.MAX_VALUE; b++)
-            cnt += count(seq, 0, b);
-        return cnt%MOD;
+
+        return count(seq, 0, 0, 30);
     }
     static Scanner scan = new Scanner(System.in);
     public static void autoTest()
@@ -40,7 +52,7 @@ public class CookOffMar17Xor {
             int N = scan.nextInt();  // between 1 to 5
             int seq[] = new int[N];
             fillArray(seq);
-            out.println(new CookOffMar17Xor().count(seq));
+            out.println(new CookOffMar17Xor().solve(seq));
         }
     }
     public static void main(String[] args)
