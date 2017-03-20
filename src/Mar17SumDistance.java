@@ -34,7 +34,7 @@ class Mar17SumDistance {
         int d3 = alldist[ts-4][s]+dist3[t-3];
         return d>d3?d3:d;
     }  
-    Mar17SumDistance(int N, boolean biglytest)
+    Mar17SumDistance(int N)
     {
         dist1 = new int[N-1];  // weight from node 1 to 2, etc
         dist2 = new int[N-2];  // weight from node 1 to 3, etc
@@ -230,7 +230,7 @@ class Mar17SumDistance {
         int TC = scan.nextInt();  // between 1 and 10^4
         for (int i=0; i<TC; i++) {
             int N = scan.nextInt();  // between 4 and 10^5
-            new Mar17SumDistance(N, false);
+            new Mar17SumDistance(N);
         }        
     }
     
