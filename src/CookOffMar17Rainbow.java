@@ -1,5 +1,7 @@
 
 import static java.lang.System.out;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -28,8 +30,8 @@ class CookOffMar17Rainbow {
         for (int j=0; j<adjMat[i].length; j++) {
             if (adjMat[i][j]>0) {
                 if (edges.contains(adjMat[i][j])) {
-                    removeNode(i);
-                    return false;
+                    //removeNode(i);
+                    //return false;  not nice only if all edges are same
                 } else
                     edges.add(adjMat[i][j]);
             }
@@ -45,9 +47,21 @@ class CookOffMar17Rainbow {
         adjMat = new int[N][N];
         fillMatrix(adjMat, scan);
         int nice=N;
-        for (int i=0; i<adjMat.length; i++)
-            if ( !visit(i) )
-                nice--;
+        boolean []removed = new boolean[N];
+        Arrays.fill(removed, false);
+        boolean repeat=true;
+        while (repeat) {
+            repeat = false;
+            for (int i=0; i<adjMat.length; i++) {
+                if (removed[i])
+                    continue;
+                if ( !visit(i) ) {
+                    nice--;
+                    repeat=true;
+                    removed[i]=true;
+                }
+            }
+        }
         out.println(nice);
     }
     public static void autoTest()
@@ -60,10 +74,10 @@ class CookOffMar17Rainbow {
     }
     public static void main(String[] args)
     {      
-        //scan = codechef.CodeChef.getFileScanner("rainbow0317.txt");
-        //Instant start = Instant.now();
+        scan = codechef.CodeChef.getFileScanner("rainbow0317.txt");
+        Instant start = Instant.now();
         autoTest();
-        //Instant end = Instant.now();
-        //out.println("usec "+ChronoUnit.MICROS.between(start, end));       
+        Instant end = Instant.now();
+        out.println("usec "+ChronoUnit.MICROS.between(start, end));       
     }
 }
