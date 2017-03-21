@@ -1,13 +1,17 @@
 
+import static java.lang.System.out;
 import java.util.Scanner;
 
-
+// Linearity of expectation
 class CookOffMar17Cards {
     
     static Scanner scan = new Scanner(System.in);
-    double score(int redCards, int blueCards, int redTokens, int blueTokens)
+    //=(p∗r+(r+b−p)∗b)/(r+b)
+    static double score(int redCards, int blueCards, int redTokens, int blueTokens)
     {
-        return 0.0;
+        // cast to long type to avoid overflow of r*b
+        double num = (long)redCards*redTokens+(long)blueTokens*blueCards;
+        return num/(redCards+blueCards);
     }
     public static void autoTest()
     {
@@ -15,7 +19,8 @@ class CookOffMar17Cards {
         for (int i=0; i<TC; i++) {
             int r = scan.nextInt();  // between 1 to 100000
             int b = scan.nextInt();
-            int p = scan.nextInt();  // between 0 and r=b
+            int p = scan.nextInt();  // between 0 and r+b
+            out.printf("%.10f\n", score(r, b, p, r+b-p));
         }
     }
     public static void main(String[] args)

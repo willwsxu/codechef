@@ -1,0 +1,55 @@
+You are given a sequence of n integers a1, ..., an. Count the number of sequences b = b1, ..., bn such that: 0 ≤ b1 ≤ ... ≤ bn < 2^31 and (a1 XOR b1) ≤ … ≤ (an XOR bn). Return this count, modulo 10^9+7.
+
+Here XOR denotes the bitwise XOR.
+
+Input
+The first line of input will contain an integer T, the number of test cases.
+
+Each test case will be in two lines.
+
+The first line of the case will contain an integer n.
+
+The next line of the case will contain n space separated integers a1,...,an.
+
+Output
+Output a single number, the number of sequences, modulo 10^9+7.
+
+Constraints
+1 ≤ T ≤ 100
+1 ≤ n ≤ 5
+0 ≤ ai < 2^31
+Example
+Input: 
+4
+1
+42
+5
+5 4 3 2 1
+4
+1194533513 122420337 1448417648 120078455
+3
+31 2047 2147483647
+
+Output:
+147483634
+986095186
+0
+468598063
+Explanation
+In the first case, there are 2^31 possible sequences, so the answer is 2^31 modulo 10^9+7 = 147483634
+
+For the second case, one possible example of a valid sequence is b = 9, 9, 18, 19, 32. We can check that this sequence is nondecreasing, and also, we have (a1 XOR b1) = 12, (a2 XOR b2) = 13, (a3 XOR b3) = 17, (a4 XOR b4) = 17, (a5 XOR b5) = 33, which is also nondecreasing.
+
+For the third case, no sequences satisfy the conditions.
+
+Editorial
+PROBLEM:
+Find the number of increasing sequences that are also increasing when XOR-ed by another sequence.
+
+QUICK EXPLANATION:
+First, it's helpful to be familiar with digit dp. The state we need to keep is whether or not b_i is strictly less than b_{i+1} and a_i XOR b_i is strictly less than a_{i+1} XOR b_{i+1}. This is a total of 2^(2(N-1)) states per digit.
+
+EXPLANATION:
+Using the logic above, we can solve f(bit,mask1,mask2)f(bit,mask1,mask2) denoting number of ways given we can fill in the bits 0 to bit. The i-th bit in mask1 (resp mask2) is 1 if and only if b_i (resp a_i XOR b_i) is strictly less than b_{i+1} (resp a_{i+1} XOR b_{i+1}).
+
+Using this logic, we can brute force over all 2^n ways to fill in the current bit for b, make sure they satisfy the constraints in mask, and recurse to smaller cases.
