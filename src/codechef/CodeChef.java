@@ -37,6 +37,13 @@ public class CodeChef {
             a[i] = scan.nextInt();  // between 1 and 10^4
         }
     }
+    static void fillMatrix(int [][] a, Scanner reader)
+    {
+        for (int i=0; i<a.length; i++)
+            for (int j=0; j<a[i].length; j++) {
+                a[i][j]=reader.nextInt();
+            }
+    }
     public static Scanner getFileScanner(String file)
     {
         try {
@@ -52,10 +59,7 @@ public class CodeChef {
         try (Scanner reader = new Scanner(
         new FileReader(
         new File(file)))) {
-            for (int i=0; i<a.length; i++)
-                for (int j=0; j<a[i].length; j++) {
-                    a[i][j]=reader.nextInt();
-                }
+            fillMatrix(a, reader);
         }
         catch (IOException e)
         {
