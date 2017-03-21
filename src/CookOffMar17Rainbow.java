@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 class CookOffMar17Rainbow {
     static Scanner scan = new Scanner(System.in);
@@ -42,10 +44,8 @@ class CookOffMar17Rainbow {
         }
         return edges.size()>0;
     }
-    public CookOffMar17Rainbow(int N)
+    int solve(int N)
     {
-        adjMat = new int[N][N];
-        fillMatrix(adjMat, scan);
         int nice=N;
         boolean []removed = new boolean[N];
         Arrays.fill(removed, false);
@@ -62,7 +62,37 @@ class CookOffMar17Rainbow {
                 }
             }
         }
-        out.println(nice);
+        return nice;
+    }
+    int solve2(int N)
+    {
+        HashSet<Integer> all = IntStream.range(0, N).boxed().collect(Collectors.toCollection(HashSet::new));
+        while (all.size()>1) {
+            int bad=-1;
+            for (int r: all) {
+                Set<Integer> edges = new HashSet<>(all.size());
+                for (int c: all) {
+                    if ( r!=c)
+                        edges.add(adjMat[r][c]);
+                }
+                if ( edges.size()<=1 ) {
+                    bad = r;
+                    break;
+                }
+            }
+            if ( bad>=0 ) {
+                all.remove(bad);
+            } else
+                break;
+        }
+        int nice = all.size();
+        return nice>1?nice:0;
+    }
+    public CookOffMar17Rainbow(int N)
+    {
+        adjMat = new int[N][N];
+        fillMatrix(adjMat, scan);
+        out.println(solve2(N));
     }
     public static void autoTest()
     {  
