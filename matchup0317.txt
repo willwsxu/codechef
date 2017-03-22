@@ -7,3 +7,27 @@ w y x z
 x w
 y x
 y z
+
+10 10 4 3
+a b c d e f g h i j
+a b
+a c
+a d
+b c
+b d
+c d
+d e
+f g
+h i
+i j
+g1 i1 h1 d1 j1 e1 f1 c1 b1 a1
+a1 b1
+a1 c1
+a1 d1
+b1 c1
+b1 d1
+c1 d1
+d1 e1
+f1 g1
+h1 i1
+i1 j1

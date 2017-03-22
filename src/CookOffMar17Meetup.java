@@ -160,38 +160,48 @@ class CookOffMar17Meetup {
         int kB = scan.nextInt(); // # of city Bob visits, independent set 
         ga = new Graph(N, M, kA);
         gb = new Graph(N, M, kB);
-        //ga.print();
-        //gb.print();
-        int node = ga.queryClique(gb);
-        while (node>=0) {
-            ga.trimNoneNeighbors(node);
-            gb.trimNoneNeighbors(node);
-            node = ga.queryClique(gb);
-        }
-        //ga.print();
-        //gb.print();
-        if (node==-1)
-            return;
-        boolean complete=true;
-        for (int i=0; i<kA; i++) {
-            if (ga.match[i]<0)
-                complete = false;
-        }
-        if (complete) {
-            out.println("C No");   
-            return;
-        }
-        node = gb.queryIndependent(ga);
-        while (node>=0) {
-            ga.trimNeighbors(node);
-            gb.trimNeighbors(node);
+        ga.print();
+        gb.print();
+        while (true) {
+            int node = ga.queryClique(gb);
+            while (node>=0) {
+                ga.trimNoneNeighbors(node);
+                gb.trimNoneNeighbors(node);
+                node = ga.queryClique(gb);
+            }
+            ga.print();
+            gb.print();
+            if (node==-1)
+                return;
+            boolean complete=true;
+            for (int i=0; i<kA; i++) {
+                if (ga.match[i]<0)
+                    complete = false;
+            }
+            if (complete) {
+                out.println("C No");   
+                return;
+            }
             node = gb.queryIndependent(ga);
+            while (node>=0) {
+                ga.trimNeighbors(node);
+                gb.trimNeighbors(node);
+                node = gb.queryIndependent(ga);
+            }
+            ga.print();
+            gb.print();
+            if (node==-1)
+                return;
+            complete=true;
+            for (int i=0; i<kB; i++) {
+                if (gb.match[i]<0)
+                    complete = false;
+            }
+            if (complete) {
+                out.println("C No");   
+                return;
+            }
         }
-        //ga.print();
-        //gb.print();
-        if (node==-1)
-            return;
-        out.println("C No");   
     }
     
     public static void main(String[] args)
