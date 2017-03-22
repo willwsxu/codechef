@@ -44,40 +44,46 @@ public class CookOffMar17Meetup {
         return reply;
     }
     static final int MAX_NODE=1000;
-    List<List<Integer>> adjListA = new ArrayList<>(MAX_NODE);
-    List<List<Integer>> adjListB = new ArrayList<>(MAX_NODE);
-    Map<String, Integer> mapA = new HashMap<>(MAX_NODE);
-    Map<String, Integer> mapB = new HashMap<>(MAX_NODE);
-    String cityA[];
-    String cityB[];
-    int matchA[]; // matched index of cities A->B
-    int matchB[]; // matched index of cities B->A
+    class Graph {
+        List<List<Integer>> adjList = new ArrayList<>(MAX_NODE);
+        Map<String, Integer> map = new HashMap<>(MAX_NODE);
+        String city[];
+        int match[]; // matched index of cities A->B 
+        int nodes;
+        int k;      // # cities to visit
+        
+        Graph(int N, int M)
+        {
+            nodes=N;
+            match = new int[N];
+            Arrays.fill(match, -1); 
+            for (int i=0; i<N; i++)
+            {
+                adjList.add(new ArrayList<>());
+            }
+            readRoads(M);
+        }
+        private void readRoads(int M)
+        {
+            city = readLine();
+            mapCity(map, city);
+            fillAdjacentNodes(adjList, map, M);
+        }
+    }
+    Graph   ga, gb;
     CookOffMar17Meetup()
     {
         int N = scan.nextInt();  // cities 1 and 1000
         int M = scan.nextInt();  // bi-directional roads
         int kA = scan.nextInt(); // # of city Alice visits, clique   
-        int kB = scan.nextInt(); // # of city Bob visits, independent set  
-        matchA = new int[N];
-        Arrays.fill(matchA, -1); 
-        matchB = new int[N];
-        Arrays.fill(matchB, -1); 
-        for (int i=0; i<N; i++)
-        {
-            adjListA.add(new ArrayList<>());
-            adjListB.add(new ArrayList<>());
-        }
-        cityA = readLine();
-        mapCity(mapA, cityA);
-        fillAdjacentNodes(adjListA, mapA, M);
-        cityB = readLine();
-        mapCity(mapB, cityB);
-        fillAdjacentNodes(adjListB, mapB, M);
+        int kB = scan.nextInt(); // # of city Bob visits, independent set 
+        ga = new Graph(N, M);
+        gb = new Graph(N, M);
         for (int i=0; i<kA; i++) {
-            if (adjListA.get(i).size()<N/2 && matchA[i]<0) {
-                int m = mapB.get(query("A", cityA[i]));
-                matchA[i]=m;
-                matchB[m]=i;
+            if (ga.adjList.get(i).size()<N/2 && ga.match[i]<0) {
+                int m = gb.map.get(query("A", ga.city[i]));
+                ga.match[i]=m;
+                gb.match[m]=i;
                 if ( m<kB )
                 {
                     out.println("C Yes");
@@ -87,7 +93,7 @@ public class CookOffMar17Meetup {
         }
         boolean complete=true;
         for (int i=0; i<kA; i++) {
-            if (matchA[i]<0)
+            if (ga.match[i]<0)
                 complete = false;
         }
         if (complete) {
