@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 
-public class CookOffMar17Meetup {
+class CookOffMar17Meetup {
     
     static Scanner scan = new Scanner(System.in);
     String[] readLine()
@@ -74,7 +74,7 @@ public class CookOffMar17Meetup {
                     int m = other.map.get(query("A", city[i]));
                     match[i]=m;
                     other.match[m]=i;
-                    if ( m<k )
+                    if ( m<other.k )
                     {
                         out.println("C Yes");
                         return -1;
@@ -84,6 +84,24 @@ public class CookOffMar17Meetup {
             }
             return -2;    // do nothing      
         }
+        public int queryIndependent(Graph other)
+        {
+            for (int i=0; i<k; i++) {
+                if (adjList.get(i).size()>=nodes/2 && match[i]<0) {
+                    int m = other.map.get(query("B", city[i]));
+                    match[i]=m;
+                    other.match[m]=i;
+                    if ( m<other.k )
+                    {
+                        out.println("C Yes");
+                        return -1;
+                    }
+                    return i;  // trim graph
+                }
+            }
+            return -2;    // do nothing                  
+        }
+                
         void trimNoneNeighbors(int node)
         {
             List<Integer> current = adjList.get(node);
@@ -98,11 +116,30 @@ public class CookOffMar17Meetup {
                     for (int j=0; j<adjList.get(i).size(); j++) {
                         if ( !current.contains(adjList.get(i).get(j)))
                             adjList.get(i).remove(j);
-                    }
-                    
+                    }                    
                 }
             }
             nodes = current.size();
+        }
+        void trimNeighbors(int node)
+        {
+            List<Integer> current = adjList.get(node);
+            nodes -= current.size();
+            for (int i=0; i<adjList.size(); i++) {
+                if ( i==node)
+                    continue;
+                if ( adjList.get(i).isEmpty() )
+                    continue;
+                if ( current.contains(i))
+                    adjList.get(i).clear();
+                else {
+                    for (int j=0; j<adjList.get(i).size(); j++) {
+                        if ( current.contains(adjList.get(i).get(j)))
+                            adjList.get(i).remove(j);
+                    }                    
+                }
+            }   
+            current.clear();
         }
         void print()
         {
@@ -123,16 +160,16 @@ public class CookOffMar17Meetup {
         int kB = scan.nextInt(); // # of city Bob visits, independent set 
         ga = new Graph(N, M, kA);
         gb = new Graph(N, M, kB);
-        ga.print();
-        gb.print();
+        //ga.print();
+        //gb.print();
         int node = ga.queryClique(gb);
         while (node>=0) {
             ga.trimNoneNeighbors(node);
             gb.trimNoneNeighbors(node);
             node = ga.queryClique(gb);
         }
-        ga.print();
-        gb.print();
+        //ga.print();
+        //gb.print();
         if (node==-1)
             return;
         boolean complete=true;
@@ -141,8 +178,20 @@ public class CookOffMar17Meetup {
                 complete = false;
         }
         if (complete) {
-            out.println("C No");            
+            out.println("C No");   
+            return;
         }
+        node = gb.queryIndependent(ga);
+        while (node>=0) {
+            ga.trimNeighbors(node);
+            gb.trimNeighbors(node);
+            node = gb.queryIndependent(ga);
+        }
+        //ga.print();
+        //gb.print();
+        if (node==-1)
+            return;
+        out.println("C No");   
     }
     
     public static void main(String[] args)
