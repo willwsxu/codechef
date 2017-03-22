@@ -64,6 +64,8 @@ class CookOffMar17Rainbow {
         }
         return nice;
     }
+    
+    // borrow idea from editorial, speed is slower 54 msec vs 4msec with solve()
     int solve2(int N)
     {
         HashSet<Integer> all = IntStream.range(0, N).boxed().collect(Collectors.toCollection(HashSet::new));
