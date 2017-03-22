@@ -52,22 +52,66 @@ public class CookOffMar17Meetup {
         int nodes;
         int k;      // # cities to visit
         
-        Graph(int N, int M)
+        Graph(int N, int M, int k)
         {
             nodes=N;
+            this.k = k;
             match = new int[N];
             Arrays.fill(match, -1); 
             for (int i=0; i<N; i++)
             {
                 adjList.add(new ArrayList<>());
             }
-            readRoads(M);
-        }
-        private void readRoads(int M)
-        {
             city = readLine();
             mapCity(map, city);
             fillAdjacentNodes(adjList, map, M);
+        }
+        
+        public int queryClique(Graph other)
+        {
+            for (int i=0; i<k; i++) {
+                if (adjList.get(i).size()<nodes/2 && match[i]<0) {
+                    int m = other.map.get(query("A", city[i]));
+                    match[i]=m;
+                    other.match[m]=i;
+                    if ( m<k )
+                    {
+                        out.println("C Yes");
+                        return -1;
+                    }
+                    return i;  // trim graph
+                }
+            }
+            return -2;    // do nothing      
+        }
+        void trimNoneNeighbors(int node)
+        {
+            List<Integer> current = adjList.get(node);
+            for (int i=0; i<adjList.size(); i++) {
+                if ( i==node)
+                    continue;
+                if ( adjList.get(i).isEmpty() )
+                    continue;
+                if ( !current.contains(i))
+                    adjList.get(i).clear();
+                else {
+                    for (int j=0; j<adjList.get(i).size(); j++) {
+                        if ( !current.contains(adjList.get(i).get(j)))
+                            adjList.get(i).remove(j);
+                    }
+                    
+                }
+            }
+            nodes = current.size();
+        }
+        void print()
+        {
+            out.println("City: "+Arrays.toString(city));
+            for (int i=0; i<city.length; i++) {
+                if ( adjList.get(i).isEmpty() )
+                    continue;
+                out.println("Node "+(i)+": "+adjList.get(i));
+            }
         }
     }
     Graph   ga, gb;
@@ -77,20 +121,20 @@ public class CookOffMar17Meetup {
         int M = scan.nextInt();  // bi-directional roads
         int kA = scan.nextInt(); // # of city Alice visits, clique   
         int kB = scan.nextInt(); // # of city Bob visits, independent set 
-        ga = new Graph(N, M);
-        gb = new Graph(N, M);
-        for (int i=0; i<kA; i++) {
-            if (ga.adjList.get(i).size()<N/2 && ga.match[i]<0) {
-                int m = gb.map.get(query("A", ga.city[i]));
-                ga.match[i]=m;
-                gb.match[m]=i;
-                if ( m<kB )
-                {
-                    out.println("C Yes");
-                    return;
-                }
-            }
+        ga = new Graph(N, M, kA);
+        gb = new Graph(N, M, kB);
+        ga.print();
+        gb.print();
+        int node = ga.queryClique(gb);
+        while (node>=0) {
+            ga.trimNoneNeighbors(node);
+            gb.trimNoneNeighbors(node);
+            node = ga.queryClique(gb);
         }
+        ga.print();
+        gb.print();
+        if (node==-1)
+            return;
         boolean complete=true;
         for (int i=0; i<kA; i++) {
             if (ga.match[i]<0)
