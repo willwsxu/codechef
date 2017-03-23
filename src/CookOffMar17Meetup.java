@@ -70,7 +70,7 @@ class CookOffMar17Meetup {
         public int queryClique(Graph other)
         {
             for (int i=0; i<k; i++) {
-                if (adjList.get(i).size()<nodes/2 && match[i]<0) {
+                if (adjList.get(i).size()*2<nodes && match[i]<0) {
                     int m = other.map.get(query("A", city[i]));
                     match[i]=m;
                     other.match[m]=i;
@@ -87,7 +87,7 @@ class CookOffMar17Meetup {
         public int queryIndependent(Graph other)
         {
             for (int i=0; i<k; i++) {
-                if (adjList.get(i).size()>=nodes/2 && match[i]<0) {
+                if (adjList.get(i).size()*2>=nodes && match[i]<0) {
                     int m = other.map.get(query("B", city[i]));
                     match[i]=m;
                     other.match[m]=i;
@@ -141,6 +141,19 @@ class CookOffMar17Meetup {
             }   
             current.clear();
         }
+        boolean complete()
+        {
+            boolean complete=true;
+            for (int i=0; i<k; i++) {
+                if (match[i]<0)
+                    complete = false;
+            }
+            if (complete) {
+                out.println("C No");  
+            } 
+            return complete;
+        }
+        
         void print()
         {
             out.println("City: "+Arrays.toString(city));
@@ -160,45 +173,39 @@ class CookOffMar17Meetup {
         int kB = scan.nextInt(); // # of city Bob visits, independent set 
         ga = new Graph(N, M, kA);
         gb = new Graph(N, M, kB);
-        ga.print();
-        gb.print();
+        //ga.print();
+        //gb.print();
         while (true) {
             int node = ga.queryClique(gb);
             while (node>=0) {
                 ga.trimNoneNeighbors(node);
-                gb.trimNoneNeighbors(node);
+                gb.trimNoneNeighbors(ga.match[node]);
                 node = ga.queryClique(gb);
             }
             ga.print();
             gb.print();
             if (node==-1)
                 return;
-            boolean complete=true;
-            for (int i=0; i<kA; i++) {
-                if (ga.match[i]<0)
-                    complete = false;
-            }
-            if (complete) {
-                out.println("C No");   
+            if (ga.complete()) {
                 return;
             }
             node = gb.queryIndependent(ga);
+            boolean trim=false;
             while (node>=0) {
-                ga.trimNeighbors(node);
+                trim=true;
+                ga.trimNeighbors(gb.match[node]);
                 gb.trimNeighbors(node);
                 node = gb.queryIndependent(ga);
             }
-            ga.print();
             gb.print();
+            ga.print();
             if (node==-1)
                 return;
-            complete=true;
-            for (int i=0; i<kB; i++) {
-                if (gb.match[i]<0)
-                    complete = false;
+            if (gb.complete()) {
+                return;
             }
-            if (complete) {
-                out.println("C No");   
+            if ( !trim ) {
+                out.println("C No");
                 return;
             }
         }

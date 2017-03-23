@@ -20,7 +20,7 @@ d e
 f g
 h i
 i j
-g1 i1 h1 d1 j1 e1 f1 c1 b1 a1
+g1 i1 d1 h1 j1 e1 f1 c1 b1 a1
 a1 b1
 a1 c1
 a1 d1
@@ -31,3 +31,31 @@ d1 e1
 f1 g1
 h1 i1
 i1 j1
+
+10 12 2 2
+j i a b c d e f g h
+a b
+a c
+a d
+b c
+b d
+c d
+d e
+f g
+h i
+i j
+j a
+a h
+g1 d1 a1 i1 h1 j1 e1 f1 c1 b1
+a1 b1
+a1 c1
+a1 d1
+b1 c1
+b1 d1
+c1 d1
+d1 e1
+f1 g1
+h1 i1
+i1 j1
+j1 a1
+a1 h1
