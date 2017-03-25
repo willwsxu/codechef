@@ -8,6 +8,9 @@ x w
 y x
 y z
 
+ab - z  No
+ab - w  Yes
+
 10 10 4 3
 a b c d e f g h i j
 a b
@@ -32,30 +35,40 @@ f1 g1
 h1 i1
 i1 j1
 
-10 12 2 2
+Yes (
+
+10 16 3 3
 j i a b c d e f g h
 a b
 a c
 a d
+a h
+a i
+a j
 b c
 b d
+b j
 c d
+c j
 d e
+d j
 f g
 h i
 i j
-j a
-a h
-g1 d1 a1 i1 h1 j1 e1 f1 c1 b1
+g1 e1 j1 a1 h1 i1 d1 f1 c1 b1
 a1 b1
 a1 c1
 a1 d1
+a1 h1
+a1 i1
+a1 j1
 b1 c1
 b1 d1
+b1 j1
 c1 d1
+c1 j1
 d1 e1
+d1 j1
 f1 g1
 h1 i1
 i1 j1
-j1 a1
-a1 h1

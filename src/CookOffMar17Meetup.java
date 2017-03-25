@@ -10,8 +10,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 
-class CookOffMar17Meetup {
-    
+class CookOffMar17Meetup {    
     static Scanner scan = new Scanner(System.in);
     String[] readLine()
     {
@@ -224,10 +223,16 @@ class CookOffMar17Meetup {
         }
         void reduce(String s, boolean bNeighbor)
         {
-            // remove all nodes if it is neighbor or not
-            adjList.keySet().removeIf(x->!x.equals(s)&&adjList.get(s).contains(s)==bNeighbor);
+            // remove all nodes if it equals bNeighbor            
+            adjList.keySet().removeIf(x->!x.equals(s)&&adjList.get(s).contains(x)==bNeighbor);
             // remove all linked nodes that is no longer part of the graph
             adjList.values().forEach(v->v.removeIf(x->!adjList.containsKey(x)));
+        }
+        
+        public void answer(String resp, String debug) {
+            out.flush();
+            out.close();
+            System.exit(0);
         }
         // true : done
         public boolean queryClique(Graph2 other)
@@ -239,15 +244,15 @@ class CookOffMar17Meetup {
                 if (adjList.get(s).size()*2<size) {
                     String answer = query("A", s);
                     if ( other.destination.contains(answer)) {
-                        out.println("queryClique C Yes");
+                        answer("Yes", "queryClique");
                         return true;
                     }
                     if ( size==1) {
-                        out.println("queryClique C No");
+                        answer("No", "queryClique");
                         return true;
                     }
                     reduce(s, false);
-                    other.reduce(s, false);
+                    other.reduce(answer, false);
                     return false;
                 }
             }
@@ -262,15 +267,15 @@ class CookOffMar17Meetup {
                 if (adjList.size()*2>=size) {
                     String answer = query("B", s);
                     if ( other.destination.contains(answer)) {
-                        out.println("queryIndependent C Yes");
+                        answer("Yes", "queryIndependent");
                         return true;
                     }
                     if ( size==1) {
-                        out.println("queryIndependent C No");
+                        answer("No", "queryIndependent");
                         return true;
                     }
                     reduce(s, true);
-                    other.reduce(s, true);
+                    other.reduce(answer, true);
                     return false;
                 }
             }
@@ -282,7 +287,7 @@ class CookOffMar17Meetup {
             {
                 if (!ga.queryClique(gb))
                     continue;
-                if (!ga.queryClique(gb))
+                if (!gb.queryIndependent(ga))
                     continue;
                 out.println("C No");
                 break;
@@ -303,8 +308,8 @@ class CookOffMar17Meetup {
         int kB = scan.nextInt(); // # of city Bob visits, independent set 
         ga = new Graph2(N, M, kA);
         gb = new Graph2(N, M, kB);
-        ga.print();
-        gb.print();
+        //ga.print();
+        //gb.print();
         ga.solve(ga, gb);
     }
     
