@@ -227,9 +227,12 @@ class CookOffMar17Meetup {
             adjList.keySet().removeIf(x->!x.equals(s)&&adjList.get(s).contains(x)==bNeighbor);
             // remove all linked nodes that is no longer part of the graph
             adjList.values().forEach(v->v.removeIf(x->!adjList.containsKey(x)));
+            //out.println(bNeighbor?"reduce neighbor":"reduce none neighbor");
+            //print();
         }
         
         public void answer(String resp, String debug) {
+            out.println("C " + resp);//+" "+debug);
             out.flush();
             out.close();
             System.exit(0);
