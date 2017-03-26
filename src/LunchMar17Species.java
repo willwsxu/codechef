@@ -2,10 +2,13 @@
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
-class LunchMar17Species {
+class GraphList
+{
     // name each cell of the grid as node, from 0 to N*N-1
     // translate n=i*N+j
     List<List<Integer>> graph=new ArrayList<>(2501);
@@ -34,7 +37,7 @@ class LunchMar17Species {
         for (int i=0; i<graph.size(); i++)
             out.println(i+":"+graph.get(i));
     }
-    LunchMar17Species(String [] x)
+    void solve(String [] x)
     {
         int N = x.length;
         visited = new boolean[N*N];
@@ -74,11 +77,70 @@ class LunchMar17Species {
                 if (!b && !p )
                     total *= 2;
             }
-            if (total >= MOD)
-                total -= MOD;
+            if (total >= LunchMar17Species.MOD)
+                total -= LunchMar17Species.MOD;
         }
         out.println(total);
     }
+}
+class GraphMatrix
+{
+    boolean vis[][];
+    void visit(String[] x, int r, int c, Map<Character, Integer> connected)
+    {
+        if (r<0 || c<0 || r>=x.length || c>=x.length)
+            return;
+        if (vis[r][c] || x[r].charAt(c)=='.')
+            return;
+        dfs(x, r, c, connected);
+    }
+    void dfs(String[] x, int r, int c, Map<Character, Integer> connected)
+    {
+        vis[r][c]=true;
+        connected.compute(x[r].charAt(c), (k,v)->v==null?1:v+1 );
+        visit(x, r-1, c, connected);
+        visit(x, r+1, c, connected);
+        visit(x, r, c-1, connected);
+        visit(x, r, c+1, connected);
+    }
+    GraphMatrix(String []x)
+    {
+        int N = x.length;
+        vis = new boolean[x.length][x.length];
+        long total=1;
+        for (int i=0; i<N; i++) {
+            for (int j=0; j<N; j++) {
+                if (x[i].charAt(j) =='.' || vis[i][j])
+                    continue;
+                Map<Character, Integer> connected = new HashMap<>();
+                dfs(x, i, j, connected);
+                if (connected.keySet().contains('G')) {
+                    if (connected.get('G')>1 || connected.keySet().size()>1) {
+                        out.println(0);
+                        return;
+                    }
+                    continue;
+                }
+                boolean b=connected.keySet().contains('B');
+                boolean p = connected.keySet().contains('P');
+                if (b && p) {
+                    out.println(0);
+                    return;                
+                }
+                if (!b && !p) {
+                    if (connected.get('?')>1)
+                        total *=2;
+                    else
+                        total *=3;
+                    if (total >= LunchMar17Species.MOD)
+                        total -= LunchMar17Species.MOD;
+                }
+            }
+        }
+        out.println(total);
+    }
+}
+class LunchMar17Species {    
     static final int MOD = 1000000007;
     static Scanner scan = new Scanner(System.in);
     public static void autoTest()
@@ -94,15 +156,12 @@ class LunchMar17Species {
             }
             //for(String x: board)
             //    out.println(x);
-            new LunchMar17Species(board);
+            //new GraphList().solve(board);
+            new GraphMatrix(board);
         }
     }
     public static void main(String[] args)
     {
-        //scan = codechef.CodeChef.getFileScanner("robot.txt");
-        //Instant start = Instant.now();
-        autoTest();
-        //Instant end = Instant.now();
-        //out.println("usec "+ChronoUnit.MICROS.between(start, end));       
+        autoTest(); 
     } 
 }
