@@ -29,10 +29,17 @@ class LunchMar17Species {
                 dfs(x, next, N, build);
         }
     }
+    void print()
+    {
+        for (int i=0; i<graph.size(); i++)
+            out.println(i+":"+graph.get(i));
+    }
     LunchMar17Species(String [] x)
     {
         int N = x.length;
-        for (int i=0; i<N*N; i++)
+        visited = new boolean[N*N];
+        Arrays.fill(visited, false);
+        for (int i=0; i<visited.length; i++)
             graph.add(new ArrayList<>());
         for (int i=0; i<N; i++) {
             for (int j=0; j<N; j++) {
@@ -45,36 +52,28 @@ class LunchMar17Species {
                     add(x, current, i, j+1, N);
             }
         }
-        visited = new boolean[N*N];
+        //print();
         long total=1;
-        for (int i=0; i<N*N; i++)
+        for (int i=0; i<visited.length; i++)
         {
             if (visited[i])
                 continue;
-            visited[i]=true;
-            List<Integer> node = graph.get(i);
-            if (node.isEmpty()) {
-                int r = i/N;
-                int c = i%N;
-                if (x[r].charAt(c)=='?')
-                    total *=3;
-                if (total >= MOD)
-                    total -= MOD;
-                continue;
-            }
             StringBuilder build = new StringBuilder();
             dfs(x, i, N, build);
             String cells = build.toString();
-            boolean b=cells.indexOf('B')>=0;
-            boolean p=cells.indexOf('P')>=0;
-            if (cells.indexOf('G')>=0 || b&&p) {
-                total=0;
-                break;
+            if (cells.length()==1) {
+                if (cells.charAt(0)=='?')
+                    total *=3;
+            } else {
+                boolean b=cells.indexOf('B')>=0;
+                boolean p=cells.indexOf('P')>=0;
+                if (cells.indexOf('G')>=0 || b&&p) {
+                    total=0;
+                    break;
+                }
+                if (!b && !p )
+                    total *= 2;
             }
-            if (b || p)
-                total *= 1;
-            else
-                total *= 2;
             if (total >= MOD)
                 total -= MOD;
         }
@@ -93,6 +92,8 @@ class LunchMar17Species {
                 if (board[j].isEmpty())
                     board[j] = scan.nextLine();
             }
+            //for(String x: board)
+            //    out.println(x);
             new LunchMar17Species(board);
         }
     }
