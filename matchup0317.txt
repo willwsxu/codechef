@@ -35,7 +35,7 @@ f1 g1
 h1 i1
 i1 j1
 
-Yes (
+Yes
 
 10 16 3 3
 j i a b c d e f g h

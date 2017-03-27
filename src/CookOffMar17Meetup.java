@@ -9,10 +9,93 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-
+class Graph3  // refernece code from editorial
+{
+    Map<String, HashSet<String>> adjList = new HashMap<>(CookOffMar17Meetup.MAX_NODE);
+    Set<String> destination = new HashSet<>(CookOffMar17Meetup.MAX_NODE);
+    Graph3(int N, int M, int k)
+    {
+        String []city = CookOffMar17Meetup.readLine();
+        for (int i=0; i<N; i++) {
+            if (i<k)
+                destination.add(city[i]);
+            adjList.put(city[i], new HashSet<>());
+        }
+        for (int i=0; i<M; i++) {
+            String[] road = CookOffMar17Meetup.readLine();
+            if (road.length==2) {
+                adjList.get(road[0]).add(road[1]);  // add adjacent nodes
+                adjList.get(road[1]).add(road[0]);  // add adjacent nodes
+            }
+        }        
+    }
+    void solve(Graph3 indepdent)
+    { 
+        while (true) {
+            int sz = adjList.size();
+            String q = null;
+            for (String s : adjList.keySet()) {
+                if (destination.contains(s) && adjList.get(s).size() * 2 < sz) {
+                    q = s;
+                    break;
+                }
+            }
+            if (q != null) {
+                ask1(q, sz == 1, indepdent);
+                continue;
+            }
+            for (String s : indepdent.adjList.keySet()) {
+                if (indepdent.destination.contains(s) && indepdent.adjList.get(s).size() * 2 >= sz) {
+                    q = s;
+                    break;
+                }
+            }
+            if (q != null) {
+                indepdent.ask2(q, sz == 1, this);
+                continue;
+        }
+        answer("No", "");
+    }
+        
+    }
+    public void answer(String resp, String debug) {
+        out.println("C " + resp);//+" "+debug);
+        out.flush();
+        out.close();
+        System.exit(0);
+    }
+    
+    public void reduce(String root, boolean conn) {
+        adjList.keySet().removeIf(x -> !x.equals(root) && (conn == adjList.get(root).contains(x)));
+        adjList.values().forEach(v -> v.removeIf(x -> !adjList.containsKey(x)));
+    }
+    public void ask1(String q, boolean last, Graph3 other) {
+        String rs = CookOffMar17Meetup.query("A", q);
+        if (other.destination.contains(rs)) {
+            answer("Yes", "");
+        } else {
+            if (last) 
+                answer("No", "");
+            reduce(q, false);
+            other.reduce(rs, false);
+        }
+    }
+    
+    public void ask2(String q, boolean last, Graph3 other) {
+        String rs = CookOffMar17Meetup.query("B", q);
+        if (other.destination.contains(rs)) {
+            answer("Yes", "");
+        } else {
+            if (last) 
+                answer("No", "");
+            other.reduce(rs, true);
+            reduce(q, true);
+        }
+    }
+}
 class CookOffMar17Meetup {    
     static Scanner scan = new Scanner(System.in);
-    String[] readLine()
+    static String[] readLine()
     {
         String str = scan.nextLine();
         if (str.isEmpty())
@@ -34,8 +117,8 @@ class CookOffMar17Meetup {
             }
         }        
     }
-    int queries=0;
-    private String query(String side, String city) {
+    static int queries=0;
+    static public String query(String side, String city) {
         queries++;
         out.println(side + " " +city);
         out.flush();
@@ -302,18 +385,19 @@ class CookOffMar17Meetup {
             adjList.forEach((k,v)->out.println(k+": "+v));
         }
     }
-    Graph2   ga, gb;
+
     CookOffMar17Meetup()
     {
         int N = scan.nextInt();  // cities 1 and 1000
         int M = scan.nextInt();  // bi-directional roads
         int kA = scan.nextInt(); // # of city Alice visits, clique   
         int kB = scan.nextInt(); // # of city Bob visits, independent set 
-        ga = new Graph2(N, M, kA);
-        gb = new Graph2(N, M, kB);
+        Graph3 ga = new Graph3(N, M, kA);
+        Graph3 gb = new Graph3(N, M, kB);
         //ga.print();
         //gb.print();
-        ga.solve(ga, gb);
+        //ga.solve(ga, gb);
+        ga.solve(gb);
     }
     
     public static void main(String[] args)
