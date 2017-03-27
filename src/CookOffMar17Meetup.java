@@ -1,3 +1,4 @@
+// hard, need to understand Graph theory about clique vs independent set
 
 import static java.lang.System.out;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-class Graph3  // refernece code from editorial
+class Graph3  // reference code from editorial
 {
     Map<String, HashSet<String>> adjList = new HashMap<>(CookOffMar17Meetup.MAX_NODE);
     Set<String> destination = new HashSet<>(CookOffMar17Meetup.MAX_NODE);
@@ -53,10 +54,9 @@ class Graph3  // refernece code from editorial
             if (q != null) {
                 indepdent.ask2(q, sz == 1, this);
                 continue;
-        }
-        answer("No", "");
-    }
-        
+            }
+            answer("No", "");
+        }  
     }
     public void answer(String resp, String debug) {
         out.println("C " + resp);//+" "+debug);
@@ -93,8 +93,90 @@ class Graph3  // refernece code from editorial
         }
     }
 }
+
+class Graph2 extends Graph3{
+    Graph2(int N, int M, int k)
+    {
+        super(N, M, k);
+    }
+    /*
+    void reduce(String s, boolean bNeighbor)
+    {
+        // remove all nodes if it equals bNeighbor            
+        adjList.keySet().removeIf(x->!x.equals(s)&&adjList.get(s).contains(x)==bNeighbor);
+        // remove all linked nodes that is no longer part of the graph
+        adjList.values().forEach(v->v.removeIf(x->!adjList.containsKey(x)));
+        //out.println(bNeighbor?"reduce neighbor":"reduce none neighbor");
+        //print();
+    }*/
+
+    // true : done
+    public boolean queryClique(Graph2 other)
+    {
+        int size = adjList.size();
+        for (String s: adjList.keySet()) {
+            if ( !destination.contains(s))
+                continue;
+            if (adjList.get(s).size()*2<size) {
+                String answer = CookOffMar17Meetup.query("A", s);
+                if ( other.destination.contains(answer)) {
+                    answer("Yes", "queryClique");
+                    return true;
+                }
+                if ( size==1) {
+                    answer("No", "queryClique");
+                    return true;
+                }
+                reduce(s, false);
+                other.reduce(answer, false);
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean queryIndependent(Graph2 other)
+    {
+        int size = adjList.size();
+        for (String s: adjList.keySet()) {
+            if ( !destination.contains(s))
+                continue;
+            if (adjList.get(s).size()*2>=size) {
+                String answer = CookOffMar17Meetup.query("B", s);
+                if ( other.destination.contains(answer)) {
+                    answer("Yes", "queryIndependent");
+                    return true;
+                }
+                if ( size==1) {
+                    answer("No", "queryIndependent");
+                    return true;
+                }
+                reduce(s, true);
+                other.reduce(answer, true);
+                return false;
+            }
+        }
+        return true;            
+    }
+    void solve(Graph2 gb)
+    {
+        while (true)
+        {
+            if (!queryClique(gb))
+                continue;
+            if (!gb.queryIndependent(this))
+                continue;
+            out.println("C No");
+            break;
+        }
+    }
+    void print()
+    {
+        out.println("dest: "+destination);
+        adjList.forEach((k,v)->out.println(k+": "+v));
+    }
+}
+
 class CookOffMar17Meetup {    
-    static Scanner scan = new Scanner(System.in);
     static String[] readLine()
     {
         String str = scan.nextLine();
@@ -285,119 +367,20 @@ class CookOffMar17Meetup {
             }
         }
     }
-    class Graph2{
-        Map<String, HashSet<String>> adjList = new HashMap<>(MAX_NODE);
-        Set<String> destination = new HashSet<>(MAX_NODE);
-        Graph2(int N, int M, int k)
-        {
-            String []city = readLine();
-            for (int i=0; i<N; i++) {
-                if (i<k)
-                    destination.add(city[i]);
-                adjList.put(city[i], new HashSet<>());
-            }
-            for (int i=0; i<M; i++) {
-                String[] road = readLine();
-                if (road.length==2) {
-                    adjList.get(road[0]).add(road[1]);  // add adjacent nodes
-                    adjList.get(road[1]).add(road[0]);  // add adjacent nodes
-                }
-            }        
-        }
-        void reduce(String s, boolean bNeighbor)
-        {
-            // remove all nodes if it equals bNeighbor            
-            adjList.keySet().removeIf(x->!x.equals(s)&&adjList.get(s).contains(x)==bNeighbor);
-            // remove all linked nodes that is no longer part of the graph
-            adjList.values().forEach(v->v.removeIf(x->!adjList.containsKey(x)));
-            //out.println(bNeighbor?"reduce neighbor":"reduce none neighbor");
-            //print();
-        }
-        
-        public void answer(String resp, String debug) {
-            out.println("C " + resp);//+" "+debug);
-            out.flush();
-            out.close();
-            System.exit(0);
-        }
-        // true : done
-        public boolean queryClique(Graph2 other)
-        {
-            int size = adjList.size();
-            for (String s: adjList.keySet()) {
-                if ( !destination.contains(s))
-                    continue;
-                if (adjList.get(s).size()*2<size) {
-                    String answer = query("A", s);
-                    if ( other.destination.contains(answer)) {
-                        answer("Yes", "queryClique");
-                        return true;
-                    }
-                    if ( size==1) {
-                        answer("No", "queryClique");
-                        return true;
-                    }
-                    reduce(s, false);
-                    other.reduce(answer, false);
-                    return false;
-                }
-            }
-            return true;
-        }
-        public boolean queryIndependent(Graph2 other)
-        {
-            int size = adjList.size();
-            for (String s: adjList.keySet()) {
-                if ( !destination.contains(s))
-                    continue;
-                if (adjList.size()*2>=size) {
-                    String answer = query("B", s);
-                    if ( other.destination.contains(answer)) {
-                        answer("Yes", "queryIndependent");
-                        return true;
-                    }
-                    if ( size==1) {
-                        answer("No", "queryIndependent");
-                        return true;
-                    }
-                    reduce(s, true);
-                    other.reduce(answer, true);
-                    return false;
-                }
-            }
-            return true;            
-        }
-        void solve(Graph2 ga, Graph2 gb)
-        {
-            while (true)
-            {
-                if (!ga.queryClique(gb))
-                    continue;
-                if (!gb.queryIndependent(ga))
-                    continue;
-                out.println("C No");
-                break;
-            }
-        }
-        void print()
-        {
-            out.println("dest: "+destination);
-            adjList.forEach((k,v)->out.println(k+": "+v));
-        }
-    }
 
+    static Scanner scan = new Scanner(System.in);
     CookOffMar17Meetup()
     {
         int N = scan.nextInt();  // cities 1 and 1000
         int M = scan.nextInt();  // bi-directional roads
         int kA = scan.nextInt(); // # of city Alice visits, clique   
         int kB = scan.nextInt(); // # of city Bob visits, independent set 
-        Graph3 ga = new Graph3(N, M, kA);
-        Graph3 gb = new Graph3(N, M, kB);
+        Graph2 ga = new Graph2(N, M, kA);
+        Graph2 gb = new Graph2(N, M, kB);
         //ga.print();
         //gb.print();
-        //ga.solve(ga, gb);
-        ga.solve(gb);
+        //ga.solve(ga, gb);  // Graph2 fail
+        ga.solve(gb);  //Graph3 pass
     }
     
     public static void main(String[] args)
