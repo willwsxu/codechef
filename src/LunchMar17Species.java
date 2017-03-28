@@ -114,6 +114,7 @@ class GraphMatrix
                     continue;
                 Map<Character, Integer> connected = new HashMap<>();
                 dfs(x, i, j, connected);
+                //print(connected);
                 if (connected.keySet().contains('G')) {
                     if (connected.get('G')>1 || connected.keySet().size()>1) {
                         out.println(0);
@@ -138,6 +139,10 @@ class GraphMatrix
             }
         }
         out.println(total);
+    }
+    void print(Map<Character, Integer> connected)
+    {
+        connected.entrySet().stream().forEach(entry->System.out.println(entry.getKey()+" count "+entry.getValue()));
     }
 }
 class LunchMar17Species {    
