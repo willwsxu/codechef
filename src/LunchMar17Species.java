@@ -106,7 +106,7 @@ class GraphMatrix
     GraphMatrix(String []x)
     {
         int N = x.length;
-        vis = new boolean[x.length][x.length];
+        vis = new boolean[N][N];
         long total=1;
         for (int i=0; i<N; i++) {
             for (int j=0; j<N; j++) {
@@ -133,8 +133,7 @@ class GraphMatrix
                         total *=2;
                     else
                         total *=3;
-                    if (total >= LunchMar17Species.MOD)
-                        total -= LunchMar17Species.MOD;
+                    total %= LunchMar17Species.MOD;  // failes if use -=
                 }
             }
         }

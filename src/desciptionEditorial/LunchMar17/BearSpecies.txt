@@ -1,0 +1,139 @@
+Bearland can be represented as a square grid that consists of N rows and N columns. Two cells are called adjacent if they share a side. In the input, each cell is described by one character:
+
+'.' is an empty cell.
+'B', 'G' or 'P' is a cell inhabited by bears of one species — brown, grizzly or polar bears respectively.
+'?' is a cell inhabited by bears of one species but you don't know which one. Note that this cell can't be empty.
+Grizzly bears are the most aggressive species. If a cell is inhabited by grizzly bears, all adjacent cells should be empty, because otherwise there would be fights between bears.
+
+Brown and polar bears are a bit calmer. All brown bears are fine with other brown bears in adjacent cells, but they would fight with bears of any other species. Similarly, polar bears would fight with bears of any species other than polar bears.
+
+Let X denote the number of question marks. Since each question mark represents one of the three species, there are 3X ways to replace them with characters 'B', 'G' and 'P' (denoting the species that live in that cell). Find the number of such ways that there are no fights between bears. Print the answer modulo (109+7).
+
+Input
+The first line of the input contains an integer T denoting the number of test cases. The description of T test cases follows.
+
+The first line of each test case contains an integer N denoting the size of the grid.
+
+The following N lines describe the grid. Each of those lines contains a string of length N. Each character is one of five: '.', '?', 'B', 'G', 'P'.
+
+Output
+For each test case, output a single line containing one integer — the number of ways to replace question marks to avoid fights in Bearland, modulo (109+7).
+
+Constraints
+1 ≤ T ≤ 50
+2 ≤ N ≤ 50
+Subtasks
+Subtask #1 (30 points): 2 ≤ N ≤ 3
+Subtask #2 (30 points): Each character in the grid will be either '.' or '?'.
+Subtask #3 (40 points): Original constraints.
+Example
+Input:
+6
+3
+..?
+.?B
+G..
+2
+GG
+..
+3
+?..
+.??
+??.
+3
+??P
+???
+??B
+7
+?.?.?.?
+.?.?.?.
+?.?.?.?
+.?.?.?.
+?.?.?.?
+.?.?.?.
+?.?.?.?
+2
+PP
+PP
+
+Output:
+1
+0
+6
+0
+288603514
+1
+Explanation
+Test case 1. We are given the grid of size 3 × 3. One of the already fixed cells is inhabited by brown bears. They would fight with bears of any species other than brown bears, so adjacent cells with question marks must by inhabited by brown bears as well. Hence, there is only 1 way to replace question marks (both of them must be replaced by 'B').
+
+Test case 2. In the given grid, there are two adjacent cells both inhabited by grizzly bears. They will fight with each other, so the answer is 0 — it's impossible to replace question marks so that there would be no fights (it doesn't matter that there are no question marks at all).
+
+Test case 3. There are 6 ways:
+
+B.. B.. G.. G.. P.. P..
+.BB .PP .BB .PP .BB .PP
+BB. PP. BB. PP. BB. PP.
+
+Test case 4. No matter how we replace question marks, bears in some two adjacent cells will start a fight. The answer is 0.
+DIFFICULTY:
+Simple
+
+PREREQUISITES:
+Graphs, connected components, dfs
+
+PROBLEM:
+For a given grid of size N×NN×N, we say that two of its cells are adjacent if and only if they share a side. Moreover, each cell contains either a determined character from set {.,B,G,P}{.,B,G,P}, or a question mark. Cells containing character '.' are considered empty. The task is to count the number of ways to replace all question marks with characters {B,G,P}{B,G,P}, in such a way that in the resulting grid:
+
+There are no two adjacent cells filled with 'G'
+
+Each cell adjacent to a cell filled with 'B' can be either also filled with 'B', or can be empty
+
+Each cell adjacent to a cell filled with 'P' can be either also filled with 'P', or can be empty
+Two ways of replacing all question marks with {B,G,P}{B,G,P} are considered different in and only if there exists a cell originally filled with a question mark which is replaced with different characters in both these ways.
+
+QUICK EXPLANATION:
+Use dfs to compute connected components of adjacent non-empty cells in the grid. Solve the problem independently for each component and multiply obtained sub-results.
+
+EXPLANATION:
+In all the subtasks there are T≤50T≤50 test cases to handle. Since we are going to solve the problem independently for all these test cases, the time complexity of each of the below approaches has to be multiplied by TT to get the total time complexity of a solution.
+
+Subtask 1
+In the first subtask NN is either 22 or 33, so one can just try all possibilities of replacing the question marks in the grid, and for each such possibility, check if it produces a valid grid according to the rules defined in the problem. Since each question mark can be replaced either with 'B', 'G', or 'P', there are 3Q3Q possible ways to replace all the questions marks with these characters, where QQ is the number of question marks in the grid. Notice that verifying if a resulting grid is valid can be done in O(N⋅N)O(N⋅N) time by just iterating over all the cells, and for a single cell, checking if its adjacent cells are filled in a valid way. Since QQ can be at most N⋅NN⋅N, the total complexity of this method is O((3N2)⋅N2)O((3N2)⋅N2), which is acceptable for such limited NN as we have in this subtask.
+
+Subtask 2 and 3
+In both these subtasks, we are going to represent the grid as a graph GG, where cells are vertices and there is an edge between two cells if and only if both of them are not empty and they are adjacent. Next, we are going to dfs to compute connected components of GG. Connected components can be computed efficiently using a dfs.
+
+Approaches for both these subtasks use these precomputed connected components of GG.
+
+Subtask 2
+In the second subtask, NN can be at most 5050, but we know that the each cell in the grid is either empty or contains a question mark. Let's consider an arbitrary cell CC containing a question mark. Cell CC belongs to exactly one connected component of GG, let's call this component XX. Now, there are two cases to consider:
+
+Size of XX is 11, i.e. XX contains only cell CC
+Size of XX is at least two, i.e. XX contains at least two question marks
+In the first case, we know that there are 33 possibilities to replace the question mark in CC. Thus, it can be replaced with any character in {B,G,P}{B,G,P}, because it is isolated.
+
+In the second case, we know there are at least 22 adjacent cells with question marks in XX. Let QQ be the number of question marks in XX. First of all, we know that none of these question marks can be replaced with 'G' because no two 'G' can be adjacent. Secondly, if we replace one of these question marks with let's say 'B', then all other X−1X−1 question marks have to replaced also with 'B', because replacing one question mark with 'B' forces all its adjacent cells also to be replaced with 'B', and this process will continue until all question marks in XX are replaced with 'B'. Since we can replace the first question mark in XX with either 'B' or 'P', then there are exactly 22 ways of replacing all question marks in XX.
+
+The final result is just the product of result obtained for all connected components of GG. Notice that we need to only know the size of a component to get its result, then the total time complexity is the time needed to compute the connected components plus the time proportional to the number of these components. Thus, overall time complexity can be bounded by O(N⋅N)O(N⋅N).
+
+Subtask 3
+In the third subtask we also have N≤50N≤50, but now the initial grid can contain characters 'B', 'G' and 'P'. The solution is very similar to the second subtask, but there are more cases to consider. Again, we are going to solve the problem independently for each component and multiply the obtained results to get the final result.
+
+Let's consider a connected component XX and let's define:
+
+cGcG := number of cells containing 'G' in XX
+cBcB := number of cells containing 'B' in XX
+cPcP := number of cells containing 'P' in XX
+c?c? := number of cells containing a question mark in XX
+
+Let also SS be the number of cells in XX.
+
+There are several cases to consider:
+
+S=1S=1
+S≥2S≥2
+In the first case, when there is only one cell in XX there are two sub-cases: either this cell contains a question mark or not. If it contains a question mark, we can replace this question mark with either of characters 'B', 'G', or 'P', so there are 33 ways to do that. Otherwise, there is no question mark to replace, and the component XX is valid, because the only cell in it is not adjacent to any other cells, so it doesn't affect the result in any way.
+
+In the second case, S≥2S≥2, so there are at least two adjacent cells in XX. Now, if cG>0cG>0, then the result for XX is 00, because cell filled with 'G' cannot be adjacent to any other non-empty cell. Moreover, if cB>0cB>0 and cPcP > 0, then also the result for XX is 00, because there is at least one pair of adjacent cells in XX, where one them contains 'B' and the other contains 'P', which is not allowed. Otherwise, we know that there is no 'G' in XX and all cells in XX contain 'B' or all cells in XX contain 'P'. Thus, if c?>0c?>0, there are exactly 22 ways to replace all questions marks in XX: either we can replace all of them with 'B' or replace all of them with 'P'.
+
+As mentioned earlier, the final result is just the product of result obtained for all connected components of GG. Since all the counters needed to compute a result for one component can be computed while computing the component itself, the total time complexity of the solution is O(N⋅N)O(N⋅N).
