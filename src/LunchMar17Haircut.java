@@ -17,11 +17,13 @@ public class LunchMar17Haircut {
             if (i+1<dp.length)
                 dp[i+1] = max(dp[i+1], dp[i]);
             int good=0;
-            for (int j=A; i<=B && i+j+1<dp.length; ++j) {
+            for (int j=A; j<=B && i+j+1<dp.length; ++j) {
                 if (special.get(i+j))
                     good++;
                 dp[i+j+1] = max(dp[i+j+1], dp[i]+good);
+                out.println("J="+j+Arrays.toString(dp));
             }
+            out.println("i="+i);
         }
         out.println(Arrays.toString(dp));
         return dp[dp.length-1];
