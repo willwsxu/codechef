@@ -18,20 +18,22 @@ public class CookOffMar17Xor {
         if (dp[bit][msk1][msk2] != -1) return dp[bit][msk1][msk2];
         int res = 0;
         outer:
-        for (int cur = 0; cur < 1 << seq.length; cur++) {
+        for (int cur = 0; cur < 1 << seq.length; cur++) {// 2^n way to fill current B bit
             int nmsk1 = msk1, nmsk2 = msk2;
             for (int i = 0; i + 1 < seq.length; i++) {
                 int b1 = (cur >> i) & 1, b2 = (cur >> (i + 1)) & 1;
-                if (b1 == 1 && b2 == 0 && ((msk1 >> i) & 1) == 0) continue outer;
+                if (b1 == 1 && b2 == 0 && ((msk1 >> i) & 1) == 0) 
+                    continue outer;  // b1>b2
                 int a1 = ((seq[i] >> bit) & 1) ^ b1, a2 = ((seq[i + 1] >> bit) & 1) ^ b2;
                 if (a1 == 1 && a2 == 0 && ((msk2 >> i) & 1) == 0) continue outer;
 
-                if (b1 == 0 && b2 == 1) nmsk1 |= 1 << i;
-                if (a1 == 0 && a2 == 1) nmsk2 |= 1 << i;
+                if (b1 == 0 && b2 == 1) nmsk1 |= 1 << i; // mask 1 set if bi is increasing
+                if (a1 == 0 && a2 == 1) nmsk2 |= 1 << i; // mask 2 set if bi ^ ai increase
             }
             res += count(seq, nmsk1, nmsk2, bit - 1);
             if (res >= MOD) res -= MOD;
         }
+        //out.println("bit "+bit+" msk1 "+msk1+" msk2 "+msk2+" res "+res);
         return dp[bit][msk1][msk2] = res;
     }
     int solve(int seq[])
@@ -40,8 +42,6 @@ public class CookOffMar17Xor {
         dp = new int[31][masks][masks];
         for (int[][] x : dp) for (int[] y : x) Arrays.fill(y, -1);
         
-        int cnt=0;
-
         return count(seq, 0, 0, 30);
     }
     static Scanner scan = new Scanner(System.in);
