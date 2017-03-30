@@ -1,0 +1,176 @@
+
+There is a directed acyclic graph with N vertices. The vertices are numbered from 1 to N.
+
+For every 1 ≤ i ≤ N-1, there is an edge from vertex i to vertex i+1, which has weight ai.
+
+For every 1 ≤ i ≤ N-2, there is an edge from vertex i to vertex i+2, which has weight bi.
+
+For every 1 ≤ i ≤ N-3, there is an edge from vertex i to vertex i+3, which has weight ci.
+
+There are no other edges.
+
+For each pair of vertices s, t where s < t, let d(s, t) denote the length of the shortest path from s to t. Your task is to compute the sum of d(s, t) for every 1 ≤ s < t ≤ N.
+
+Input
+First line of the input contains an integer T denoting number of test cases. T test cases follow.
+
+For each test case:
+
+The first line contains an integer N.
+
+The second line contains N - 1 integers a1, a2, ..., aN-1.
+
+The third line contains N - 2 integers b1, b2, ..., bN-2.
+
+The fourth line contains N - 3 integers c1, c2, ..., cN-3.
+
+Output
+For each test case, output a single line containing an integer, denoting the answer. It can be proved that the answer fits in the signed 64-bit type.
+
+Constraints
+1 ≤ T ≤ 10^4
+4 ≤ N ≤ 10^5
+1 ≤ sum of N over all test cases ≤ 3*10^5
+1 ≤ ai, bi, ci ≤ 10^4
+Subtasks
+Subtask #1 (8 points):
+
+N ≤ 10^3.
+1 ≤ sum of N over all test cases ≤ 10^4.
+Subtask #2: (13 points):
+
+bi = ai + ai+1.
+ci = ai + ai+1 + ai+2.
+Subtask #3: (46 points):
+
+ci = ai + ai+1 + ai+2.
+Subtask #4: (33 points):
+
+Original constraints.
+Example
+Input:
+2
+4
+1 1 1
+1 1
+1
+5
+1 2 3 4
+2 3 4
+3 4
+
+Output:
+6
+31
+Explanation
+Example case 1. In this test case the distance between the node A and the node B will be equal to one for all pairs (A, B). So for all six pairs we get the distance 1 and the final sum 6.
+
+Author:	7★r_64
+Tester:	6★xcwgf666
+Editorial:	https://discuss.codechef.com/problems/SUMDIS
+
+DIFFICULTY:
+Hard
+
+PREREQUISITES:
+Divide and conquer, sweep line/segment tree
+
+PROBLEM:
+G is a directed acyclic graph with N vertices numbered from 1 to N. There are 3 classes of edges in G:
+
+For every 1≤i≤N−1 there is an edge (i,i+1) with weight ai
+For every 1≤i≤N−2 there is an edge (i,i+2) with weight bi
+For every 1≤i≤N−3 there is an edge (i,i+3) with weight ci
+For any pair of vertices s<t, let d(s,t) be the length of the shortest path from s to t in G. The task is to compute the sum of d(s,t) for every 1≤s<t≤N.
+
+QUICK EXPLANATION:
+Use divide and conquer to remove 3 central nodes, which disconnects the graph, solve the problem recursively into smaller graphs and combine the results into the final result.
+
+EXPLANATION:
+First of all, notice that the graph G is a directed acyclic graph and has O(N) edges with a very small constant.
+
+Subtask 1
+In the first subtask, we have N≤10^3 and sum of N over all test cases not greater than 10^4. This allows the most straightforward method of iterating over all vertices, 
+and for a fixed vertex i, compute the sum of distances from i to all other vertices j>i. This can be easily done in O(N) time for a fixed vertex i because the graph is
+a directed acyclic graph (see here for more details). In our case, it's even easier because the topologic order of G is just 1,2,…,N.
+
+Subtask 2
+In the second subtask, we know that there is a specific relation between weight of edges in all classes:
+
+bi=ai+ai+1
+ci=ai+ai+1+ai+2
+If we take a closer look at above equations, we can notice that if P is the shortest path from i to j>i, and PP uses at least one edge of the second or the third class, 
+then there exists another path P′ of the same length that PP, such that P′ use only edges from the first class. This is true because any edge of the second class in PP 
+can be replaced by two consecutive edges of the first class without changing the length of the path. Similarly, each edge of the third class in PP can be replaced 
+by three consecutive edges of the first class without changing the length of the path. Thus, we can reduce the graph to a path graph where vertices i and i+1 are connected 
+by an edge with weight ai and there are no other edges in the graph. Moreover, between any two vertices i<j there is now exactly one path.
+
+How to solve this simpler problem on the path graph? Well, it's pretty easy. An Edge (i,i+1) for i=1,2,…,N−1 is taken into the final result i⋅(N−i) times because it is
+a part of that many shortest paths connecting vertices with indices x≤i with vertices with indices y≥i+1.
+
+Subtask 3
+In the third subtask, we also know something specific about relation of weight of edges from the first and the third class:
+
+ci=ai+ai+1+ai+2
+Using a similar reasoning as in the solution for the second subtask, we can reduce the input graph to a graph with edges only from the first and the second class. The solution 
+for such a graph is the same as the solution for the third subtask, except the fact that one crucial step is easier to perform. Please read the description of the intended 
+solution below to get the overall idea, and the distinction between these two solutions it also pointed out there.
+
+Subtask 4
+In the last subtask, we have the original constraints. The idea here is to use divide and conquer approach in order. Let's assume that we are solving the problem for an induced 
+graph G with vertices from range [L,R] only. Clearly, the final result will be the solution for a graph with vertices in a range [1,N]. Now, the crucial observation comes:
+
+Let m be some vertex such that L<m<R. Then, if we remove vertices m−1,m and m+1 from G, then we get two disconnected graphs GL and GR denoted by vertices in ranges respectively 
+[L,m−2] and [m+2,R]. Thus, we can solve the problem recursively for both of them, add sub-results computed for these sub-problems, and the only remaining thing to do is to compute:
+
+f(l,r,m):=∑l≤i<m<j≤r d(i,j)
+g(l,r,m):=∑l≤i<m−1 d(i,m−1)+∑l≤i<m d(i,m)+∑m<i≤r d(m,i)+∑m+1<i≤r d(m+1,i)
+where f(l,r,m) is the sum of all shortest paths from vertices with numbers smaller than m to vertices with numbers larger than m, while g(l,r,m) is the sum of all shortest paths 
+to vertices m−1 and m and from vertices m and m+1.
+
+The result for graph G denoted by [L,R] is then the sum of subresults for graphs G1 and G2 plus f(l,r,m) plus g(l,r,m).
+
+One more thing before we take a look at how to compute values of f and g. Notice that as often in divide and conquer approaches, we want to divide the problem into as equal 
+(in terms of size) sub-problems as we can. Here, picking m=(L+R)/2 does the job because it reduces the size of the problem by a factor of 2 every time. Moreover, when the size 
+of a sub-problem is small enough, so R−L+1<C, where C is some constant, we can solve the problem with a quadratic solution described as the solution to the first subtask. 
+This is a common technique used to speed up a solution in practice.
+
+Now, how to compute values of f and g defined above? Let's start with g because it's easier.
+
+Notice, that g is just a sum of three different sums. Each of them is a sum of the shortest paths to or from a fixed vertex, so a single such sum can be computed easily in O(N)
+ time by solving a standard shortest path problem in a DAG.
+
+Now the harder part, computing f. Let's consider two vertices i<m and j>m. Then, d(i,j) is the smallest of the following 3 values:
+
+d1(i,j):=d(i,m−1)+d(m−1,j)
+d2(i,j):=d(i,m)+d(m,j) 
+d3(i,j):=d(i,m+1)+d(m+1,j)
+
+Thus, we are interested, for all i<m and j>m, how many times d(i,m−1) contributes to the final result, so how many times path d(i,m−1) is a part a a shortest path in all shortest 
+paths counted in f(l,r,m). Similarly, we want to count the same for d(m−1,j), d(i,m), d(m,j), d(i,m+1), and d(m+1,j). We are going to show how to do it only for d(i,m−1), 
+because other cases are very similar.
+
+Now, we are interested in how many times d(i,m−1) is counted into f(l,r,m), which is equal to the number of times d1(i,j) is smaller than d2(i,j) and also is smaller than d3(i,j). 
+If any two paths, for example d1(i,j) and d2(i,j) are equal, we say that the one with smaller subscript is smaller, so d1(i,j) is smaller in this case. In other words,
+for a fixed node i, we are interested in number of j, such that m<j≤r, and both below equations are fulfilled:
+
+d(i,m−1)+d(m−1,j)≤d(i,m)+d(m,j)
+d(i,m−1)+d(m−1,j)≤d(i,m+1)+d(m+1,j)
+above equations can be rewritten as:
+
+d(m−1,j)−d(m,j)≤d(i,m)−d(i,m−1)
+d(m−1,j)−d(m+1,j)≤d(i,m+1)−d(i,m−1)
+Now, if we let:
+
+x0=d(i,m)−d(i,m−1)
+y0=d(i,m+1)−d(i,m−1)
+and
+
+xj=d(m−1,j)−d(m,j)
+yj=d(m−1,j)−d(m+1,j)
+Then we are interested in the number of points (xj,yj) in 2d plane, such that xj≤x0 and yj≤y0. This last problem can be solved with for example a sweep line algorithm, 
+sweeping through all O(R−L) points in sorted order by their x coordinates and maintaining a set of all points seen so far sorted by their y coordinate. It follows, 
+that the time needed to compute f(l,r,m) is O((R−L)⋅log(R−L)), and its dominated by the time of sorting the points and performing query operations to the set sorted by y coordinates.
+
+Now, we showed how to decompose a problem using divide and conquer and how to combine the results computed for subproblems with additional values, f and g, into the final result.
+The total time complexity of this approach can be written as T(N)=2⋅T(N/2)+O(NlogN), which is equal to O(Nlog^2 N).
