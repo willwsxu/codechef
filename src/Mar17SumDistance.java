@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// ArrayList of Interger is very slow comparing to int array
+// ArrayList of Integer is very slow comparing to int array
 class Mar17SumDistance {
     
     static Scanner scan = new Scanner(System.in);
