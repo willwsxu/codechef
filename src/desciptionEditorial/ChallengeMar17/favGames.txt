@@ -1,0 +1,120 @@
+Chef has a nice job. Actually he doesn't even remember what he is supposed to do there, because he just plays video-games all the time, exactly h hours every working day!
+
+Recently he got bored of just randomly playing video-games and decided to complete all the levels of his favorite Game as fast as possible.
+
+The Game consists of n levels numbered with integers from 1 to n. After completing every level, some small number of new levels is unlocked. The structure of the Game levels is a tree with the root in level 1, i.e. every level (except for 1) has a unique level that unlocks it and level 1 is the only level that is considered unlocked at the very beginning. Chef has completed his favorite Game lots of times, so he knows that he needs exactly ti hours to complete level i. Due to specifics of the Game every level should be completed entirely within one working day, i.e. Chef cannot start a level on Thursday, and finish it Friday morning.
+
+Overall the game-play proceeds as follows:
+
+There is a stack S that initially contains only the level 1
+Chef pops the topmost level out of the stack. Let's call this level x
+Chef spends tx hours to complete level x. Note that he doesn't want to stay at work longer than for h hours, so if there is not enough time left today Chef will complete level x the next working day morning.
+After completing level x some mx new levels get unlocked
+Chef places all the mx unlocked levels on the top of the stack S in an arbitrary order, i.e. he is free to choose any order he likes
+If stack S is empty, the Game is considered completed, otherwise Chef goes back to the step 2
+Can you help Chef figure out the minimum number of working days necessary to complete the Game?
+
+Input
+The first line of the input contains an integer T denoting the number of test cases.
+
+For each test case, the first line of input contains two integers n and h.
+
+The next line contains n space-separated integers ― t1, t2, ..., tn.
+
+The following n lines describe the structure of Game's levels: the x-th of them contains an integer mx followed by mx integers ― the levels that get unlocked after completing level x.
+
+Output
+For each test case, output a single integer ― the minimum number of working days necessary to complete the Game.
+
+Constraints
+1 ≤ T ≤ 10
+1 ≤ n ≤ 1000
+1 ≤ ti ≤ h ≤ 24
+0 ≤ mx ≤ 10
+It is guaranteed that the structure of the Game levels is a tree, i.e. it is possible to unlock all n levels and every level (except for 1) has exactly one other level that unlocks it.
+Subtasks
+Subtask #1: n ≤ 9 (7 points)
+Subtask #2: mx ≤ 2 (20 points)
+Subtask #3: n ≤ 100; h ≤ 8 (27 points)
+Subtask #4: Original constraints (46 points)
+Example
+Input:
+2
+5 24
+13 24 22 12 16
+1 3
+0
+2 2 5
+0
+1 4
+10 8
+1 4 3 1 7 3 2 2 4 4
+3 2 5 10
+2 3 4
+0
+0
+1 6
+3 7 8 9
+0
+0
+0
+0
+
+Output:
+5
+4
+
+Explanation
+Example case 1: Chef has to complete every level during separate working days, and so to complete all 5 levels he needs 5 working days.
+
+Example case 2: Chef will complete the Game if he will always push unlocked levels into stack starting with the largest indexed one and ending with the smallest indexed one. That is, after Chef completes level 1 he first pushes level 10 (S = [10]), then level 5 (S = [10, 5]) and then level 2 (S = [10, 5, 2]). So the second level Chef will play is 2.
+
+Author:	7★alex_2oo8
+Tester:	6★xcwgf666
+Editorial:	https://discuss.codechef.com/problems/FAVGAME
+
+DIFFICULTY:
+Medium
+
+PREREQUISITES:
+Trees, dynamic programming
+
+PROBLEM:
+The goal of the problem is to complete a video Game in a few days as possible. The Game has nn levels numbered from 11 to nn and you can play it at most h≤24h≤24 hours per day. The ii-th level takes ti≤hti≤h hours to complete. The levels are structured in a tree TT. It means that the level 11 is the root of the tree and the only unlocked level available to play at the beginning. Every other level ii has unique level, its parent in the tree denoted as parentiparenti, such that completing level parentiparenti unlocks level ii making it available to play. The game is completed when all its levels are completed. Moreover, the process of completing the game looks as follows:
+
+There is a stack SS initially containing only the level 11
+You pop the topmost level xx out of the stack
+You spends txtx hours to complete level xx and you must complete it during a single day, which means that if there are not enough hours to complete level xx on the current day, you cannot start it on that day.
+After completing level xx some mxmx new levels get unlocked
+You place all the mxmx unlocked levels on the top of the stack SS in an arbitrary order
+If stack SS is empty, the Game is considered completed, otherwise you go back to the step 22
+The task is to find the minimum number of days needed to complete the Game.
+
+QUICK EXPLANATION:
+Use dynamic programming to compute for each vertex vv the minimum number of days needed to complete all levels in vv's subtree when you start on day 11 in vv and have already worked pp hours on that day.
+
+EXPLANATION:
+First and major observation we can make is to notice that each valid play, i.e. the order in which levels of the game are unlocked, corresponds to DFS order on TT. Thus, the problem is reduced to finding DFS order which yields the smallest cost of visiting all NN nodes of TT.
+
+Subtask 1
+In the first subtask, we have N≤9N≤9, which allows totally brute-force solution. Notice that there are no more than N!N! possible DFS orders of TT, so one can generate all N!N! permutation of the nodes, take only the ones describing valid DFS orders, and for each such sequence, compute the number of days needed to complete the game unlocking levels in the order given by the sequence. The result is the minimum result among all such valid DFS sequences. The time complexity of this method for a single test case is (N!⋅N)(N!⋅N).
+
+Subtasks 2, 3, 4
+Approaches for subtasks 2, 3 and 4 are based on dynamic programming approach, so let's describe the idea first. Just to recall, notice that h≤24h≤24 and each node has at most 1010 children. Both these constraints are very important here.
+
+Let dpv,pdpv,p be a pair (a,b)(a,b) denoting that when we start processing vv's subtree on the first day and have already worked pp hours that day, then aa is the minimum number of additional days, besides the first day, to complete the whole vv's subtree and bb is the minimum number of hours we have to work on the last day in such optimal solution. Now, by this definition, dpdp functions captures all information we need, and the result to the problem is the resulting number of days in dp1hdp1h, because 11 is the root of the tree and completing its subtree means that the whole game is completed, and its always not worse to work as many hours on the first day as possible.
+
+Now, notice that for fixed vv and pp, the value of dpv,pdpv,p can be easily computed when we only know the best order in which we should complete subtrees of children of vv. More specifically, if we know such best order, then we first complete level vv, because it has to be completed before any other levels in vv's subtree, and then we solve the problem recursively for all vv's children. Next, we just compute the value of dpv,pdpv,p straight away by accumulating, in a deterministic way, values computed for vv's children in such an order. Thus, the problem is reduced to just computing the best order of processing subtrees of vv's children.
+
+Subtask 2
+In the second subtask, there is an additional constraint on the number of children of a node, and we know that each node has at most 22 children. This allows for a fixed node vv to just check at most 2!=22!=2 orders of completing subtrees of vv's children and assign the smallest result to dpv,pdpv,p.
+
+Subtask 3
+In the third subtask, we have N≤100N≤100 and h≤8h≤8. These constraints allow to use the intended method for the original constraints but just implemented in not an optimal way. For example, one can capture additional, not necessary information in states of dpdp, resulting in higher complexity of the solution than the intended one.
+
+Subtask 4
+In the fourth subtask, we have the original constraints, and the only thing left to do is to show how for a fixed vv and pp, compute the best order of completing subtrees of vv's children resulting in the smallest value of dpv,pdpv,p. Just to recall, we know that vv has at most 1010 children, so there are at most 10!10! possible such orders, but, since this number is quite big, checking just any of them explicitly is unacceptable.
+
+However, a quite common optimization can be used here. We can avoid iterating over all permutations of children and instead iterate over all subsets of them. For a fixed node vv, let fmask,pfmask,p be a pair (a,b)(a,b) denoting that when we start processing vv's subtree on the first day and have already worked pp hours that day, then aa is the minimum number of additional days, besides the first day, to complete level vv and subtrees of vv's children included in the maskmask, and bb is the number of hours we have to work on the last day in such optimal solution. Then, set maskmask can be implemented as a binary number of length mvmv, where 11 at the ii-th position in maskmask denotes that the ii-th children is included into the set. Now, we can just iterate over all masksmasks and extend a solution for a fixed maskmask to a masknewmasknew having one more subtree completed than maskmask. Then, the value of dpv,pdpv,p is just the value of fmaskfull,pfmaskfull,p, where maskfullmaskfull denotes a set of all children of vv.
+
+The overall time complexity of this method is O(N⋅h⋅210)O(N⋅h⋅210). For implementation details of this exact method please refer to setter solution.
