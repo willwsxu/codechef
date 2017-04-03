@@ -33,6 +33,13 @@ public class Mar17FavGames {
             return 1;
         return games.size();
     }
+    int minDays=0;
+    void dfs(int v)
+    {
+        out.println(v);
+        for (int u: levels.get(v-1))
+            dfs(u);
+    }
     void solve()
     {
         int days=1;
@@ -41,6 +48,7 @@ public class Mar17FavGames {
             days += calcMinDays(levels.get(i));
         }
         out.println(days);
+        dfs(1);
     }
     
     static Scanner scan = new Scanner(System.in);
