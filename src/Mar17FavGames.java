@@ -62,15 +62,66 @@ public class Mar17FavGames {
     class pi{  // int pair
         int first;
         int second;
+        pi(int f, int s)
+        {
+            first = f;
+            second =s;
+        }
     }
     static final int MX = 1000; // max vertices
     pi [][]dp = new pi[MX][25];
+    pi [][]f = new pi[1<<10][25];  // at most levels can be unlocked each time
     // editorial impl
     void dfs(int v)
     {
-        out.println(v+1);
         for (int u: levels.get(v))
             dfs(u);
+        int n = levels.get(v).size();
+        out.println(v+1+":"+n);
+        // initalize f[][] with infinities
+	for (int msk = 0; msk < (1 << n); msk++)
+            for (int p = 0; p <= maxH; p++)
+		f[msk][p] = new pi(MX, maxH);
+        // first of all we should complete level 'v'
+	// we will put the time taken into the base state
+	// of our second dp - f[0][p], that corresponds to
+	// a state with none of the children completed
+		
+	// we have enough time on the first workday:
+	for (int p = 0; p + gameHours.get(v) <= maxH; p++) 
+            f[0][p] = new pi(0, p + gameHours.get(v));
+	// we don't have enough time on the first workday:
+	for (int p = maxH + 1 - gameHours.get(v); p <= maxH; p++) 
+            f[0][p] = new pi(1, gameHours.get(v));
+        
+        for (int msk = 0; msk < (1 << n); msk++)
+            for (int i = 0; i < n; i++)
+                if (((msk >> i) & 1) == 0)
+                    for (int p = 0; p <= maxH; p++) {
+                        // we have already completed all the subtrees
+                        // described by 'msk' and the next subtree will be 'i'.
+
+                        // the state right after we have finished all the
+                        // subtrees in 'msk'
+                        pi a = f[msk][p];
+
+                        // dp value that we want to update (after adding subtree)
+                        pi b = f[msk | (1 << i)][p];
+
+                        // time spent in newly added subtree, we will have
+                        // a.second hours worked on the first workday (the last
+                        // workday to complete all subtrees in 'msk')
+                        pi c = dp[levels.get(v).get(i)][a.second];
+
+                        // overall we will spend (a.first + c.first) additional
+                        // workdays and will have worked exactly c.second hours
+                        // during the last one
+                        if ( a.first + c.first < b.first)
+                            f[msk | (1 << i)][p] = new pi(a.first + c.first, c.second);
+                    }	
+        // update values of global dp[][] using the values of second dp
+	for (int p = 0; p <= maxH; p++) 
+            dp[v][p] = f[(1 << n) - 1][p];
     }
     void solve()
     {
@@ -81,6 +132,7 @@ public class Mar17FavGames {
         }
         out.println(days);
         dfs(0);
+        out.println(dp[0][maxH].first);
     }
     
     static Scanner scan = new Scanner(System.in);
