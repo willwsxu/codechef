@@ -2,7 +2,7 @@
 import static java.lang.System.out;
 import java.util.Scanner;
 
-//ROWSOLD easy
+//ROWSOLD medium
 class Apr17BearRow1 {
     
     // move from left to right to prolong the game
