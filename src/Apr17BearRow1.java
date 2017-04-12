@@ -2,7 +2,8 @@
 import static java.lang.System.out;
 import java.util.Scanner;
 
-//ROWSOLD medium
+//ROWSOLD easy / medium
+// be careful of overflow, use long c1, not int
 class Apr17BearRow1 {
     
     // move from left to right to prolong the game
@@ -15,7 +16,7 @@ class Apr17BearRow1 {
         // skipped all leading 0, nothing left or just a single 1
         if (pos>=cells.length()-1)
             return 0;
-        int c1=0; // count 1's
+        long c1=0; // count 1's
         int c0=0; // count 0
         long tim=0; // time to play game
         for (; pos< cells.length(); pos++)
