@@ -14,6 +14,7 @@ class Apr17CliqueDist {
     static Scanner scan = new Scanner(System.in);
     public static void main(String[] args)
     {        
+        scan = codechef.CodeChef.getFileScanner("cliqueDist-t.txt");
         int TC = scan.nextInt();  // between 1 and 10
         for (int i=0; i<TC; i++) {
             int N = scan.nextInt();   // 2 ≤ K ≤ N ≤ 10^5
@@ -202,7 +203,7 @@ class SSSPclique
         //out.println("edges "+g.E());
         if ( s>=K ) { // s is not in clique
             for (int k: in) {
-                for (int j=0;j<K;j++) {
+                for (int j : in) {
                     if (k != j)
                         g.addDirectEdge(new Edge(k, j, Kw));   
                 }
@@ -217,5 +218,14 @@ class SSSPclique
         cliqueEdges();
         while (!pq.isEmpty())
             relax(pq.poll().v);
+        long minClique=Long.MAX_VALUE;
+        for (int v = 0; v < K; v++) {
+            if ( distTo[v] < minClique)
+                minClique = distTo[v];
+        }
+        for (int v = 0; v < K; v++) {
+            if ( distTo[v] ==Long.MAX_VALUE)
+                distTo[v] = minClique +Kw;
+        }
     }
 }
