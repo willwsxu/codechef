@@ -17,71 +17,73 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-    class MyReader
+class MyReader
+{
+    BufferedReader br;
+    String line;
+    List<String> items=new ArrayList<>();
+    MyReader(String f)
     {
-        BufferedReader br;
-        String line;
-        List<String> items=new ArrayList<>();
-        MyReader(String f)
+        try {
+            br = new BufferedReader(new FileReader(new File(f)));
+        } catch (IOException e)
         {
-            try {
-                br = new BufferedReader(new FileReader(new File(f)));
-            } catch (IOException e)
-            {
-                out.println("MyReader bad file "+f);
-            }
-            readline();
+            out.println("MyReader bad file "+f);
         }
-        MyReader()
-        {
-            br = new BufferedReader(new InputStreamReader(System.in));
-            readline();            
-        }
-        void readline()
-        {
-            try {
+        readline();
+    }
+    MyReader()
+    {
+        br = new BufferedReader(new InputStreamReader(System.in));
+        readline();            
+    }
+    void readline()
+    {
+        try {
+            line = br.readLine();
+            while (line.isEmpty())
                 line = br.readLine();
-                if (line.isEmpty())
-                    line = br.readLine();
-            }catch (IOException e)
-            {
-                out.println("MyReader read exception "+e);
-            }
-            String [] w = line.split("\\s+");
-            for(String s:w) {
-                if (!s.isEmpty())
-                    items.add(s);
-            }
-        }
-        int nextInt()
+            //out.println(line);
+        }catch (IOException e)
         {
-            if (items.isEmpty())
-                readline();
-            try {
-            int i=Integer.parseInt(items.get(0));
-            items.remove(0);
-            return i;
-            } catch (NumberFormatException e) {
-                out.println(items.toString()+e);
-                return 0;
-            }
+            out.println("MyReader read exception "+e);
         }
-        long nextLong()
-        {
-            if (!items.isEmpty() && items.get(0).isEmpty())
-                items.remove(0);     
-            if (items.isEmpty())
-                readline();
-            long i=Long.parseLong(items.get(0));
-            items.remove(0);
-            return i;
+        String [] w = line.split("\\s+");
+        for(String s:w) {
+            if (!s.isEmpty())
+                items.add(s);
+        }
+        //out.println(items);
+    }
+    int nextInt()
+    {
+        if (items.isEmpty())
+            readline();
+        try {
+        int i=Integer.parseInt(items.get(0));
+        items.remove(0);
+        return i;
+        } catch (NumberFormatException e) {
+            out.println(items.toString()+e);
+            return 0;
         }
     }
+    long nextLong()
+    {
+        if (!items.isEmpty() && items.get(0).isEmpty())
+            items.remove(0);     
+        if (items.isEmpty())
+            readline();
+        long i=Long.parseLong(items.get(0));
+        items.remove(0);
+        return i;
+    }
+}
 // single-source shortest paths
 class Apr17CliqueDist {
     //static Scanner scan = new Scanner(System.in);
-    static MyReader scan = new MyReader("winout.txt");
-    //static MyReader scan = new MyReader();
+    //static MyReader scan = new MyReader("cliqueDist10000EWD.txt");
+    static MyReader scan = new MyReader();
     static void testAddEdge()
     {
         Instant start = Instant.now();
@@ -94,35 +96,37 @@ class Apr17CliqueDist {
         Instant mid0 = Instant.now();
         out.println("testAddEdge usec "+ChronoUnit.MICROS.between(start, mid0));    
     }
+    static void addTest(SSSPclique sp, int v, int w, long wt, int k)
+    {        
+        sp.addEdge(v+k-1000, w+k-1000, wt);
+    }
     public static void main(String[] args) throws FileNotFoundException
     {        
         //Instant start = Instant.now();
-        File file = new File("out.txt");
+        /*File file = new File("out.txt");
         FileOutputStream fos = new FileOutputStream(file);
         PrintStream ps = new PrintStream(fos);        
-        System.setOut(ps);
-        boolean indexfrom1=false;
+        System.setOut(ps);*/
+        
         int TC = scan.nextInt();  // between 1 and 10
-        for (int i=0; i<TC; i++) {
+        for (int i=0; i<TC; i++) { 
+            //out.println("TOP case #"+(i+1));
             int N = scan.nextInt();   // 2 ≤ K ≤ N ≤ 10^5
             int K = scan.nextInt();
             long X = scan.nextLong(); // 1 to 10^9
             int M = scan.nextInt();     // 1 to 10^5 new roads
             int s = scan.nextInt();
-            if (indexfrom1)
-                --s;
-            SSSPclique sp = new SSSPclique(N, K, X, s);
+            // test
+            //N += K-1000;
+            SSSPclique sp = new SSSPclique(N, K, X, s-1);
             //Instant mid0 = Instant.now();
             //out.println("usec "+ChronoUnit.MICROS.between(start, mid0));    
             for (int j=0; j<M; j++) {
                 int v = scan.nextInt();  // index from 1
                 int w = scan.nextInt();
                 long wt = scan.nextLong();
-                if (indexfrom1) 
-                {
-                    --v;--w;
-                }
-                sp.addEdge(v, w, wt);
+                //addTest(sp, v, w, wt, K);
+                sp.addEdge(v-1, w-1, wt);
             }
             //Instant mid = Instant.now();
             //out.println("usec "+ChronoUnit.MICROS.between(mid0, mid));    
@@ -131,7 +135,8 @@ class Apr17CliqueDist {
                 out.print(sp.distTo(k)+" ");
             out.println();
             //Instant end = Instant.now();
-            //out.println("usec "+ChronoUnit.MICROS.between(mid, end));       
+            //out.println("usec "+ChronoUnit.MICROS.between(mid, end));  
+            //out.println("case #"+(i+1));
         }
     }
 }
@@ -289,22 +294,22 @@ class SSSPclique
     Set<Integer> in = new HashSet<>();
     public void addEdge(int v, int w, long wt)
     {            
-        /*if ( v<K && s<K) {
+        if ( v<K && s<K) {
             g.addDirectEdge(new Edge(v, w, wt)); 
         }
         else if ( w<K && s<K) {
             g.addDirectEdge(new Edge(w, v, wt)); 
         }
-        else {*/
+        else {
             g.addDirectEdge(v, w, wt);
             g.addDirectEdge(w, v, wt);                    
-        /*}
+        }
         if ( s>= K) {
             if ( v<K )
                 in.add(v);
             else if ( w<K )
                 in.add(w);
-        }*/
+        }
     }
     private void cliqueEdges()
     {
