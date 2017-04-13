@@ -1,20 +1,107 @@
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import static java.lang.System.out;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Scanner;
 import java.util.Set;
 
+    class MyReader
+    {
+        BufferedReader br;
+        String line;
+        List<String> items=new ArrayList<>();
+        MyReader(String f)
+        {
+            try {
+                br = new BufferedReader(new FileReader(new File(f)));
+            } catch (IOException e)
+            {
+                out.println("MyReader bad file "+f);
+            }
+            readline();
+        }
+        MyReader()
+        {
+            br = new BufferedReader(new InputStreamReader(System.in));
+            readline();            
+        }
+        void readline()
+        {
+            try {
+                line = br.readLine();
+                if (line.isEmpty())
+                    line = br.readLine();
+            }catch (IOException e)
+            {
+                out.println("MyReader read exception "+e);
+            }
+            String [] w = line.split("\\s+");
+            for(String s:w) {
+                if (!s.isEmpty())
+                    items.add(s);
+            }
+        }
+        int nextInt()
+        {
+            if (items.isEmpty())
+                readline();
+            try {
+            int i=Integer.parseInt(items.get(0));
+            items.remove(0);
+            return i;
+            } catch (NumberFormatException e) {
+                out.println(items.toString()+e);
+                return 0;
+            }
+        }
+        long nextLong()
+        {
+            if (!items.isEmpty() && items.get(0).isEmpty())
+                items.remove(0);     
+            if (items.isEmpty())
+                readline();
+            long i=Long.parseLong(items.get(0));
+            items.remove(0);
+            return i;
+        }
+    }
 // single-source shortest paths
 class Apr17CliqueDist {
-    
-    static Scanner scan = new Scanner(System.in);
-    public static void main(String[] args)
+    //static Scanner scan = new Scanner(System.in);
+    static MyReader scan = new MyReader("winout.txt");
+    //static MyReader scan = new MyReader();
+    static void testAddEdge()
+    {
+        Instant start = Instant.now();
+        WeightedGraph g = new WeightedGraph(1000000);
+        for (int i=0; i<g.V()-30; i++)
+        {
+            for (int j=i+1; j<=i+30; j++)
+                g.addDirectEdge(i, j, i);
+        }
+        Instant mid0 = Instant.now();
+        out.println("testAddEdge usec "+ChronoUnit.MICROS.between(start, mid0));    
+    }
+    public static void main(String[] args) throws FileNotFoundException
     {        
-        scan = codechef.CodeChef.getFileScanner("cliqueDist-t.txt");
+        //Instant start = Instant.now();
+        File file = new File("out.txt");
+        FileOutputStream fos = new FileOutputStream(file);
+        PrintStream ps = new PrintStream(fos);        
+        System.setOut(ps);
+        boolean indexfrom1=false;
         int TC = scan.nextInt();  // between 1 and 10
         for (int i=0; i<TC; i++) {
             int N = scan.nextInt();   // 2 ≤ K ≤ N ≤ 10^5
@@ -22,17 +109,29 @@ class Apr17CliqueDist {
             long X = scan.nextLong(); // 1 to 10^9
             int M = scan.nextInt();     // 1 to 10^5 new roads
             int s = scan.nextInt();
-            SSSPclique sp = new SSSPclique(N, K, X, s-1);
+            if (indexfrom1)
+                --s;
+            SSSPclique sp = new SSSPclique(N, K, X, s);
+            //Instant mid0 = Instant.now();
+            //out.println("usec "+ChronoUnit.MICROS.between(start, mid0));    
             for (int j=0; j<M; j++) {
                 int v = scan.nextInt();  // index from 1
                 int w = scan.nextInt();
                 long wt = scan.nextLong();
-                sp.addEdge(v-1, w-1, wt);
+                if (indexfrom1) 
+                {
+                    --v;--w;
+                }
+                sp.addEdge(v, w, wt);
             }
+            //Instant mid = Instant.now();
+            //out.println("usec "+ChronoUnit.MICROS.between(mid0, mid));    
             sp.run();
             for (int k=0; k<N; k++)
                 out.print(sp.distTo(k)+" ");
             out.println();
+            //Instant end = Instant.now();
+            //out.println("usec "+ChronoUnit.MICROS.between(mid, end));       
         }
     }
 }
@@ -78,7 +177,7 @@ class WeightedGraph {
         E=0;
         adj = new List[V];  // -Xlint:unchecked
         for (int v = 0; v < V; v++) // Initialize all lists
-            adj[v] = new ArrayList<>();
+            adj[v] = new ArrayList<>(10);
     }
     public int V() { return V; }
     public int E() { return E; }
@@ -91,6 +190,11 @@ class WeightedGraph {
         adj[v].add(e);
         adj[w].add(e);
         E++;
+    }
+    public void addDirectEdge(int v, int w, long wt)
+    {
+        adj[v].add(new Edge(v, w, wt));
+        E++;        
     }
     public void addDirectEdge(Edge e)
     {
@@ -155,8 +259,11 @@ class SSSPclique
         pq.add(new PQItem(s, 0));
     }
     
-    private void relax(int v)
+    private void relax(PQItem pqi)
     {
+        int v = pqi.v;
+        if (distTo[v] != pqi.getWeight())  // ignore dup node
+            return;
         for(Edge e : g.adj(v))
         {
             int w = e.to();
@@ -165,9 +272,10 @@ class SSSPclique
             {
                 distTo[w] = distTo[v] + e.weight();
                 edgeTo[w] = e;
-                if (pq.contains(w)) {
-                    pq.remove(new Integer(w));
-                }
+                //if (pq.contains(w)) {
+                //    pq.remove(new Integer(w));
+                //}
+                // don't bother to delete old one, 10% better performance
                 pq.add(new PQItem(w, distTo[w]));
                 //out.println("update dist to w "+(w+1)+" is "+distTo[w]);
             }
@@ -181,22 +289,22 @@ class SSSPclique
     Set<Integer> in = new HashSet<>();
     public void addEdge(int v, int w, long wt)
     {            
-        if ( v<K && s<K) {
+        /*if ( v<K && s<K) {
             g.addDirectEdge(new Edge(v, w, wt)); 
         }
         else if ( w<K && s<K) {
             g.addDirectEdge(new Edge(w, v, wt)); 
         }
-        else {
-            g.addDirectEdge(new Edge(v, w, wt));
-            g.addDirectEdge(new Edge(w, v, wt));                    
-        }
+        else {*/
+            g.addDirectEdge(v, w, wt);
+            g.addDirectEdge(w, v, wt);                    
+        /*}
         if ( s>= K) {
             if ( v<K )
                 in.add(v);
             else if ( w<K )
                 in.add(w);
-        }   
+        }*/
     }
     private void cliqueEdges()
     {
@@ -215,9 +323,12 @@ class SSSPclique
 
     public void run()
     {
+        //out.println("edges "+g.E());
         cliqueEdges();
-        while (!pq.isEmpty())
-            relax(pq.poll().v);
+        //out.println("edges "+g.E());
+        while (!pq.isEmpty()) {
+            relax(pq.poll());
+        }
         long minClique=Long.MAX_VALUE;
         for (int v = 0; v < K; v++) {
             if ( distTo[v] < minClique)
