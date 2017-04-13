@@ -3,11 +3,13 @@ import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Scanner;
 
-
+// SMARKET medium hard 
 class Apr17StableMarket {
     int blocks[];        // precompute order of blocks
     int blkIndex[];      // point index of blocks
     int blkPos[];        // position in its block, 1 mean firt number of the block
+    int maxBlk=0;
+    int minBlk=Integer.MAX_VALUE;
     Apr17StableMarket(int p[])
     {
         blocks = new int[p.length];
@@ -24,6 +26,10 @@ class Apr17StableMarket {
         {
             if ( lastP !=p[i]) {
                 blocks[bIndex++]=order;
+                if ( order<minBlk )
+                    minBlk = order;
+                if ( order>maxBlk )
+                    maxBlk = order;
                 order=1;
                 lastP=p[i];
                 pos=1;
@@ -36,6 +42,10 @@ class Apr17StableMarket {
             blkPos[i]=pos;
         }     
         blocks[bIndex++]=order;
+        if ( order<minBlk )
+            minBlk = order;
+        if ( order>maxBlk )
+            maxBlk = order;
         /*out.println(Arrays.toString(p));
         out.println(Arrays.toString(blkIndex));
         out.println(Arrays.toString(blkPos));
@@ -43,6 +53,8 @@ class Apr17StableMarket {
     }
     int blocks(int n1, int n2, int ord)
     {
+        if ( ord>maxBlk)
+            return 0;
         int start = blkIndex[n1-1];
         int end = blkIndex[n2-1];
         if (start==end)  // same block
@@ -84,7 +96,7 @@ class Apr17StableMarket {
     static Scanner scan = new Scanner(System.in);
     public static void main(String[] args)
     {        
-        //scan = codechef.CodeChef.getFileScanner("stablemarket-t.txt");
+        scan = codechef.CodeChef.getFileScanner("stablemarket-t.txt");
         int TC = scan.nextInt();  // between 1 and 5
         for (int i=0; i<TC; i++) {
             int N = scan.nextInt();   // 1 ≤ N, Q ≤ 10^5
