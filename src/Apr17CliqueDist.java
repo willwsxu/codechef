@@ -69,9 +69,7 @@ class MyReader
         }
     }
     long nextLong()
-    {
-        if (!items.isEmpty() && items.get(0).isEmpty())
-            items.remove(0);     
+    {    
         if (items.isEmpty())
             readline();
         long i=Long.parseLong(items.get(0));
@@ -82,8 +80,8 @@ class MyReader
 // single-source shortest paths
 class Apr17CliqueDist {
     //static Scanner scan = new Scanner(System.in);
-    //static MyReader scan = new MyReader("cliqueDist10000EWD.txt");
-    static MyReader scan = new MyReader();
+    static MyReader scan = new MyReader("cliqueDist10000EWD.txt");
+    //static MyReader scan = new MyReader();
     static void testAddEdge()
     {
         Instant start = Instant.now();
@@ -96,13 +94,14 @@ class Apr17CliqueDist {
         Instant mid0 = Instant.now();
         out.println("testAddEdge usec "+ChronoUnit.MICROS.between(start, mid0));    
     }
+    static int testClique=500;
     static void addTest(SSSPclique sp, int v, int w, long wt, int k)
     {        
-        sp.addEdge(v+k-1000, w+k-1000, wt);
+        sp.addEdge(v+k-testClique, w+k-testClique, wt);
     }
     public static void main(String[] args) throws FileNotFoundException
     {        
-        //Instant start = Instant.now();
+        Instant start = Instant.now();
         /*File file = new File("out.txt");
         FileOutputStream fos = new FileOutputStream(file);
         PrintStream ps = new PrintStream(fos);        
@@ -117,7 +116,7 @@ class Apr17CliqueDist {
             int M = scan.nextInt();     // 1 to 10^5 new roads
             int s = scan.nextInt();
             // test
-            //N += K-1000;
+            N += K-testClique;
             SSSPclique sp = new SSSPclique(N, K, X, s-1);
             //Instant mid0 = Instant.now();
             //out.println("usec "+ChronoUnit.MICROS.between(start, mid0));    
@@ -125,8 +124,8 @@ class Apr17CliqueDist {
                 int v = scan.nextInt();  // index from 1
                 int w = scan.nextInt();
                 long wt = scan.nextLong();
-                //addTest(sp, v, w, wt, K);
-                sp.addEdge(v-1, w-1, wt);
+                addTest(sp, v, w, wt, K);
+                //sp.addEdge(v-1, w-1, wt);
             }
             //Instant mid = Instant.now();
             //out.println("usec "+ChronoUnit.MICROS.between(mid0, mid));    
@@ -134,8 +133,8 @@ class Apr17CliqueDist {
             for (int k=0; k<N; k++)
                 out.print(sp.distTo(k)+" ");
             out.println();
-            //Instant end = Instant.now();
-            //out.println("usec "+ChronoUnit.MICROS.between(mid, end));  
+            Instant end = Instant.now();
+            out.println("usec "+ChronoUnit.MICROS.between(start, end));  
             //out.println("case #"+(i+1));
         }
     }
@@ -295,10 +294,10 @@ class SSSPclique
     public void addEdge(int v, int w, long wt)
     {            
         if ( v<K && s<K) {
-            g.addDirectEdge(new Edge(v, w, wt)); 
+            g.addDirectEdge(v, w, wt); 
         }
         else if ( w<K && s<K) {
-            g.addDirectEdge(new Edge(w, v, wt)); 
+            g.addDirectEdge(w, v, wt); 
         }
         else {
             g.addDirectEdge(v, w, wt);
@@ -328,9 +327,9 @@ class SSSPclique
 
     public void run()
     {
-        //out.println("edges "+g.E());
+        out.println("edges "+g.E());
         cliqueEdges();
-        //out.println("edges "+g.E());
+        out.println("edges "+g.E());
         while (!pq.isEmpty()) {
             relax(pq.poll());
         }
