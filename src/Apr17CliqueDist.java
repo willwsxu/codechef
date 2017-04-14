@@ -77,8 +77,8 @@ class MyReader
 }
 // single-source shortest paths
 class Apr17CliqueDist {
-    //static MyReader scan = new MyReader("cliqueDist10000EWD.txt");
-    static MyReader scan = new MyReader();
+    static MyReader scan = new MyReader("cliqueDist10000EWD.txt");
+    //static MyReader scan = new MyReader();
     static void testAddEdge()
     {
         Instant start = Instant.now();
@@ -92,14 +92,21 @@ class Apr17CliqueDist {
         out.println("testAddEdge usec "+ChronoUnit.MICROS.between(start, mid0));    
     }
     static int testClique=500;
+    static int discard=0;
     static void addTest(SSSPclique sp, int v, int w, long wt, int k)
     {        
-        sp.addEdge(v+k-testClique, w+k-testClique, wt);
+        v += k-testClique;
+        w += k-testClique;
+        if (v<k && w<k) {
+            discard++;
+            return;
+        }
+        sp.addEdge(v, w, wt);
     }
     public static void main(String[] args)
     {        
         //Instant start = Instant.now();
-        //ContestHelper.redirect("out.txt");
+        ContestHelper.redirect("out.txt");
         
         int TC = scan.nextInt();  // between 1 and 3
         for (int i=0; i<TC; i++) { 
@@ -109,15 +116,16 @@ class Apr17CliqueDist {
             int M = scan.nextInt();     // 1 to 10^5 new roads
             int s = scan.nextInt();
             // test
-            //N += K-testClique;
+            N += K-testClique;
             SSSPclique sp = new SSSPclique(N, K, X, s-1);
             for (int j=0; j<M; j++) {
                 int v = scan.nextInt();  // index from 1
                 int w = scan.nextInt();
                 long wt = scan.nextLong();
-                //addTest(sp, v, w, wt, K);
-                sp.addEdge(v-1, w-1, wt);
+                addTest(sp, v, w, wt, K);
+                //sp.addEdge(v-1, w-1, wt);
             }
+            out.println("discard edges "+discard); //test
             sp.run();
             for (int k=0; k<N; k++) {
                 out.print(sp.distTo(k));
@@ -304,7 +312,7 @@ class SSSPclique
     }
     private void cliqueEdges()
     {
-        //out.println("edges "+g.E());
+        out.println("edges "+g.E());
         if ( s>=K ) { // s is not in clique
             for (int k: in) {
                 for (int j : in) {
@@ -314,17 +322,37 @@ class SSSPclique
             }
         }
         in.clear();// only need it once
-        //out.println("edges "+g.E());   
+        out.println("edges "+g.E());   
     }
 
+    private void runClique()
+    {
+        if (s<K)
+            return;
+        Comparator<PQItem> cmp = Comparator.comparingLong(a->a.weight);
+        PriorityQueue<PQItem> pqc = new PriorityQueue<>(K, cmp); 
+        for (int j : in) {       
+            pqc.add(new PQItem(j, distTo[j]));
+        }
+        PQItem minQ = pqc.poll();
+        while (!pqc.isEmpty()) {
+            PQItem next = pqc.poll();
+            if (next.weight<=minQ.weight+Kw)
+                continue;
+            distTo[next.v] = minQ.weight+Kw;
+            pq.add(new PQItem(next.v, distTo[next.v]));
+            while (!pq.isEmpty()) {
+                relax(pq.poll());
+            }
+        }
+    }
     public void run()
     {
-        //out.println("edges "+g.E());
-        cliqueEdges();
-        //out.println("edges "+g.E());
+        //cliqueEdges();
         while (!pq.isEmpty()) {
             relax(pq.poll());
         }
+        runClique();
         long minClique=Long.MAX_VALUE;
         for (int v = 0; v < K; v++) {
             if ( distTo[v] < minClique)
