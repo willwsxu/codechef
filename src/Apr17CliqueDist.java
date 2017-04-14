@@ -2,11 +2,9 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import static java.lang.System.out;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -79,9 +77,8 @@ class MyReader
 }
 // single-source shortest paths
 class Apr17CliqueDist {
-    //static Scanner scan = new Scanner(System.in);
-    static MyReader scan = new MyReader("cliqueDist10000EWD.txt");
-    //static MyReader scan = new MyReader();
+    //static MyReader scan = new MyReader("cliqueDist10000EWD.txt");
+    static MyReader scan = new MyReader();
     static void testAddEdge()
     {
         Instant start = Instant.now();
@@ -99,39 +96,37 @@ class Apr17CliqueDist {
     {        
         sp.addEdge(v+k-testClique, w+k-testClique, wt);
     }
-    public static void main(String[] args) throws FileNotFoundException
+    public static void main(String[] args)
     {        
-        Instant start = Instant.now();
-        ContestHelper.redirect("out.txt");
+        //Instant start = Instant.now();
+        //ContestHelper.redirect("out.txt");
         
-        int TC = scan.nextInt();  // between 1 and 10
+        int TC = scan.nextInt();  // between 1 and 3
         for (int i=0; i<TC; i++) { 
-            //out.println("TOP case #"+(i+1));
             int N = scan.nextInt();   // 2 ≤ K ≤ N ≤ 10^5
             int K = scan.nextInt();
             long X = scan.nextLong(); // 1 to 10^9
             int M = scan.nextInt();     // 1 to 10^5 new roads
             int s = scan.nextInt();
             // test
-            N += K-testClique;
+            //N += K-testClique;
             SSSPclique sp = new SSSPclique(N, K, X, s-1);
-            //Instant mid0 = Instant.now();
-            //out.println("usec "+ChronoUnit.MICROS.between(start, mid0));    
             for (int j=0; j<M; j++) {
                 int v = scan.nextInt();  // index from 1
                 int w = scan.nextInt();
                 long wt = scan.nextLong();
-                addTest(sp, v, w, wt, K);
-                //sp.addEdge(v-1, w-1, wt);
+                //addTest(sp, v, w, wt, K);
+                sp.addEdge(v-1, w-1, wt);
             }
-            //Instant mid = Instant.now();
-            //out.println("usec "+ChronoUnit.MICROS.between(mid0, mid));    
             sp.run();
-            for (int k=0; k<N; k++)
-                out.print(sp.distTo(k)+" ");
+            for (int k=0; k<N; k++) {
+                out.print(sp.distTo(k));
+                if (k<N-1)
+                    out.print(" ");
+            }
             out.println();
-            Instant end = Instant.now();
-            out.println("usec "+ChronoUnit.MICROS.between(start, end));  
+            //Instant end = Instant.now();
+            //out.println("usec "+ChronoUnit.MICROS.between(start, end));  
             //out.println("case #"+(i+1));
         }
     }
@@ -170,7 +165,6 @@ class WeightedGraph {
     private final int   V; // number of vertices
     private int         E; // number of edges
     List<Edge>[]        adj;// adjacency lists
-    //Map<String, Integer> map = new HashMap<>(MAX_NODE);
 
     WeightedGraph(int V)
     {
@@ -185,7 +179,7 @@ class WeightedGraph {
     public List<Edge> adj(int v) {
         return adj[v];
     }
-    public void addEdge(Edge e)
+    public void addEdge(Edge e) // undirected
     {
         int v = e.either(), w = e.other(v);
         adj[v].add(e);
@@ -231,27 +225,28 @@ class SSSPclique
             return v==w;
         }
     }
-    private final int   K; // 1 to vertices clique
-    private final long  Kw; // weight between clique
+    private final int   K; // clique, 2 to vertices
+    private final long  Kw; // weight between clique vertices
     private final int   s; // source node
     private final WeightedGraph g;
     private Edge[] edgeTo;
     private long[] distTo;
     private PriorityQueue<PQItem> pq;
     
-    SSSPclique(int N, int k, long w, int s)
+    // s, v, w index from 0
+    SSSPclique(int N, int k, long wt, int s)
     {
         g = new WeightedGraph(N);
         K=k;
-        Kw=w;
+        Kw=wt;
         this.s=s;
         edgeTo = new Edge[g.V()];
         distTo = new long[g.V()];
         Comparator<PQItem> cmp = Comparator.comparingLong(a->a.weight);
-        pq = new PriorityQueue<>(g.V(), cmp);
+        pq = new PriorityQueue<>(g.V()*2, cmp);
         for (int v = 0; v < g.V(); v++) {
             if (v<K && v!=s && s<K) {
-                g.addDirectEdge(new Edge(s, v, w));
+                g.addDirectEdge(s, v, wt);
             }
             distTo[v] = Long.MAX_VALUE;
         }
@@ -290,10 +285,10 @@ class SSSPclique
     Set<Integer> in = new HashSet<>();
     public void addEdge(int v, int w, long wt)
     {            
-        if ( v<K && s<K) {
+        if ( v==s && s<K) {
             g.addDirectEdge(v, w, wt); 
         }
-        else if ( w<K && s<K) {
+        else if ( w==s && s<K) {
             g.addDirectEdge(w, v, wt); 
         }
         else {
@@ -314,7 +309,7 @@ class SSSPclique
             for (int k: in) {
                 for (int j : in) {
                     if (k != j)
-                        g.addDirectEdge(new Edge(k, j, Kw));   
+                        g.addDirectEdge(k, j, Kw);   
                 }
             }
         }
@@ -324,9 +319,9 @@ class SSSPclique
 
     public void run()
     {
-        out.println("edges "+g.E());
+        //out.println("edges "+g.E());
         cliqueEdges();
-        out.println("edges "+g.E());
+        //out.println("edges "+g.E());
         while (!pq.isEmpty()) {
             relax(pq.poll());
         }
