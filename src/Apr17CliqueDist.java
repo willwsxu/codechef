@@ -77,7 +77,7 @@ class MyReader
 }
 // single-source shortest paths
 class Apr17CliqueDist {
-    static MyReader scan = new MyReader("cliqueDist10000EWD.txt");
+    static MyReader scan = new MyReader("cliqueDist10000EWD.txt");//test
     //static MyReader scan = new MyReader();
     static void testAddEdge()
     {
@@ -125,7 +125,7 @@ class Apr17CliqueDist {
                 addTest(sp, v, w, wt, K);
                 //sp.addEdge(v-1, w-1, wt);
             }
-            out.println("discard edges "+discard); //test
+            //out.println("discard edges "+discard); //test
             sp.run();
             for (int k=0; k<N; k++) {
                 out.print(sp.distTo(k));
