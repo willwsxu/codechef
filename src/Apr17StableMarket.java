@@ -96,7 +96,7 @@ class Apr17StableMarket {
     static Scanner scan = new Scanner(System.in);
     public static void main(String[] args)
     {        
-        scan = codechef.CodeChef.getFileScanner("stablemarket-t.txt");
+        scan = ContestHelper.getFileScanner("stablemarket-t.txt");
         int TC = scan.nextInt();  // between 1 and 5
         for (int i=0; i<TC; i++) {
             int N = scan.nextInt();   // 1 ≤ N, Q ≤ 10^5

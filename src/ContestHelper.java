@@ -1,24 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package codechef;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Random;
 import java.util.Scanner;
 
-/**
- *
- * @author wxu
- */
-public class CodeChef {
+public class ContestHelper {
 
     /**
      * @param args the command line arguments
@@ -86,6 +79,25 @@ public class CodeChef {
         {
             
         }        
+    }
+    
+    static PrintStream console = System.out; // ssave the console
+    public static void redirect()
+    {
+            System.setOut(console);        
+    }
+    public static void redirect(String f)
+    {        
+        try
+        {
+            PrintStream ps = new PrintStream(
+            new FileOutputStream(
+            new File(f)));
+            System.setOut(ps);
+        } catch (FileNotFoundException e)
+        {
+            System.out.println("exception bad outfile "+f);
+        }
     }
     
     public static void writeFile(int []line, int start, int end, boolean append)

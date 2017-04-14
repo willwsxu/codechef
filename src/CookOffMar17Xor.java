@@ -57,7 +57,7 @@ public class CookOffMar17Xor {
     }
     public static void main(String[] args)
     {
-        scan = codechef.CodeChef.getFileScanner("xor0317.txt");
+        scan = ContestHelper.getFileScanner("xor0317.txt");
         //Instant start = Instant.now();
         autoTest();
         //Instant end = Instant.now();

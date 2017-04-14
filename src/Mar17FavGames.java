@@ -147,7 +147,7 @@ public class Mar17FavGames {
     }
     public static void main(String[] args)
     {
-        scan = codechef.CodeChef.getFileScanner("favGames-t.txt");
+        scan = ContestHelper.getFileScanner("favGames-t.txt");
         autoTest();
     }
 }

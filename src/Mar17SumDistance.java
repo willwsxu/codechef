@@ -241,7 +241,7 @@ class Mar17SumDistance {
     //Mar 16 test3.txt: <1 sec after checking repeat pattern of last 6, 55558888938889, loops 599968      
     public static void main(String[] args)
     {
-        scan = codechef.CodeChef.getFileScanner("sumdist-t5.txt");
+        scan = ContestHelper.getFileScanner("sumdist-t5.txt");
         //Instant start = Instant.now();
         autoTest();
         //Instant end = Instant.now();

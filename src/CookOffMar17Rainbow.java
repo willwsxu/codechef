@@ -106,7 +106,7 @@ class CookOffMar17Rainbow {
     }
     public static void main(String[] args)
     {      
-        scan = codechef.CodeChef.getFileScanner("rainbow0317.txt");
+        scan = ContestHelper.getFileScanner("rainbow0317.txt");
         Instant start = Instant.now();
         autoTest();
         Instant end = Instant.now();

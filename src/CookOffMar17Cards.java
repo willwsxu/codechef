@@ -25,7 +25,7 @@ class CookOffMar17Cards {
     }
     public static void main(String[] args)
     {
-        scan = codechef.CodeChef.getFileScanner("cards0317.txt");
+        scan = ContestHelper.getFileScanner("cards0317.txt");
         //Instant start = Instant.now();
         autoTest();
         //Instant end = Instant.now();
