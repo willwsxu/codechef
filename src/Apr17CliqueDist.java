@@ -102,10 +102,7 @@ class Apr17CliqueDist {
     public static void main(String[] args) throws FileNotFoundException
     {        
         Instant start = Instant.now();
-        /*File file = new File("out.txt");
-        FileOutputStream fos = new FileOutputStream(file);
-        PrintStream ps = new PrintStream(fos);        
-        System.setOut(ps);*/
+        ContestHelper.redirect("out.txt");
         
         int TC = scan.nextInt();  // between 1 and 10
         for (int i=0; i<TC; i++) { 
