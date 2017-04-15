@@ -1,21 +1,20 @@
 
 import static java.lang.System.out;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 // SMARKET medium hard 
 class Apr17StableMarket {
-    int blocks[];        // precompute order of blocks
+    List<Integer> blocks=new ArrayList<>();        // precompute order of blocks
     int blkIndex[];      // point index of blocks
     int blkPos[];        // position in its block, 1 mean firt number of the block
     int maxBlk=0;
     int minBlk=Integer.MAX_VALUE;
     Apr17StableMarket(int p[])
     {
-        blocks = new int[p.length];
         blkIndex = new int[p.length];
         blkPos = new int[p.length];
-        int bIndex=0;
         int pos=1;
         int order=1;
         int lastP=p[0];
@@ -25,7 +24,7 @@ class Apr17StableMarket {
         for (int i=1; i<p.length; i++)
         {
             if ( lastP !=p[i]) {
-                blocks[bIndex++]=order;
+                blocks.add(order);
                 if ( order<minBlk )
                     minBlk = order;
                 if ( order>maxBlk )
@@ -38,10 +37,10 @@ class Apr17StableMarket {
                 order++;
                 pos++;
             }
-            blkIndex[i]=bIndex;
+            blkIndex[i]=blocks.size();
             blkPos[i]=pos;
         }     
-        blocks[bIndex++]=order;
+        blocks.add(order);
         if ( order<minBlk )
             minBlk = order;
         if ( order>maxBlk )
@@ -60,12 +59,12 @@ class Apr17StableMarket {
         if (start==end)  // same block
             return n2-n1+1>=ord?1:0;
         int blk=0;
-        if (blocks[start]-blkPos[n1-1]+1>=ord)
+        if (blocks.get(start)-blkPos[n1-1]+1>=ord)
             ++blk;
         if (blkPos[n2-1]>=ord)
             ++blk;
         for (int i=start+1; i<end; i++)
-            if (blocks[i]>=ord)
+            if (blocks.get(i)>=ord)
                 ++blk;
         return blk;
     }
