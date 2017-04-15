@@ -109,7 +109,7 @@ class Apr17CliqueDist {
     public static void main(String[] args)
     {        
         //Instant start = Instant.now();
-        ContestHelper.redirect("out.txt");
+        codechef.ContestHelper.redirect("out.txt");
         
         int TC = scan.nextInt();  // between 1 and 3
         for (int i=0; i<TC; i++) { 
