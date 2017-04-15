@@ -1,4 +1,5 @@
 
+import codechef.ContestHelper;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ class Apr17StableMarket {
     int blkPos[];        // position in its block, 1 mean firt number of the block
     int maxBlk=0;
     int minBlk=Integer.MAX_VALUE;
+    
     Apr17StableMarket(int p[])
     {
         blkIndex = new int[p.length];
