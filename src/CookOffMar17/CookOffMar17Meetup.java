@@ -1,3 +1,5 @@
+package CookOffMar17;
+
 // hard, need to understand Graph theory about clique vs independent set
 
 import static java.lang.System.out;
