@@ -116,3 +116,8 @@ class Apr17StableMarket {
         }
     }
 }
+
+class SegTree
+{
+    
+}
