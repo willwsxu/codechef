@@ -9,10 +9,39 @@ import java.util.Scanner;
 
 class DivisorTree {
     
+    static int tree(Divisors div)
+    {
+        if (div.numDiv()<=2) {
+            if (div.value==1)
+                return 1;
+            return div.numDiv();
+        }
+        
+        List<Divisors> divs = div.computeNext();
+        int max=3;
+        for (int i=0; i<divs.size(); i++) {   
+            int m = tree(divs.get(i));
+            if (m>max)
+                max = m;
+        }
+        //out.println(max+"+"+div.numDiv());
+        return max+div.numDiv();
+    }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
-        Divisors.test();
+        long A = sc.nextLong();  // between 1 and B
+        long B = sc.nextLong();   // 1 ≤ B ≤ 10^12, B-A<=10^5
+        
+        int score=0;
+        for (long i=A; i<=B; i++) {
+            Divisors div = new Divisors(i);
+            int s = tree(div);
+            if (s>2)
+                s--;
+            score += s;
+        }
+        out.println(score);
     }
 }
 
@@ -72,6 +101,11 @@ class Divisors
         if (num<value && num>1)
             pfs.add(new PrimeFactor(num, 1));
     }
+    Divisors(List<PrimeFactor> pfs)
+    {
+        this.pfs=pfs;
+        value = value();
+    }
     
     long value()
     {
@@ -85,17 +119,39 @@ class Divisors
         }
         return ans;
     }
+    List<Divisors> computeNext()
+    {
+        List<Divisors> divs = new ArrayList<>();
+        for (int i=0; i<pfs.size(); i++) {
+            List<PrimeFactor> p = new ArrayList<>();
+            for (int j=0; j<pfs.size(); j++)
+            {
+                PrimeFactor pf = pfs.get(j);
+                if (j==i) {
+                    if ( pf.power>1)
+                        p.add(new PrimeFactor(pf.base, pf.power-1));
+                }
+                else
+                    p.add(new PrimeFactor(pf.base, pf.power));
+            }
+            divs.add(new Divisors(p));
+        }
+        return divs;
+    }
     int numDiv()
     {
-        if (pfs.isEmpty())
-            return 1;  // a prime number
+        if (pfs.isEmpty()) {
+            if (value==1)
+                return 1;
+            return 2;  // a prime number
+        }
         
         int ans=1;
         for (int i=0; i<pfs.size(); i++) {
             PrimeFactor pf = pfs.get(i);
             ans *= (pf.power+1);
         }
-        return ans-1;
+        return ans;
     }
     void printFactors()
     {
@@ -114,10 +170,18 @@ class Divisors
     static void test()
     {
         test1(30);
-        test1(9);        
+        test1(9);  
+        test1(12);       
         test1(13);     
         test1(100); 
         test1(1000000000000L);
         test1(999999999999L);
+        Divisors d = new Divisors(12);
+        List<Divisors> divs = d.computeNext();
+        for (int i=0; i<divs.size(); i++) {   
+            Divisors div = divs.get(i);
+            out.println(div.value()+" has divisors "+div.numDiv());
+            div.printFactors();        
+        }
     }
 }
