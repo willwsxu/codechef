@@ -1,24 +1,27 @@
 package CookOff0417;
 
 
+import static java.lang.Math.min;
 import static java.lang.Math.sqrt;
 import static java.lang.System.out;
+import java.util.Arrays;
 import java.util.Scanner;
 
 // Dynamic programming, dp, TSP
 class ShopTrip {
     
     double [][]dist;
-    int N, K;       // N city (max 36), K ingredient
-    long ingre[];    // binary bit for ingredients of each city, max 12
-    long all;
+    int N, K;       // N city (max 36), K ingredient (max 12)
+    int ingre[];    // binary bit for ingredients of each city, max 12 bits
+    int all;
     ShopTrip(long X[], long Y[], String ingre[], int K)
     {
         this.K = K;
         X[0]=Y[0]=0;
         N = X.length-1;
         dist = new double[N+1][N+1];
-        this.ingre = new long[ingre.length];
+        this.ingre = new int[ingre.length];
+        int avail=0;
         for (int i=0; i<N; i++) {
             for (int j=i+1; j<=N; j++) {
                 dist[i][j]=sqrt((X[j]-X[i])*(X[j]-X[i])+(Y[j]-Y[i])*(Y[j]-Y[i]));
@@ -26,20 +29,25 @@ class ShopTrip {
                 //out.println(dist[i][j]);
             }
             this.ingre[i] = Integer.parseInt(ingre[i], 2);
+            avail |= this.ingre[i];
             //out.println(Integer.toBinaryString(this.ingre[i]));
         }
         for (int i=0; i<K; i++) {
-            all |= (1L<<i);
+            all |= (1<<i);
         }
-        //out.println(Integer.toBinaryString(all));
-        recurse(0, 0.0, 0);
-        if (distance != Double.MAX_VALUE)
-            out.println(String.format("%.9f", distance));
-        else
+        if ( avail<all) {
             out.println(-1);
+            return;
+        }
+        dpstate = new double[all][N+1];
+        //out.println(Integer.toBinaryString(all));
+        //recurse(0, 0.0, 0);
+        //out.println(String.format("%.9f", distance));
+        dp(0,0);
+        out.println(String.format("%.9f", dpstate[0][0]));
     }
     double distance=Double.MAX_VALUE;
-    void recurse(int start, double d, long ingre)
+    void recurse(int start, double d, int ingre)// very slow
     {
         if (ingre == all) {
             d += dist[start][0];// go back
@@ -55,6 +63,43 @@ class ShopTrip {
             recurse(i, d+dist[start][i], this.ingre[i-1] | ingre);
         }
     }
+    class State
+    {
+        long ingre;
+        long city;
+        @Override
+        public boolean equals(Object s)
+        {
+            if (s instanceof State) {
+                
+            }
+            return false;
+        }
+        @Override
+        public int hashCode()
+        {
+            return (int)(ingre*city);
+        }
+    }
+    double dpstate[][];
+    double dp(int ingre, int city)
+    {
+        if (ingre == all) {
+            return dist[city][0];// go back
+        }
+        else if (dpstate[ingre][city]>0)
+            return dpstate[ingre][city];
+        
+        double d=Double.MAX_VALUE;
+        for(int i=1; i<=N; i++) {
+            if (i==city)
+                continue;
+            if ( (this.ingre[i-1] | ingre) == ingre) // no new ingre
+                continue;
+            d = min(d, dist[city][i]+dp(this.ingre[i-1] | ingre, i));
+        }
+        return dpstate[ingre][city]=d;
+    }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
@@ -69,7 +114,7 @@ class ShopTrip {
                 X[j] = sc.nextInt();
                 Y[j] = sc.nextInt();
             }
-            String ingr[] = new String[K];
+            String ingr[] = new String[N];
             for (int j=0; j<N; j++) {
                 ingr[j] = sc.next();
             }
