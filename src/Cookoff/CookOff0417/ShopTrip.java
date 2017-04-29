@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 // Dynamic programming, dp, TSP
+// 2D state, per set of ingredients and last city
 class ShopTrip {
     
     double [][]dist;
