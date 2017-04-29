@@ -1,4 +1,4 @@
-package CookOff0417;
+package Cookoff.CookOff0417;
 
 
 import static java.lang.Math.min;
@@ -85,7 +85,7 @@ class ShopTrip {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
-        sc = codechef.ContestHelper.getFileScanner("shoptrip-t.txt");
+        //sc = codechef.ContestHelper.getFileScanner("shoptrip-t.txt");
         int TC = sc.nextInt();  // 1 ≤ T ≤ 10
         for (int i=0; i<TC; i++) {
             int N = sc.nextInt();   // 1 ≤ N ≤ 36
