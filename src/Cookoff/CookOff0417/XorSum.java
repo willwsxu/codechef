@@ -1,15 +1,15 @@
-package CookOff0417;
+package Cookoff.CookOff0417;
 
 
 import static java.lang.System.out;
 import java.util.Scanner;
 
 /*
- * XOR sum of all segments of an integer sequence
+ * XOR sum of all segments of N integer sequence, each <=50
  * Medium, segment tree
  */
 
-
+// Borrow ideas from editorial
 class XorSum {
     
     static void solve(int A[])
