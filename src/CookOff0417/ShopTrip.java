@@ -63,24 +63,6 @@ class ShopTrip {
             recurse(i, d+dist[start][i], this.ingre[i-1] | ingre);
         }
     }
-    class State
-    {
-        long ingre;
-        long city;
-        @Override
-        public boolean equals(Object s)
-        {
-            if (s instanceof State) {
-                
-            }
-            return false;
-        }
-        @Override
-        public int hashCode()
-        {
-            return (int)(ingre*city);
-        }
-    }
     double dpstate[][];
     double dp(int ingre, int city)
     {
