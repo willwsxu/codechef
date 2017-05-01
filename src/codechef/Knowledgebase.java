@@ -23,4 +23,9 @@ class State
     {
         return (int)(ingre*city);
     }
+    @Override
+    public String toString()
+    {
+        return ingre+":"+city;
+    }
 }

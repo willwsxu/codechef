@@ -6,7 +6,7 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Scanner;
 
-
+// Easy? 
 class DivisorTree {
     
     static int tree(Divisors div)
