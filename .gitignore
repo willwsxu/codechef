@@ -24,3 +24,7 @@ test.txt
 test.out.txt
 cliqueDistlargeEWD.txt
 out.txt
+src/examples/SumDistance-cheng.cpp
+src/examples/sumdistance-oml.cpp
+src/examples/SumDistance-percy.cpp
+src/examples/SumDistance-vagesh.cpp
