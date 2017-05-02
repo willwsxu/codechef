@@ -70,19 +70,15 @@ class Apr17StableMarket {
                 ++blk;
         return blk;
     }
-    int blocks(int p[], int n1, int n2, int ord)
+    int bruteforce(int p[], int n1, int n2, int ord)
     {
-        /*out.println(Arrays.toString(p));
-        out.println(n1);
-        out.println(n2);
-        out.println(ord);*/
         int order=0;
         int lastP=0;
         int blk=0;
         for (int i=n1-1; i<n2; i++)
         {
             if ( lastP !=p[i]) {
-                if (order>=ord)
+                if (order>=ord) 
                     ++blk;
                 order=1;
                 lastP=p[i];
