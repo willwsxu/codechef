@@ -1,4 +1,4 @@
-package ChallengeApr17;
+package longContests.ChallengeApr17;
 
 
 import codechef.ContestHelper;
