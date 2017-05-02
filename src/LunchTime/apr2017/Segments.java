@@ -7,29 +7,8 @@ import java.util.Scanner;
 
 
 class Segments {
-    
-    static void maxRangeSum(long A[], long P)
-    {
-        out.println(Arrays.toString(A));
-        int N=A.length;
-        long sum=0;
-        long ans=0;
-        long count=0;
-        for (int i=0; i<N; i++) {
-            sum += A[i];
-            sum = sum%P;
-            if (sum>ans)
-            {
-                ans=sum;
-                count=1;
-            }
-            else if (sum==ans)
-                count++;
-        }
-        out.println(ans+" "+count);
-    }
-    
-    static void maxSeg(long A[], long P, long ans)
+      
+    static void maxSeg(long A[], long P, long ans)// brute force
     {
         int N=A.length;
         long count=0;

@@ -57,9 +57,9 @@ class Apr17DigitCount {
         //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
         int TC = sc.nextInt();  // between 1 and 20
         for (int i=0; i<TC; i++) {
-            long L = sc.nextLong();   // 1 ≤ L ≤ 10^8
-            long R = sc.nextLong();   // 1 ≤ R<=L
-            int A[] = new int[10];    // digit count, 1 to 18
+            long L = sc.nextLong();   // 1 ≤ L ≤ R ≤ 10^18
+            long R = sc.nextLong();
+            int A[] = new int[10];    // digit count, 0 to 18
             for (int j=0; j<10; j++)
                 A[j] = sc.nextInt(); 
             new Apr17DigitCount(L, R, A);
