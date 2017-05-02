@@ -96,8 +96,8 @@ class Apr17StableMarket {
             out.println(0);
             return;
         }
-        int le = Collections.binarySearch(blocks[order-1], L-1);
-        int r = Collections.binarySearch(blocks[order-1], R-1);
+        int le = Collections.binarySearch(blocks[order-1], new Integer(L-1));
+        int r = Collections.binarySearch(blocks[order-1], new Integer(R-1));
         if (r<0)
             r = -(r+2);  // move up 1
         if (le<0)
