@@ -11,26 +11,51 @@ class GridHelper
     {
         R=r; C=c;
     }
+    boolean isValid(int r, int c)
+    {
+        return r>=0 && r<R && c>=0 && c<C;
+    }
     int[] next(int r, int c, DIRECTION d) {
         switch(d){
             case DOWN:
-                if (++r==R)
+                if (++r>=R)
                     return null;
                 break;
             case UP:
-                if (r--==0)
+                if (r--<=0)
                     return null;
                 break;
             case LEFT:
-                if (c--==0)
+                if (c--<=0)
                     return null;
                 break;
             case RIGHT:
-                if (++c==C)
+                if (++c>=C)
                     return null;
                 break;
         }
-        return new int[]{r, c};
+        return null;
+    }
+    
+    boolean next(int[]rc, DIRECTION d)
+    {
+        switch(d){
+            case DOWN:
+                ++rc[0];
+                break;
+            case UP:
+                --rc[0];
+                break;
+            case LEFT:
+                --rc[1];
+                break;
+            case RIGHT:
+                ++rc[1];
+                break;
+            default:
+                out.println("ERROR direction "+d);
+        }   
+        return isValid(rc[0],rc[1]);
     }
     DIRECTION getDir(char ch)
     {
@@ -153,6 +178,7 @@ class RandomGrid {
                 }
         return xor;
     }
+    int N;
     GridHelper gh;
     int movingBox[]; // grid box required to allow all the moves
     int[][]mg;  // grid for calculating moves
@@ -162,21 +188,19 @@ class RandomGrid {
     int sparse()
     {
         mg=new int[grid.length][grid.length];
-        gh.fill(mg, -1);
-        // find all cells thatr will end up being blocked
-        for (int i=0; i<grid.length; i++) 
-            for (int j=0; j<grid.length; j++)
-                if (grid[i].charAt(j)!='.') {
-                    int step=0;
+        gh.fill(mg, moves.length());  // initialized to max value possible
+        // find all cells that will end up being blocked
+        for (int i=-1; i<=N; i++) 
+            for (int j=-1; j<=N; j++)
+                if (i<0 || j<0 || i==N || j==N || grid[i].charAt(j)!='.') { // blocked 
                     int []cell=new int[]{i,j};
                     for ( int k=0; k<moves.length(); k++) {
-                        cell= gh.next(cell[0], cell[1], gh.getReverse(moves.charAt(k)));
-                        if (cell==null)
-                            break;
-                        if ( grid[cell[0]].charAt(cell[1]) == '#' )
-                            break;
-                        if ( mg[cell[0]][cell[1]]<0 || mg[cell[0]][cell[1]]>step)
-                            mg[cell[0]][cell[1]]=step++;  // update only if it is smaller
+                        if ( gh.next(cell, gh.getReverse(moves.charAt(k))) 
+                                && grid[cell[0]].charAt(cell[1]) == '.')
+                        {
+                            if ( mg[cell[0]][cell[1]]>k)
+                                mg[cell[0]][cell[1]]=k;  // update only if it is smaller
+                        }
                     }
                 }
         //GridHelper.print(mg);
@@ -185,10 +209,10 @@ class RandomGrid {
             for (int j=0; j<grid.length; j++) {
                 if (grid[i].charAt(j)!='.')
                     continue;
-                if (mg[i][j]>0)
+                //if (mg[i][j]>0)
                     xor ^= mg[i][j];
-                else if (mg[i][j]<0)
-                    xor ^= moves(i,j);
+                //else if (mg[i][j]<0)
+                //    xor ^= moves(i,j);
             }
         return xor;
     }
@@ -196,7 +220,7 @@ class RandomGrid {
     {
         grid=g;
         moves=m;
-        int N=grid.length;
+        N=grid.length;
         gh=new GridHelper(N, N);
         int blocked=0;
         for (int i=0; i<grid.length; i++) 
@@ -204,11 +228,11 @@ class RandomGrid {
                 if (grid[i].charAt(j)!='.')
                     ++blocked;
         movingBox = GridHelper.movingBox(m);
-        if (blocked==0)
+        /*if (blocked==0)
             out.println(openGrid());
         else if (blocked>N*N/10)
             out.println(bruteforce());
-        else
+        else*/
             out.println(sparse());
     }
     static void test()
