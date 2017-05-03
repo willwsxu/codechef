@@ -39,6 +39,7 @@ class GridHelper
             case 'L': return DIRECTION.LEFT;
             case 'R': return DIRECTION.RIGHT;
         }
+        out.println("Error direction "+ch);
         return DIRECTION.ERROR;
     }
     DIRECTION getReverse(char ch)
@@ -49,6 +50,7 @@ class GridHelper
             case 'L': return DIRECTION.RIGHT;
             case 'R': return DIRECTION.LEFT;
         }
+        out.println("Error direction "+ch);
         return DIRECTION.ERROR;
     }
     static void print(int g[][])
@@ -66,10 +68,16 @@ class RandomGrid {
     String moves;
     int moves(int r, int c)
     {
-        int N=grid.length;
         int i=0;
-        forloop:
+        int []next=new int[]{r,c};
+        //forloop:
         for ( i=0; i<moves.length(); i++) {
+            next = gh.next(next[0], next[1], gh.getDir(moves.charAt(i)));
+            if (next==null)
+                break;
+            if (grid[next[0]].charAt(next[1])=='#')
+                break;
+            /*
             switch(moves.charAt(i)){
                 case 'D':
                     if (r++==N-1)
@@ -95,7 +103,7 @@ class RandomGrid {
                     if (grid[r].charAt(c)=='#')
                         break forloop;
                     break;
-            }
+            }*/
         }
         return i;
     }
@@ -157,14 +165,14 @@ class RandomGrid {
                 if (grid[i].charAt(j)!='.')
                     ++blocked;
         //if (blocked>N*N/10)
-        //    out.println(bruteforce());
+            out.println(bruteforce());
         //else
-            out.println(sparse());
+        //    out.println(sparse());
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
-        //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
+        sc = codechef.ContestHelper.getFileScanner("randomgrid-t.txt");
         int TC = sc.nextInt();  // between 1 and 2
         for (int i=0; i<TC; i++) {
             int L = sc.nextInt();   // 1 ≤ L ≤ 5000
