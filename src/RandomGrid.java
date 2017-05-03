@@ -67,6 +67,50 @@ class GridHelper
         for (int r[]: g)
             Arrays.fill(r, v);
     }
+    // Grid box that covers all the moves
+    // borrow from CookOffMar17Robot
+    static int[] movingBox(String udlr)
+    {
+        int r=0, c=0;
+        int []mm=new int[4]; // minR, minC, maxR, maxC
+        Arrays.fill(mm, 0);
+        for (int i=0; i<udlr.length(); i++) {
+            switch(udlr.charAt(i)){
+                case 'U':
+                    r--;
+                    break;
+                case 'D':
+                    r++;
+                    break;
+                case 'L':
+                    c--;
+                    break;
+                case 'R':
+                    c++;
+                    break;
+                default:
+                    out.println("ERROR move "+udlr.charAt(i));
+            }
+            if ( mm[0]>r)
+                mm[0]=r;
+            if ( mm[2]<r)
+                mm[2]=r;
+            if ( mm[1]>c)
+                mm[1]=c;
+            if (mm[3]<c)
+                mm[3]=c;
+        }
+        return mm;
+    }
+    // can you move within box from (r, c)
+    boolean inBox(int r, int c, int[]mb)
+    {
+        return inBox_(r, c, R, C, mb);
+    }
+    static boolean inBox_(int r, int c, int R, int C, int[]mb)
+    {
+        return mb[0]+r>=0 && mb[1]+c>=0 && mb[2]+r<R && mb[3]+c<C;
+    }
 }
 
 class RandomGrid {
@@ -90,11 +134,27 @@ class RandomGrid {
         int xor=0;
         for (int i=0; i<grid.length; i++) 
             for (int j=0; j<grid.length; j++)
-                if (grid[i].charAt(j)=='.')
+                if (grid[i].charAt(j)=='.') {
                     xor ^= moves(i,j);
+                }
+        return xor;
+    }
+    
+    int openGrid()
+    {
+        int xor=0;
+        for (int i=0; i<grid.length; i++) 
+            for (int j=0; j<grid.length; j++)
+                if (grid[i].charAt(j)=='.') {
+                    if (gh.inBox(i, j, movingBox))
+                        xor ^= moves.length();
+                    else
+                        xor ^= moves(i,j);
+                }
         return xor;
     }
     GridHelper gh;
+    int movingBox[]; // grid box required to allow all the moves
     int[][]mg;  // grid for calculating moves
     // from blocked cell, reverse steps, e.g if (3,3) is blocked, moves is "LURRD"
     // reverse steps as "RDLLU", (3,4), (4,4), (4,3), (4,2), (3,2)
@@ -143,15 +203,32 @@ class RandomGrid {
             for (int j=0; j<grid.length; j++)
                 if (grid[i].charAt(j)!='.')
                     ++blocked;
-        //if (blocked>N*N/10)
-        //    out.println(bruteforce());
-        //else
+        movingBox = GridHelper.movingBox(m);
+        if (blocked==0)
+            out.println(openGrid());
+        else if (blocked>N*N/10)
+            out.println(bruteforce());
+        else
             out.println(sparse());
+    }
+    static void test()
+    {
+        int[] mbox = GridHelper.movingBox("LLURRRDDD");
+        out.println(Arrays.toString(mbox));
+        boolean in = GridHelper.inBox_(1,1, 5, 5, mbox);
+        out.println("1,1, 5, 5 in "+in);
+        in = GridHelper.inBox_(1,2, 4, 3, mbox);
+        out.println("1,2, 4, 3 in "+in);
+        in = GridHelper.inBox_(1,2, 3, 3, mbox);
+        out.println("1,2, 3, 3 in "+in);
+        in = GridHelper.inBox_(1,2, 4, 2, mbox);
+        out.println("1,2, 4, 2 in "+in);
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
-        sc = codechef.ContestHelper.getFileScanner("randomgrid-t.txt");
+        //test();
+        //sc = codechef.ContestHelper.getFileScanner("randomgrid-t.txt");
         int TC = sc.nextInt();  // between 1 and 2
         for (int i=0; i<TC; i++) {
             int L = sc.nextInt();   // 1 ≤ L ≤ 5000
