@@ -1,5 +1,6 @@
 
 import static java.lang.System.out;
+import java.util.Arrays;
 import java.util.Scanner;
 
 class GridHelper
@@ -61,6 +62,11 @@ class GridHelper
             out.println();
         }
     }
+    static void fill(int g[][], int v)
+    {
+        for (int r[]: g)
+            Arrays.fill(r, v);
+    }
 }
 
 class RandomGrid {
@@ -70,40 +76,12 @@ class RandomGrid {
     {
         int i=0;
         int []next=new int[]{r,c};
-        //forloop:
         for ( i=0; i<moves.length(); i++) {
             next = gh.next(next[0], next[1], gh.getDir(moves.charAt(i)));
             if (next==null)
                 break;
             if (grid[next[0]].charAt(next[1])=='#')
                 break;
-            /*
-            switch(moves.charAt(i)){
-                case 'D':
-                    if (r++==N-1)
-                        break forloop;
-                    if (grid[r].charAt(c)=='#')
-                        break forloop;
-                    break;
-                case 'U':
-                    if (r--==0)
-                        break forloop;
-                    if (grid[r].charAt(c)=='#')
-                        break forloop;
-                    break;
-                case 'L':
-                    if (c--==0)
-                        break forloop;
-                    if (grid[r].charAt(c)=='#')
-                        break forloop;
-                    break;
-                case 'R':
-                    if (c++==N-1)
-                        break forloop;
-                    if (grid[r].charAt(c)=='#')
-                        break forloop;
-                    break;
-            }*/
         }
         return i;
     }
@@ -124,23 +102,24 @@ class RandomGrid {
     int sparse()
     {
         mg=new int[grid.length][grid.length];
+        gh.fill(mg, -1);
         // find all cells thatr will end up being blocked
         for (int i=0; i<grid.length; i++) 
             for (int j=0; j<grid.length; j++)
                 if (grid[i].charAt(j)!='.') {
                     int step=0;
+                    int []cell=new int[]{i,j};
                     for ( int k=0; k<moves.length(); k++) {
-                        int cell[]= gh.next(i, j, gh.getReverse(moves.charAt(k)));
+                        cell= gh.next(cell[0], cell[1], gh.getReverse(moves.charAt(k)));
                         if (cell==null)
                             break;
                         if ( grid[cell[0]].charAt(cell[1]) == '#' )
                             break;
-                        ++step;
-                        if ( mg[cell[0]][cell[1]]==0 || mg[cell[0]][cell[1]]>step)
-                            mg[cell[0]][cell[1]]=step;  // update only if it is smaller
+                        if ( mg[cell[0]][cell[1]]<0 || mg[cell[0]][cell[1]]>step)
+                            mg[cell[0]][cell[1]]=step++;  // update only if it is smaller
                     }
                 }
-        GridHelper.print(mg);
+        //GridHelper.print(mg);
         int xor=0;
         for (int i=0; i<grid.length; i++) 
             for (int j=0; j<grid.length; j++) {
@@ -148,7 +127,7 @@ class RandomGrid {
                     continue;
                 if (mg[i][j]>0)
                     xor ^= mg[i][j];
-                else
+                else if (mg[i][j]<0)
                     xor ^= moves(i,j);
             }
         return xor;
@@ -165,9 +144,9 @@ class RandomGrid {
                 if (grid[i].charAt(j)!='.')
                     ++blocked;
         //if (blocked>N*N/10)
-            out.println(bruteforce());
+        //    out.println(bruteforce());
         //else
-        //    out.println(sparse());
+            out.println(sparse());
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
