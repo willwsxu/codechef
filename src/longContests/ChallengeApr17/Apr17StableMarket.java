@@ -1,3 +1,5 @@
+package longContests.ChallengeApr17;
+
 
 import static java.lang.Integer.min;
 import static java.lang.System.out;

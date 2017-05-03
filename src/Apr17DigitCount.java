@@ -3,7 +3,7 @@ import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Scanner;
 
-
+// DGTCNT medium
 class Apr17DigitCount {
     
     int A[];
