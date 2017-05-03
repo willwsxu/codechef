@@ -1,4 +1,5 @@
 
+import static java.lang.Integer.min;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,12 +79,21 @@ class BlockOrder
 
 class Apr17StableMarket {
     int[] B;  // transform number into orders of block
+    int[] C;  // order of block for every item
     int maxOrder=0;
     List<Integer>[] blocks;
     Apr17StableMarket(int p[])
     {
         B = new int[p.length];
+        C = new int[p.length];
         maxOrder=transformOrder(p, B);
+        C[B.length-1]=B[B.length-1];
+        for (int i=B.length-2; i>=0; i--) {
+            if (B[i]>=B[i+1])
+                C[i]=B[i];
+            else
+                C[i]=C[i+1];
+        }
         blocks = blockOrderList(maxOrder, B);
     }
     void query(int L, int R, int order)
@@ -104,7 +114,13 @@ class Apr17StableMarket {
             le = -(le+1);
         int ans = r-le+1;
         if (B[L-1]>1) { // left is in middle of a block
-            int first=B[L-1]-1;
+            int partialOrder = min(C[L-1]-B[L-1]+1, R-L+1); // watch out when R and L in the same block
+            if ( partialOrder>=order ) { // B: 23123, no adjust if order is 2
+                if (order <B[L-1] ) // if order is 1, add 1
+                    ans++;
+            } else if (order>=B[L-1] && order <=C[L-1]) // B: 23123 adjust down if order is 3
+                ans--; //B: 212 no adjust if order is 3, B:2 adjust down if order 2
+            /*int first=B[L-1]-1;
             for (int i=L-1; i<R; i++) {
                 if (B[i]==1)
                     break;  // next block
@@ -114,9 +130,9 @@ class Apr17StableMarket {
                     ans++; 
                     break; // only need to add once
                 }
-            }
+            }*/
         }
-        //out.println(le+" "+r+" "+ ans+" order "+order);
+        //out.println(le+" "+r+" "+ ans+" order "+order+" B "+B[L-1]+" C "+C[L-1]);
         out.println(ans);
     }
     static List<Integer>[] blockOrderList(int maxOrder, int B[])
@@ -156,6 +172,7 @@ class Apr17StableMarket {
         int p[]=new int[]{20, 10, 10, 7, 7, 7, 10};
         Apr17StableMarket mkt = new Apr17StableMarket(p);
         out.println(Arrays.toString(mkt.B));
+        out.println(Arrays.toString(mkt.C));
         out.println("max order "+mkt.maxOrder);
         print(mkt.blocks);
         mkt.query(1, 6, 1); // 3
