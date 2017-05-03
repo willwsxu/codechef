@@ -10,8 +10,12 @@ import java.util.Scanner;
 // Editorial IDEA: convert list of numbers into block orders
 // e.g A:20, 10, 10, 7, 7, 7, 10 ->B: 1, 1, 2, 1, 2, 3, 1
 // # of block order K will be same as # of Bi=K
-// BST, Binary Search
+// use array of list to store position of each order
+// BST, Binary Search the L and R position in the List, by order
+// Take care of special case when left is in middle of block. precalculate order for each elem
 // SMARKET medium hard 
+// Performance tip: save output in StringBuider, call out.println once
+
 
 // slight improvement over brute force
 class BlockOrder
@@ -79,15 +83,15 @@ class BlockOrder
 
 class Apr17StableMarket {
     int[] B;  // transform number into orders of block
-    int[] C;  // order of block for every item
+    int[] C;  // Block order for every element, used for special case when L is in middle of a block
     int maxOrder=0;
-    List<Integer>[] blocks;
+    List<Integer>[] blocks;  //one list per order, each list store original position (sorted)
     Apr17StableMarket(int p[])
     {
         B = new int[p.length];
         C = new int[p.length];
         maxOrder=transformOrder(p, B);
-        C[B.length-1]=B[B.length-1];
+        C[B.length-1]=B[B.length-1]; // from back, calculate order for each
         for (int i=B.length-2; i>=0; i--) {
             if (B[i]>=B[i+1])
                 C[i]=B[i];
@@ -96,15 +100,14 @@ class Apr17StableMarket {
         }
         blocks = blockOrderList(maxOrder, B);
     }
-    void query(int L, int R, int order)
+    int query(int L, int R, int order)
     {// L and R is 1 based
         if (order<1 || L<1 || R< 1) {
             out.println("Error L, R, order ");
-            return;
+            return 0;
         }
         if ( order>maxOrder ) {
-            out.println(0);
-            return;
+            return 0;
         }
         int le = Collections.binarySearch(blocks[order-1], new Integer(L-1));
         int r = Collections.binarySearch(blocks[order-1], new Integer(R-1));
@@ -120,20 +123,9 @@ class Apr17StableMarket {
                     ans++;
             } else if (order>=B[L-1] && order <=C[L-1]) // B: 23123 adjust down if order is 3
                 ans--; //B: 212 no adjust if order is 3, B:2 adjust down if order 2
-            /*int first=B[L-1]-1;
-            for (int i=L-1; i<R; i++) {
-                if (B[i]==1)
-                    break;  // next block
-                if (B[i]==order)
-                    ans--;  // wrong match, next line could add it back
-                else if ( B[i]-first>=order) {
-                    ans++; 
-                    break; // only need to add once
-                }
-            }*/
         }
         //out.println(le+" "+r+" "+ ans+" order "+order+" B "+B[L-1]+" C "+C[L-1]);
-        out.println(ans);
+        return ans;
     }
     static List<Integer>[] blockOrderList(int maxOrder, int B[])
     {
@@ -163,7 +155,7 @@ class Apr17StableMarket {
         }  
         return mo;
     }
-   static  void print(List<Integer>[] blk) {
+    static  void print(List<Integer>[] blk) {
         for (List l:blk)
             out.println(l);
     }
@@ -227,14 +219,17 @@ class Apr17StableMarket {
                 prices[j] = scan.nextInt();
             //BlockOrder mkt = new BlockOrder(prices);
             Apr17StableMarket mkt = new Apr17StableMarket(prices);
+            StringBuilder sb = new StringBuilder();
             for (int j=0; j<Q; j++) {
                 int n1 = scan.nextInt();
                 int n2 = scan.nextInt();
                 int ord = scan.nextInt();
                 //out.println(mkt.blocks(prices, n1, n2, ord));
                 //out.println(mkt.blocks(n1, n2, ord));
-                mkt.query(n1, n2, ord);
+                sb.append(mkt.query(n1, n2, ord));
+                sb.append("\n");
             }
+            out.print(sb);   // speed up 2 sec to print once per test
         }
     }
 }
