@@ -1,3 +1,5 @@
+package longContests.ChallengeApr17;
+
 /* Brief Description: In a grid with free (.) and blocked(#) cells, Given a sequence
  * of moves. e.g. "LRUD", calculate how many moved each cell can make before beong blocked
  * output: XOR of moves of all cells
