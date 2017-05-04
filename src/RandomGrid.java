@@ -34,7 +34,7 @@ class GridHelper
                     return null;
                 break;
         }
-        return null;
+        return new int[]{r,c};
     }
     
     boolean next(int[]rc, DIRECTION d)
@@ -156,25 +156,27 @@ class RandomGrid {
     }
     int bruteforce()
     {
+        gh.fill(mg, moves.length());  // initialized to max value possible
         int xor=0;
         for (int i=0; i<grid.length; i++) 
             for (int j=0; j<grid.length; j++)
                 if (grid[i].charAt(j)=='.') {
-                    xor ^= moves(i,j);
+                    mg[i][j]=moves(i,j);
+                    xor ^= mg[i][j];
                 }
         return xor;
     }
     
     int openGrid()
     {
+        gh.fill(mg, moves.length());  // initialized to max value possible
         int xor=0;
         for (int i=0; i<grid.length; i++) 
             for (int j=0; j<grid.length; j++)
                 if (grid[i].charAt(j)=='.') {
-                    if (gh.inBox(i, j, movingBox))
-                        xor ^= moves.length();
-                    else
-                        xor ^= moves(i,j);
+                    if (!gh.inBox(i, j, movingBox))
+                        mg[i][j]=moves(i,j);
+                    xor ^= mg[i][j];
                 }
         return xor;
     }
@@ -187,7 +189,6 @@ class RandomGrid {
     // with 1, 2, 3, 4, 5 moves
     int sparse()
     {
-        mg=new int[grid.length][grid.length];
         gh.fill(mg, moves.length());  // initialized to max value possible
         // find all cells that will end up being blocked
         for (int i=-1; i<=N; i++) 
@@ -203,7 +204,6 @@ class RandomGrid {
                         }
                     }
                 }
-        //GridHelper.print(mg);
         int xor=0;
         for (int i=0; i<grid.length; i++) 
             for (int j=0; j<grid.length; j++) {
@@ -222,18 +222,22 @@ class RandomGrid {
         moves=m;
         N=grid.length;
         gh=new GridHelper(N, N);
+        movingBox = GridHelper.movingBox(m);
+        mg=new int[N][N];
+    }
+    void solve()
+    {
         int blocked=0;
         for (int i=0; i<grid.length; i++) 
             for (int j=0; j<grid.length; j++)
                 if (grid[i].charAt(j)!='.')
                     ++blocked;
-        movingBox = GridHelper.movingBox(m);
-        /*if (blocked==0)
+        if (blocked==0)
             out.println(openGrid());
         else if (blocked>N*N/10)
             out.println(bruteforce());
-        else*/
-            out.println(sparse());
+        else
+            out.println(sparse());        
     }
     static void test()
     {
@@ -247,6 +251,14 @@ class RandomGrid {
         out.println("1,2, 3, 3 in "+in);
         in = GridHelper.inBox_(1,2, 4, 2, mbox);
         out.println("1,2, 4, 2 in "+in);
+        
+        RandomGrid rg=new RandomGrid(new String[]{".....", ".....", ".....", "....."}, "LLURRRDDD");
+        out.println(rg.bruteforce());
+        GridHelper.print(rg.mg);
+        out.println(rg.openGrid());
+        GridHelper.print(rg.mg);
+        out.println(rg.sparse());
+        GridHelper.print(rg.mg);
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
@@ -261,7 +273,7 @@ class RandomGrid {
             String grid[]=new String[N];
             for (int j=0; j<N; j++)
                 grid[j]=sc.next();
-            new RandomGrid(grid, moves);
+            new RandomGrid(grid, moves).solve();
         }
     }
 }
