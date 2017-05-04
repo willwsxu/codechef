@@ -1,143 +1,19 @@
-
+/* Brief Description: In a grid with free (.) and blocked(#) cells, Given a sequence
+ * of moves. e.g. "LRUD", calculate how many moved each cell can make before beong blocked
+ * output: XOR of moves of all cells
+ * Editorial strategy:
+ * if P>=0.1, brute force is good enough as cell can rarely finish all moved, expected length is L/10
+ *  worse case N*N*K/10=5*10^8
+ * if P<0.1, go reverse from a blocked cell, worse case N*N*K/10=5*10^8
+ * if P=0, we can preprocess the box that fit for all moves, min and max row and col
+ * Test show bruteforce use least time even when P is 0.01
+*/
+import codechef.GridHelper;
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Scanner;
 
-class GridHelper
-{
-    enum DIRECTION {UP, DOWN, LEFT, RIGHT, ERROR};
-    int R, C; // RxC dimention
-    GridHelper(int r, int c)
-    {
-        R=r; C=c;
-    }
-    boolean isValid(int r, int c)
-    {
-        return r>=0 && r<R && c>=0 && c<C;
-    }
-    int[] next(int r, int c, DIRECTION d) {
-        switch(d){
-            case DOWN:
-                if (++r>=R)
-                    return null;
-                break;
-            case UP:
-                if (r--<=0)
-                    return null;
-                break;
-            case LEFT:
-                if (c--<=0)
-                    return null;
-                break;
-            case RIGHT:
-                if (++c>=C)
-                    return null;
-                break;
-        }
-        return new int[]{r,c};
-    }
-    
-    boolean next(int[]rc, DIRECTION d)
-    {
-        switch(d){
-            case DOWN:
-                ++rc[0];
-                break;
-            case UP:
-                --rc[0];
-                break;
-            case LEFT:
-                --rc[1];
-                break;
-            case RIGHT:
-                ++rc[1];
-                break;
-            default:
-                out.println("ERROR direction "+d);
-        }   
-        return isValid(rc[0],rc[1]);
-    }
-    DIRECTION getDir(char ch)
-    {
-        switch(ch){
-            case 'D': return DIRECTION.DOWN;
-            case 'U': return DIRECTION.UP;
-            case 'L': return DIRECTION.LEFT;
-            case 'R': return DIRECTION.RIGHT;
-        }
-        out.println("Error direction "+ch);
-        return DIRECTION.ERROR;
-    }
-    DIRECTION getReverse(char ch)
-    {
-        switch(ch){
-            case 'D': return DIRECTION.UP;
-            case 'U': return DIRECTION.DOWN;
-            case 'L': return DIRECTION.RIGHT;
-            case 'R': return DIRECTION.LEFT;
-        }
-        out.println("Error direction "+ch);
-        return DIRECTION.ERROR;
-    }
-    static void print(int g[][])
-    {
-        for (int i=0; i<g.length; i++) {
-            for (int j=0; j<g[0].length; j++)
-                out.print(g[i][j]+" ");
-            out.println();
-        }
-    }
-    static void fill(int g[][], int v)
-    {
-        for (int r[]: g)
-            Arrays.fill(r, v);
-    }
-    // Grid box that covers all the moves
-    // borrow from CookOffMar17Robot
-    static int[] movingBox(String udlr)
-    {
-        int r=0, c=0;
-        int []mm=new int[4]; // minR, minC, maxR, maxC
-        Arrays.fill(mm, 0);
-        for (int i=0; i<udlr.length(); i++) {
-            switch(udlr.charAt(i)){
-                case 'U':
-                    r--;
-                    break;
-                case 'D':
-                    r++;
-                    break;
-                case 'L':
-                    c--;
-                    break;
-                case 'R':
-                    c++;
-                    break;
-                default:
-                    out.println("ERROR move "+udlr.charAt(i));
-            }
-            if ( mm[0]>r)
-                mm[0]=r;
-            if ( mm[2]<r)
-                mm[2]=r;
-            if ( mm[1]>c)
-                mm[1]=c;
-            if (mm[3]<c)
-                mm[3]=c;
-        }
-        return mm;
-    }
-    // can you move within box from (r, c)
-    boolean inBox(int r, int c, int[]mb)
-    {
-        return inBox_(r, c, R, C, mb);
-    }
-    static boolean inBox_(int r, int c, int R, int C, int[]mb)
-    {
-        return mb[0]+r>=0 && mb[1]+c>=0 && mb[2]+r<R && mb[3]+c<C;
-    }
-}
-
+// medium, randomized algorithms
 class RandomGrid {
     String grid[];
     String moves;
@@ -154,7 +30,7 @@ class RandomGrid {
         }
         return i;
     }
-    int bruteforce()
+    int bruteforce()  // subtask 3, p>=0.1, less than 1 sec
     {
         gh.fill(mg, moves.length());  // initialized to max value possible
         int xor=0;
@@ -167,7 +43,7 @@ class RandomGrid {
         return xor;
     }
     
-    int openGrid()
+    int openGrid()  // subtask 2, P=0, 4 sec. less than 1 sec if use sparse
     {
         gh.fill(mg, moves.length());  // initialized to max value possible
         int xor=0;
@@ -187,7 +63,7 @@ class RandomGrid {
     // from blocked cell, reverse steps, e.g if (3,3) is blocked, moves is "LURRD"
     // reverse steps as "RDLLU", (3,4), (4,4), (4,3), (4,2), (3,2)
     // with 1, 2, 3, 4, 5 moves
-    int sparse()
+    int sparse()  //P<0.1, up to 9 sec, P<0.01, up to 3 sec
     {
         gh.fill(mg, moves.length());  // initialized to max value possible
         // find all cells that will end up being blocked
@@ -201,7 +77,7 @@ class RandomGrid {
                         {
                             if ( mg[cell[0]][cell[1]]>k)
                                 mg[cell[0]][cell[1]]=k;  // update only if it is smaller
-                        }
+                        }// don't break when cell is blocked
                     }
                 }
         int xor=0;
@@ -209,10 +85,7 @@ class RandomGrid {
             for (int j=0; j<grid.length; j++) {
                 if (grid[i].charAt(j)!='.')
                     continue;
-                //if (mg[i][j]>0)
-                    xor ^= mg[i][j];
-                //else if (mg[i][j]<0)
-                //    xor ^= moves(i,j);
+                xor ^= mg[i][j];
             }
         return xor;
     }
@@ -233,8 +106,8 @@ class RandomGrid {
                 if (grid[i].charAt(j)!='.')
                     ++blocked;
         if (blocked==0)
-            out.println(openGrid());
-        else if (blocked>N*N/10)
+            out.println(sparse());
+        else if (blocked>=N*N/100)
             out.println(bruteforce());
         else
             out.println(sparse());        
@@ -265,10 +138,10 @@ class RandomGrid {
     {
         //test();
         //sc = codechef.ContestHelper.getFileScanner("randomgrid-t.txt");
-        int TC = sc.nextInt();  // between 1 and 2
+        int TC = sc.nextInt();  // between 1 and 3
         for (int i=0; i<TC; i++) {
             int L = sc.nextInt();   // 1 ≤ L ≤ 5000
-            int N = sc.nextInt();   // 1 ≤ L ≤ 1000
+            int N = sc.nextInt();   // 1 ≤ N ≤ 1000
             String moves= sc.next();
             String grid[]=new String[N];
             for (int j=0; j<N; j++)
