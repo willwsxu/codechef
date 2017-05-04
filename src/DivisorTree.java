@@ -1,8 +1,8 @@
 
 import static java.lang.System.out;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
+import static java.util.Collections.list;
 import java.util.List;
 import java.util.Scanner;
 
@@ -69,6 +69,16 @@ class PrimeSieve
     }
 }
 
+// count prime factors, use it to computer divisors, no need to know which prime
+class SegmentedSieve
+{
+    static PrimeSieve primes = new PrimeSieve(1000005);
+    List<Integer>[] pfs;
+    SegmentedSieve(long A, long B) // 1 ≤ B ≤ 10^12, B-A<=10^5
+    {
+        
+    }
+}
 class Divisors
 {
     class PrimeFactor
@@ -106,7 +116,7 @@ class Divisors
         this.pfs=pfs;
         value = value();
     }
-    
+        
     long value()
     {
         if (pfs.isEmpty())
