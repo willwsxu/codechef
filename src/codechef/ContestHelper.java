@@ -1,7 +1,6 @@
 package codechef;
 
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,6 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import static java.lang.System.out;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -122,5 +124,12 @@ public class ContestHelper {
         {
             
         }        
+    }
+    static void perfTest()
+    {
+        Instant start = Instant.now();
+        
+        Instant end = Instant.now();
+        out.println("usec "+ChronoUnit.MICROS.between(start, end));   
     }
 }

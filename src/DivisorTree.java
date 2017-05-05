@@ -1,5 +1,7 @@
 
 import static java.lang.System.out;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Comparator;
@@ -28,15 +30,65 @@ class DivisorTree {
         //out.println(max+"+"+div.numDiv());
         return max+div.numDiv();
     }
+    DivisorTree(long A, long B)
+    {
+        SegmentedSieve ss = new SegmentedSieve(A,B);
+        ss.sieve();
+        PriorityQueue<Integer> pq = new PriorityQueue<>(500, SegmentedSieve.cmp);
+        long total=0;
+        for (long i=A; i<=B; i++) {
+            ss.pfCount(i, pq);
+            total += ss.DivisorTreeScore(pq);
+            pq.clear();
+        }
+        out.println(total);
+    }
+    static void perfTest()
+    {
+        long a=100000000000L;
+        long b = a+100000;
+        Instant start = Instant.now();
+        SegmentedSieve.test(a, b);  // 84 msec
+        Instant end = Instant.now();
+        out.println("usec "+ChronoUnit.MICROS.between(start, end));   
+        Divisors.test(a, b);  // 5.7 sec
+        Instant end2 = Instant.now();
+        out.println("usec "+ChronoUnit.MICROS.between(end, end2));   
+        
+    }
+    static void validateSegmented()
+    {
+        long a=100000000000L;
+        long b = a+100000;
+        validateSegmented(1, 10);
+        validateSegmented(a, b);
+    }
+    static void validateSegmented(long a, long b)
+    {
+        SegmentedSieve ss = new SegmentedSieve(a,b);
+        ss.sieve();
+        PriorityQueue<Integer> pq = new PriorityQueue<>(500, SegmentedSieve.cmp);
+        for (long i=a; i<=b; i++) {
+            ss.pfCount(i, pq);
+            long d1 = ss.numDiv(pq);
+            //out.println(i+":"+pq+" "+d1);
+            pq.clear();
+            Divisors div = new Divisors(i);
+            long d2 = div.numDiv();
+            //div.printFactors();
+            if (d1 !=d2 ) {
+                out.println(i+":"+d1+" "+d2);
+            }
+        }
+        //ss.print();
+    }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
-    {
-        SegmentedSieve.test();
-        Divisors.test();
-        /*
+    {        
         long A = sc.nextLong();  // between 1 and B
         long B = sc.nextLong();   // 1 ≤ B ≤ 10^12, B-A<=10^5
-        
+        new DivisorTree(A, B);
+        /*
         int score=0;
         for (long i=A; i<=B; i++) {
             Divisors div = new Divisors(i);
@@ -77,7 +129,7 @@ class PrimeSieve
 class SegmentedSieve
 {
     static PrimeSieve sv = new PrimeSieve(1000005);
-    List<Integer>[] pfs;
+    List<Long>[] pfs;
     private long A, B;
     private boolean checkRange()
     {
@@ -103,11 +155,11 @@ class SegmentedSieve
     {
         for (int pf: sv.primes)
         {
-            if (pf*pf>A)
+            if (pf*pf>B)
                 break;
             for (long x=ceiling(A, pf); x<=B; x+=pf)
             {
-                pfs[(int)(x-A)].add(pf);
+                pfs[(int)(x-A)].add((long)pf);
             }
         }
     }
@@ -125,7 +177,7 @@ class SegmentedSieve
         int target = (int)(a-A);
         //out.println(pfs[target]);
         for (int i=0; i<pfs[target].size(); i++) {
-            int f = pfs[target].get(i);
+            long f = pfs[target].get(i);
             int count=0;
             while (a>0 && a%f==0) {
                 count++;
@@ -136,27 +188,47 @@ class SegmentedSieve
             else
                 out.println("Error no factor "+f);
         }
-        if (a>1)
+        if (a>1) {
             pq.add(1);
+            pfs[target].add(a);
+        }
         //out.println(a);
+    }
+    
+    // number of divisors
+    public static long numDiv(PriorityQueue<Integer> pq)
+    {
+        long div=1;
+        for (long p: pq)
+            div *= (p+1);     
+        return div;
+    }
+    
+    public static long DivisorTreeScore(PriorityQueue<Integer> pq)
+    {        
+        long numDiv=0;
+        while(!pq.isEmpty()) {
+            numDiv += numDiv(pq);
+            int big=pq.poll();
+            if (big>1)  // subtract 1 from the biggest, add back if not zero
+                pq.add(big-1);
+        }
+        return numDiv;
     }
     static Comparator<Integer> cmp=Comparator.reverseOrder();
  
-    static void test()
+    static void test(long A, long B)
     {
-        SegmentedSieve ss = new SegmentedSieve(2001,3001);
-        out.println(sv.primes);
+        SegmentedSieve ss = new SegmentedSieve(A,B);
+        //out.println(sv.primes);
         ss.sieve();
+        PriorityQueue<Integer> pq = new PriorityQueue<>(500, cmp);
+        for (long i=A; i<=B; i++) {
+            ss.pfCount(i, pq);
+            out.println(i+":"+pq);
+            pq.clear();
+        }
         ss.print();
-        PriorityQueue<Integer> pq = new PriorityQueue<>(1001, cmp);
-        ss.pfCount(2008, pq);
-        out.println(pq);            pq.clear();
-        ss.pfCount(2003, pq);
-        out.println(pq);            pq.clear();
-        ss.pfCount(2400, pq);
-        out.println(pq);            pq.clear();
-        ss.pfCount(3001, pq);
-        out.println(pq);
     }
 }
 class Divisors
@@ -257,12 +329,15 @@ class Divisors
         out.println(div.value()+" has divisors "+div.numDiv());
         div.printFactors();        
     }
+    static void test(long A, long B)
+    {
+        for (long i=A; i<=B; i++) {
+            Divisors div = new Divisors(i);
+            div.printFactors();    
+        }
+    }
     static void test()
     {
-        test1(2008);
-        test1(2003);
-        test1(2400);
-        test1(3001);
         test1(30);
         test1(9);  
         test1(12);       
