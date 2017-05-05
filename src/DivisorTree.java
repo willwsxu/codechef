@@ -2,8 +2,9 @@
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.BitSet;
-import static java.util.Collections.list;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 // Easy? 
@@ -30,6 +31,9 @@ class DivisorTree {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
+        SegmentedSieve.test();
+        Divisors.test();
+        /*
         long A = sc.nextLong();  // between 1 and B
         long B = sc.nextLong();   // 1 ≤ B ≤ 10^12, B-A<=10^5
         
@@ -41,7 +45,7 @@ class DivisorTree {
                 s--;
             score += s;
         }
-        out.println(score);
+        out.println(score);*/
     }
 }
 
@@ -72,11 +76,87 @@ class PrimeSieve
 // count prime factors, use it to computer divisors, no need to know which prime
 class SegmentedSieve
 {
-    static PrimeSieve primes = new PrimeSieve(1000005);
+    static PrimeSieve sv = new PrimeSieve(1000005);
     List<Integer>[] pfs;
+    private long A, B;
+    private boolean checkRange()
+    {
+        return A>=1 && B>=A && B-A<=1000005 && B <= 1000000000000L;
+    }
     SegmentedSieve(long A, long B) // 1 ≤ B ≤ 10^12, B-A<=10^5
     {
-        
+        this.A=A;
+        this.B=B;
+        if ( !checkRange() )
+            out.println("Error invalid range");
+        pfs = new List[(int)(B-A+1)];
+        for (int i=0; i<pfs.length; i++) {
+            pfs[i] = new ArrayList<>();
+        }
+    }
+    
+    long ceiling(long a, int b) // return number divisible by b and >=a
+    {
+        return (a+b-1)/b*b;
+    }
+    void sieve()
+    {
+        for (int pf: sv.primes)
+        {
+            if (pf*pf>A)
+                break;
+            for (long x=ceiling(A, pf); x<=B; x+=pf)
+            {
+                pfs[(int)(x-A)].add(pf);
+            }
+        }
+    }
+    void print()
+    {
+        for (int i=0; i<pfs.length; i++)
+            out.println(pfs[i]);
+    }
+    
+    void pfCount(long a, PriorityQueue<Integer> pq)
+    {
+        if (a<A || a>B) {
+            out.println("Error pfCount invalid range");
+        }
+        int target = (int)(a-A);
+        //out.println(pfs[target]);
+        for (int i=0; i<pfs[target].size(); i++) {
+            int f = pfs[target].get(i);
+            int count=0;
+            while (a>0 && a%f==0) {
+                count++;
+                a /= f;
+            }
+            if (count>0)
+                pq.add(count);
+            else
+                out.println("Error no factor "+f);
+        }
+        if (a>1)
+            pq.add(1);
+        //out.println(a);
+    }
+    static Comparator<Integer> cmp=Comparator.reverseOrder();
+ 
+    static void test()
+    {
+        SegmentedSieve ss = new SegmentedSieve(2001,3001);
+        out.println(sv.primes);
+        ss.sieve();
+        ss.print();
+        PriorityQueue<Integer> pq = new PriorityQueue<>(1001, cmp);
+        ss.pfCount(2008, pq);
+        out.println(pq);            pq.clear();
+        ss.pfCount(2003, pq);
+        out.println(pq);            pq.clear();
+        ss.pfCount(2400, pq);
+        out.println(pq);            pq.clear();
+        ss.pfCount(3001, pq);
+        out.println(pq);
     }
 }
 class Divisors
@@ -179,6 +259,10 @@ class Divisors
     }
     static void test()
     {
+        test1(2008);
+        test1(2003);
+        test1(2400);
+        test1(3001);
         test1(30);
         test1(9);  
         test1(12);       

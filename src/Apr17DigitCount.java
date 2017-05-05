@@ -30,12 +30,17 @@ class Apr17DigitCount {
                 good++;
         return good;        
     }
+    long dp(int d, long tight, int mask)
+    {
+        return 0;
+    }
     // all digits must appreat at least once
     long subtask2(long L, long R)
     {
         if (R<1023456789) // 1023456798 1023456879 1023456897 1023456978 1023456987 1023457689
             return 0;//9 81 18 81 9 702
-        return bruteforce(1023456789, R);
+        long cnt=dp(0, R, 0);
+        return cnt;
     }
     Apr17DigitCount(long L, long R, int A[])
     {
