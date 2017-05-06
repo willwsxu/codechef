@@ -1,8 +1,10 @@
+package longContests.may17;
+
 
 import static java.lang.System.out;
 import java.util.Scanner;
 
-
+// CHEFROUT beginner
 class ChefRoutine {
     
     // valid string pattern Cook Eat Sleep
@@ -47,7 +49,6 @@ class ChefRoutine {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {        
-        //test();
         //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
         int TC = sc.nextInt();  // between 1 and 20
         for (int i=0; i<TC; i++) {
