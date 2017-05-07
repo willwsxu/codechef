@@ -3,8 +3,7 @@ import static java.lang.System.out;
 import java.util.Scanner;
 
 
-class SubArray {
-    
+class SubArray {    
     int start=0;
     int N;  // Array size
     int P;  // number of requests
@@ -16,8 +15,10 @@ class SubArray {
         this.N=A.length;
         this.P=p.length();
         this.request = p;
-        this.K=K;
         this.A=A;
+        if (K>N) // important case
+            K=N;
+        this.K=K;
     }
     int count1(int s)
     {
@@ -54,7 +55,7 @@ class SubArray {
     }
     static void test()
     {
-        int A[]=new int[]{1,1,0,0,0,1,1};
+        int A[]=new int[]{1,1,0,1,0,1,1};
         SubArray sa=new SubArray(A, 4, "?!!?!!!?!?!?!?");
         sa.bruteforce();
         out.println();
@@ -74,6 +75,9 @@ class SubArray {
         sa.bruteforce();
         out.println();
         sa=new SubArray(A, 7, "?!!?!!!?!?!?!?");
+        sa.bruteforce();
+        out.println();
+        sa=new SubArray(A, 8, "?!!?!!!?!?!?!?");
         sa.bruteforce();
         out.println();
     }

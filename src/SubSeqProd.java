@@ -5,12 +5,16 @@ import java.util.Scanner;
 
 
 // any sub sequence, product < K
+// use bit for subset, int is enough for N=30
 class SubSeqProd {
     
     static void bruteforce(long A[], long K)
     {
         Arrays.sort(A);
         int N=A.length;
+        while (N>0 && A[N-1]>K) {
+            N--;
+        }
         long count=0;
         outterfor:
         for (long i=1; i< (1<<N); i++) {  // bit for all subset of A
