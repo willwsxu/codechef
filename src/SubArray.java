@@ -19,11 +19,11 @@ class SubArray {
         this.K=K;
         this.A=A;
     }
-    int count1(int start)
+    int count1(int s)
     {
         int count=0;
         for (int i=0; i<K; i++) {
-            if (A[(i+start)%N]==1)
+            if (A[(i+s)%N]==1)
                 count++;
         }
         return count;
@@ -83,7 +83,7 @@ class SubArray {
         //test();/*
         int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
         int K=sc.nextInt();
-        int P=sc.nextInt();
+        int P=sc.nextInt();  // P=p.length
         int []A=new int[N];
         for (int j=0; j<N; j++)
             A[j]=sc.nextInt();  // 0 or 1
