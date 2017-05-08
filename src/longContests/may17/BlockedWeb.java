@@ -1,4 +1,11 @@
+package longContests.may17;
 
+
+/* Brief Description: Adding prefix filter to block certain web sites from list of N
+ * website names are all lower case letters, each name is unique
+ * Use Trie and match prefix of unblocked sites
+ * if a blocked name has a complete match, filter scheme won't work as it will block the unblocked
+*/
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
