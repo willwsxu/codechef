@@ -6,6 +6,7 @@ package longContests.may17;
  * Use Trie and match prefix of unblocked sites
  * if a blocked name has a complete match, filter scheme won't work as it will block the unblocked
 */
+import codechef.Trie26;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,57 +78,5 @@ class BlockedWeb {
                 out.println("Error bad input, expect + or -");
         }
         solve(tr, blocked);
-    }
-}
-
-class Trie26  // for 26 lower case letters
-{
-    private static int R=26;
-    private Node root;
-    private static class Node
-    {
-        String name;
-        private Node[] next = new Node[R];
-    }
-    public void put(String key)
-    {
-        root = put(root, key, 0);
-    }
-    
-    private Node put(Node x, String k, int d)
-    {
-        if (x==null)
-            x= new Node();
-        if ( d==k.length()) {
-            x.name=k;
-            return x;
-        }
-        int n=k.charAt(d)-'a';
-        x.next[n]=put(x.next[n], k, d+1);
-        return x;
-    }
-    
-    public int prefixMatch(String key)
-    {
-        return prefixMatch(root, key, 0);
-    }
-    
-    public int prefixMatch(Node x, String key, int d)
-    {
-        if (x==null)
-            out.println("Error node null, d="+d);
-        if (d==key.length())
-            return d;
-        if (x.next[key.charAt(d)-'a']==null)
-            return d;
-        return prefixMatch(x.next[key.charAt(d)-'a'], key, d+1);
-    }
-    
-    static void test()
-    {
-        Trie26 tr = new Trie26();
-        tr.put("google");
-        out.println(tr.prefixMatch("goo"));
-        out.println(tr.prefixMatch("pi"));
     }
 }
