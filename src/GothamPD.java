@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import static java.lang.Integer.max;
+import static java.lang.Integer.min;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +83,7 @@ class MyReader
 public class GothamPD {
     int N, Q;
     GraphEx g;
+    boolean dirty=true;
     GothamPD(int n, int q)
     {
         N=n; Q=q;
@@ -95,7 +98,7 @@ public class GothamPD {
         g=new GraphEx(N);
         int R=sc.nextInt();  // 1 ≤ R ≤ N
         int key=sc.nextInt();// 1 ≤ R, ui, vi, key, ki ≤ 2^31− 1
-        g.setKey(R, key);
+        g.setKey(R-1, key);
         for (int i=0; i<N-1; i++) {
             int u=sc.nextInt();
             int v=sc.nextInt();
@@ -103,12 +106,41 @@ public class GothamPD {
             g.setKey(u-1, k);
             g.addEdge(u-1, v-1);
         }
+        dirty=true;
     }
-    int query(int v, int k)
+    
+    BreadthFirstPaths bf;
+    int query(int v, int k, int last_answer)
     {
-        int last_answer = 0;
+        if ( dirty ) {
+            bf = new BreadthFirstPaths(g, 0);    
+            dirty=false;
+        }
+        v = (v^last_answer)-1;
+        k ^=last_answer;
+        assert(v>0);
+        Iterable<Integer> p = bf.pathTo(v);  // 1 4 2
+        //p.forEach (out::println) ;
+        int minX=Integer.MAX_VALUE;
+        int maxX=0;
+        for (int w: p) {
+            int k2=(w+1)^k;
+            minX=min(minX, k2);
+            maxX=max(maxX, k2);
+        }
+        out.println(minX+" "+maxX);
         
-        return last_answer;
+        return minX^maxX;
+    }
+    void add(int u, int v, int k, int last_answer)
+    {
+        u ^=last_answer;
+        v ^=last_answer;
+        k ^=last_answer;
+        out.println("u "+u+" v "+v+" k "+k);
+        g.setKey(u-1, k);
+        g.addEdge(u-1, v-1);    
+        dirty=true;
     }
     void readQuery(GraphEx g, int Q)
     {
@@ -117,14 +149,14 @@ public class GothamPD {
             int t = sc.nextInt();
             t ^= last_answer;
             if (t==0) {  // add
-                int u=sc.nextInt()^last_answer;
-                int v=sc.nextInt()^last_answer;
-                int k=sc.nextInt()^last_answer;
-                g.setKey(u-1, k);
-                g.addEdge(u-1, v-1);                 
+                int u=sc.nextInt();
+                int v=sc.nextInt();
+                int k=sc.nextInt();
+                add(u, v, k, last_answer);    
             } else {  // query
-                int v=sc.nextInt()^last_answer;
-                int k=sc.nextInt()^last_answer;                 
+                int v=sc.nextInt();
+                int k=sc.nextInt();    
+                last_answer = query(v, k, last_answer);
             }
         }        
     }
@@ -133,20 +165,22 @@ public class GothamPD {
         GothamPD gpd = new GothamPD(6, 4);
         gpd.g=new GraphEx(6);
         gpd.g.setKey(0, 2);  // 1 2, index from 0
-        gpd.g.setKey(4, 3);  // 5 1 3
-        gpd.g.addEdge(4, 0);   
-        gpd.g.setKey(1, 4);  // 2 1 4
-        gpd.g.addEdge(1, 0);   
-        gpd.g.setKey(2, 5);  // 3 2 5
-        gpd.g.addEdge(2, 1);   
-        gpd.g.setKey(3, 1);  // 4 2 1
-        gpd.g.addEdge(3, 1);   
-        gpd.g.setKey(5, 3);  // 6 3 3
-        gpd.g.addEdge(5, 2);   
-        out.println("Edges"+gpd.g.E());
-        BreadthFirstPaths bf = new BreadthFirstPaths(gpd.g, 0);
-        Iterable<Integer> p = bf.pathTo(3);  // 1 4 2
-        p.forEach (out::println) ;
+        gpd.add(5, 1, 3, 0);    // 5 1 3
+        gpd.add(2, 1, 4, 0);    // 2 1 4
+        gpd.add(3, 2, 5, 0);    // 3 2 5
+        gpd.add(4, 2, 1, 0);    // 4 2 1
+        gpd.add(6, 3, 3, 0);    // 6 3 3
+        out.println("Edges "+gpd.g.E());
+        int last_answer = gpd.query(4, 2, 0);      // 1 4 2
+        // 6 0 12 0
+        int t=6^last_answer;
+        assert(t==0);
+        gpd.add(0, 12, 0, last_answer);
+        // 7 12 7
+        t = 7^last_answer;
+        last_answer = gpd.query(12, 7, last_answer);
+        assert(t==1);
+        // 4 0 7
     }
     
     //static MyReader sc = new MyReader();  // for large input
