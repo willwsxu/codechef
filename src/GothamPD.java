@@ -137,7 +137,7 @@ public class GothamPD {
         u ^=last_answer;
         v ^=last_answer;
         k ^=last_answer;
-        out.println("u "+u+" v "+v+" k "+k);
+        //out.println("u "+u+" v "+v+" k "+k);
         g.setKey(u-1, k);
         g.addEdge(u-1, v-1);    
         dirty=true;
@@ -176,6 +176,7 @@ public class GothamPD {
         int t=6^last_answer;
         assert(t==0);
         gpd.add(0, 12, 0, last_answer);
+        //gpd.bf.pathTo(9).forEach(out::println);
         // 7 12 7
         t = 7^last_answer;
         last_answer = gpd.query(12, 7, last_answer);
@@ -192,7 +193,7 @@ public class GothamPD {
 }
 
 class Graph { // unweighted, bidirectional
-    protected final int   V; // number of vertices
+    protected int   V; // number of vertices
     private int         E; // number of edges
 
     List<List<Integer>> adj=new ArrayList<>(2501);
@@ -205,8 +206,17 @@ class Graph { // unweighted, bidirectional
     }
     public int V() { return V; }
     public int E() { return E; }
+    void expand(int newsize)
+    {
+        if ( newsize<=adj.size())
+            return;
+        V = newsize;
+        while (adj.size()<newsize)
+            adj.add( new ArrayList<>(10));        
+    }
     public void addEdge(int u, int v)
     {
+        expand(max(u,v)+1);
         adj.get(u).add(v);
         adj.get(v).add(u);
         E++;
