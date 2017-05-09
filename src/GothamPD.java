@@ -80,11 +80,11 @@ class MyReader
     }
 }
 
-public class GothamPD {
+class GothamPD {
     int N, Q;
     GraphEx g;
     boolean dirty=true;
-    GothamPD(int n, int q)
+    GothamPD(int n, int q)  // for unit testing
     {
         N=n; Q=q;
     }
@@ -114,14 +114,14 @@ public class GothamPD {
     BreadthFirstPaths bf;
     int query(int v, int k, int last_answer, StringBuilder sb)
     {
-        if ( dirty ) {
+        if ( bf==null ) { // first time
             bf = new BreadthFirstPaths(g, 0);    
             dirty=false;
         }
         v = (v^last_answer)-1;
         k ^=last_answer;
         //out.println(" v "+v+" k "+k);
-        assert(v>0);
+        //assert(v>0);
         Iterable<Integer> p = bf.pathTo(v);  // 1 4 2
         int minmax[]=g.findMinMax(p, k);
         sb.append(minmax[0]);
@@ -141,8 +141,10 @@ public class GothamPD {
         g.addEdge(u-1, v-1);  // must call this first to expand graph node
         g.setKey(u-1, k);  
         dirty=true;
+        if ( bf !=null) // did initial bsf
+            bf.bfsMore(v-1);
     }
-    void readQuery(GraphEx g, int Q)
+    private void readQuery(GraphEx g, int Q)
     {
         StringBuilder sb = new StringBuilder();
         int last_answer = 0;
@@ -191,21 +193,25 @@ public class GothamPD {
         out.print(sb.toString());
     }
     
-    //static MyReader sc = new MyReader();  // for large input
-    static Scanner sc = new Scanner(System.in);
+    static MyReader sc = new MyReader();  // for large input
+    //static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {     
-        GothamPD gpd = new GothamPD();
+        //test();
+        new GothamPD();
     }
 }
 
 class Graph { // unweighted, bidirectional
     protected int   V; // number of vertices
-    private int         E; // number of edges
+    private   int   E; // number of edges
+    private   int   capacity;
 
-    List<List<Integer>> adj=new ArrayList<>(2501);
-    Graph(int V)
+    List<List<Integer>> adj;
+    Graph(int V, int capacity)
     {
+        this.capacity=capacity;
+        adj=new ArrayList<>(capacity);
         this.V = V;
         E=0;
         for (int v = 0; v < V; v++) // Initialize all lists
@@ -213,6 +219,7 @@ class Graph { // unweighted, bidirectional
     }
     public int V() { return V; }
     public int E() { return E; }
+    public int capacity() { return capacity; }
     
     boolean expand(int newsize)
     {
@@ -243,16 +250,20 @@ class BreadthFirstPaths
     private boolean[] marked; // Is a shortest path to this vertex known?
     private int[] edgeTo; // last vertex on known path to this vertex
     private final int s; // source
+    private Graph G;
+    LinkedBlockingQueue<Integer> queue;
     public BreadthFirstPaths(Graph G, int s)
     {
-        marked = new boolean[G.V()];
-        edgeTo = new int[G.V()];
+        marked = new boolean[G.capacity()];
+        edgeTo = new int[G.capacity()];
         this.s = s;
-        bfs(G, s);
+        this.G =G;
+        
+        queue = new LinkedBlockingQueue<Integer>();
+        bfs(s);
     }
-    private void bfs(Graph G, int s)
+    private void bfs(int s)
     {
-        LinkedBlockingQueue<Integer> queue = new LinkedBlockingQueue<Integer>();
         marked[s] = true; // Mark the source
         queue.add(s); // and put it on the queue.
         while (!queue.isEmpty())
@@ -266,6 +277,12 @@ class BreadthFirstPaths
                 queue.add(w); // and add it to the queue.
             }
         }
+    }
+    // 
+    public void bfsMore(int n)  // 
+    {
+        assert(marked[n]);
+        bfs(n);
     }
     public boolean hasPathTo(int v)
     { 
@@ -285,10 +302,11 @@ class BreadthFirstPaths
 class GraphEx extends Graph
 {
     private int K[]; // encriptionKey for each node
+    static final int capacity=100005;  // trade off memory for performance
     GraphEx(int V)
     {
-        super(V);
-        K=new int[V];
+        super(V, capacity);
+        K=new int[capacity];
     }
 
     @Override
@@ -296,11 +314,13 @@ class GraphEx extends Graph
     {
         if ( !super.expand(newsize))
             return false;
-        //out.println("expand "+newsize+" V "+V);
-        int newK[]=new int[newsize];
-        for (int i=0; i<K.length; i++)
-            newK[i]=K[i];
-        K=newK;
+        if ( K.length<newsize ) {
+            //out.println("expand "+newsize+" V "+V);
+            int newK[]=new int[newsize];
+            for (int i=0; i<K.length; i++)
+                newK[i]=K[i];
+            K=newK;
+        }
         return true;
     }
     void setKey(int v, int k)
