@@ -92,8 +92,10 @@ public class GothamPD {
     {
         N=sc.nextInt();  // 1 ≤ N ≤ 100,000, PD
         Q=sc.nextInt();  // 1 ≤ Q ≤ 200,000
+        readNodes();
+        readQuery(g, Q);
     }
-    void readNodes()
+    private void readNodes()
     {        
         g=new GraphEx(N);
         int R=sc.nextInt();  // 1 ≤ R ≤ N
@@ -110,7 +112,7 @@ public class GothamPD {
     }
     
     BreadthFirstPaths bf;
-    int query(int v, int k, int last_answer)
+    int query(int v, int k, int last_answer, StringBuilder sb)
     {
         if ( dirty ) {
             bf = new BreadthFirstPaths(g, 0);    
@@ -118,52 +120,53 @@ public class GothamPD {
         }
         v = (v^last_answer)-1;
         k ^=last_answer;
+        //out.println(" v "+v+" k "+k);
         assert(v>0);
         Iterable<Integer> p = bf.pathTo(v);  // 1 4 2
-        //p.forEach (out::println) ;
-        int minX=Integer.MAX_VALUE;
-        int maxX=0;
-        for (int w: p) {
-            int k2=(w+1)^k;
-            minX=min(minX, k2);
-            maxX=max(maxX, k2);
-        }
-        out.println(minX+" "+maxX);
+        int minmax[]=g.findMinMax(p, k);
+        sb.append(minmax[0]);
+        sb.append(" ");
+        sb.append(minmax[1]);
+        sb.append("\n");
+        //out.println(minmax[0]+" "+minmax[1]);
         
-        return minX^maxX;
+        return minmax[0]^minmax[1];
     }
     void add(int u, int v, int k, int last_answer)
     {
         u ^=last_answer;
         v ^=last_answer;
         k ^=last_answer;
-        //out.println("u "+u+" v "+v+" k "+k);
-        g.setKey(u-1, k);
-        g.addEdge(u-1, v-1);    
+        //out.println(" add u "+u+" v "+v+" k "+k);
+        g.addEdge(u-1, v-1);  // must call this first to expand graph node
+        g.setKey(u-1, k);  
         dirty=true;
     }
     void readQuery(GraphEx g, int Q)
     {
+        StringBuilder sb = new StringBuilder();
         int last_answer = 0;
         for (int i=0; i<Q; i++) {
             int t = sc.nextInt();
             t ^= last_answer;
             if (t==0) {  // add
-                int u=sc.nextInt();
                 int v=sc.nextInt();
+                int u=sc.nextInt();
                 int k=sc.nextInt();
                 add(u, v, k, last_answer);    
             } else {  // query
                 int v=sc.nextInt();
                 int k=sc.nextInt();    
-                last_answer = query(v, k, last_answer);
+                last_answer = query(v, k, last_answer, sb);
             }
-        }        
+        } 
+        out.print(sb.toString());
     }
     public static void test()
     {
         GothamPD gpd = new GothamPD(6, 4);
         gpd.g=new GraphEx(6);
+        StringBuilder sb = new StringBuilder();
         gpd.g.setKey(0, 2);  // 1 2, index from 0
         gpd.add(5, 1, 3, 0);    // 5 1 3
         gpd.add(2, 1, 4, 0);    // 2 1 4
@@ -171,24 +174,28 @@ public class GothamPD {
         gpd.add(4, 2, 1, 0);    // 4 2 1
         gpd.add(6, 3, 3, 0);    // 6 3 3
         out.println("Edges "+gpd.g.E());
-        int last_answer = gpd.query(4, 2, 0);      // 1 4 2
+        int last_answer = gpd.query(4, 2, 0, sb);      // 1 4 2
         // 6 0 12 0
         int t=6^last_answer;
         assert(t==0);
-        gpd.add(0, 12, 0, last_answer);
-        //gpd.bf.pathTo(9).forEach(out::println);
+        gpd.add(12, 0, 0, last_answer); // 0 6 10 6, v u k
         // 7 12 7
         t = 7^last_answer;
-        last_answer = gpd.query(12, 7, last_answer);
         assert(t==1);
+        last_answer = gpd.query(12, 7, last_answer, sb); // 1 10 1
+        gpd.bf.pathTo(9).forEach(gpd.g::printKey);
         // 4 0 7
+        t = 4^last_answer;
+        assert(t==1);
+        last_answer = gpd.query(0, 7, last_answer, sb); // 1 5 2
+        out.print(sb.toString());
     }
     
     //static MyReader sc = new MyReader();  // for large input
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
-    {      
-        test();
+    {     
+        GothamPD gpd = new GothamPD();
     }
 }
 
@@ -206,17 +213,21 @@ class Graph { // unweighted, bidirectional
     }
     public int V() { return V; }
     public int E() { return E; }
-    void expand(int newsize)
+    
+    boolean expand(int newsize)
     {
         if ( newsize<=adj.size())
-            return;
+            return false;
         V = newsize;
         while (adj.size()<newsize)
-            adj.add( new ArrayList<>(10));        
+            adj.add( new ArrayList<>(10));  
+        return true;
     }
     public void addEdge(int u, int v)
     {
-        expand(max(u,v)+1);
+        int newsize=max(u,v)+1;
+        if (newsize>adj.size())
+            expand(newsize);
         adj.get(u).add(v);
         adj.get(v).add(u);
         E++;
@@ -273,19 +284,48 @@ class BreadthFirstPaths
 
 class GraphEx extends Graph
 {
-    int K[]; // encriptionKey for each node
+    private int K[]; // encriptionKey for each node
     GraphEx(int V)
     {
         super(V);
         K=new int[V];
     }
 
+    @Override
+    boolean expand(int newsize)
+    {
+        if ( !super.expand(newsize))
+            return false;
+        //out.println("expand "+newsize+" V "+V);
+        int newK[]=new int[newsize];
+        for (int i=0; i<K.length; i++)
+            newK[i]=K[i];
+        K=newK;
+        return true;
+    }
     void setKey(int v, int k)
     {
         if (v<V)
             K[v]=k;
         else 
             out.println("Error bad node "+v);
+    }
+    
+    int[] findMinMax(Iterable<Integer> p, int k)
+    {
+        //p.forEach (out::println) ;
+        int minX=Integer.MAX_VALUE;
+        int maxX=0;
+        for (int w: p) {
+            int k2=K[w]^k;
+            minX=min(minX, k2);
+            maxX=max(maxX, k2);
+        }
+        return new int[]{minX, maxX};
+    }
+    void printKey(int i)
+    {
+        out.println((i+1)+" "+K[i]);
     }
 }
 
