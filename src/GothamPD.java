@@ -302,7 +302,7 @@ class BreadthFirstPaths
 class GraphEx extends Graph
 {
     private int K[]; // encriptionKey for each node
-    static final int capacity=100005;  // trade off memory for performance
+    static final int capacity=200005;  // trade off memory for performance
     GraphEx(int V)
     {
         super(V, capacity);
