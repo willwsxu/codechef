@@ -13,6 +13,8 @@ public class LongSandwich {
     static long recurse(long N, long count, long K)
     {
         out.println("N "+N+" count "+count+" K="+K);
+        if ( N<=K)
+            return 1;
         if ( count*K==N)
             return 1;
         long extra=count*K-N;  // 7/3=2
@@ -23,14 +25,16 @@ public class LongSandwich {
             ans += recurse(N-i, count-1, K);
         return ans;
     }
-    static long small(int N, int K, int M)  // dynamic programming, for small case
+    static void small(int N, int K, int M)  // dynamic programming, for small case
     {
         long count = (N+K-1)/K;  // ceiling of multiples
-        return recurse(N, count, K);        
+        long ways= recurse(N, count, K);        
+        out.println(count +" "+ways);
     }
     static void test()
     {
-        out.println(small(7, 3, 500));
+        small(7, 3, 500);
+        small(10, 2, 1000);
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
