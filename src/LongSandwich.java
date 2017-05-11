@@ -3,16 +3,14 @@ import static java.lang.System.out;
 import java.util.Scanner;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+
  */
 
-public class LongSandwich {
+class LongSandwich {
     
     static long recurse(long N, long count, long K)
     {
-        out.println("N "+N+" count "+count+" K="+K);
+        //out.println("N "+N+" count "+count+" K="+K);
         if ( N<=K)
             return 1;
         if ( count*K==N)
@@ -25,10 +23,10 @@ public class LongSandwich {
             ans += recurse(N-i, count-1, K);
         return ans;
     }
-    static void small(int N, int K, int M)  // dynamic programming, for small case
+    static void small(long N, long K, int M)  // dynamic programming, for small case
     {
         long count = (N+K-1)/K;  // ceiling of multiples
-        long ways= recurse(N, count, K);        
+        long ways= recurse(N, count, K)%M;        
         out.println(count +" "+ways);
     }
     static void test()
@@ -36,17 +34,18 @@ public class LongSandwich {
         small(7, 3, 500);
         small(10, 2, 1000);
         small(45, 11, 1000);
+        small(1000000, 11, 1000);
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();/*
+        //test();/*
         int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             long N=sc.nextLong(); // 1 ≤ N ≤ 10^18
             long K=sc.nextLong(); // 1 ≤ K ≤ 10^18
             int M=sc.nextInt();     // 2 ≤ M ≤ 10^6
-            
-        }*/
+            small(N, K, M);
+        }
     }
 }
