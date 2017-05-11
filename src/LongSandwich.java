@@ -35,6 +35,7 @@ public class LongSandwich {
     {
         small(7, 3, 500);
         small(10, 2, 1000);
+        small(45, 11, 1000);
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
