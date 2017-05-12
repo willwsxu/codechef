@@ -79,12 +79,14 @@ class SubArray {
                 sb.append("\n");
             }
             else if (N>K){
-                pq.remove(new Integer(Asum[tail])); // be careful of remove overload
-                //out.println("remove "+Asum[tail]+" at "+tail);
                 head = (head+N-1)%N;
+                if (Asum[tail] !=Asum[head]) {
+                    pq.remove(new Integer(Asum[tail]));
+                    //out.println("remove "+Asum[tail]+" at "+tail);
+                    pq.add(Asum[head]);
+                    //out.println("add "+Asum[head]+" at "+head);
+                }
                 tail = (tail+N-1)%N;
-                pq.add(Asum[head]);
-                //out.println("add "+Asum[head]+" at "+head);
                 //out.println(pq);
             }
         }
