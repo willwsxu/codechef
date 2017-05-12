@@ -173,7 +173,6 @@ class SubArray {
 class SortedList
 {
     private List<Integer> ls;
-    private PriorityQueue<Integer> pq;
     Comparator<Integer> cmp;
     SortedList(boolean reverseOrder)
     {
@@ -182,39 +181,26 @@ class SortedList
         else
             cmp = Comparator.naturalOrder();
         ls = new ArrayList<>(10000);
-        //pq = new PriorityQueue<>(10000, cmp);
     }
     public boolean add(Integer e)
     {
-        if (ls!=null)
-        {
         int i=Collections.binarySearch(ls, e, cmp);
         if (i<0)
             i=-(i+1);
         ls.add(i, e);
-        } else {
-            pq.add(e);
-        }
         return true;
     }
     public int peek()
     {
-        if (ls!=null)
-            return ls.get(0);
-        else
-            return pq.peek();
+        return ls.get(0);
     }
     
     public boolean remove(Integer e)
     {
-        if (ls!=null) {
         int i=Collections.binarySearch(ls, e, cmp);
         if (i>=0) {
             ls.remove(i);
             return true;
-        }
-        } else {
-            pq.remove(e);
         }
         return false;
     }
