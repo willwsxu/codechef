@@ -1,6 +1,8 @@
 
 import static java.lang.System.out;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 
@@ -21,6 +23,7 @@ class SubArray {
         if (K>N) // important case
             K=N;
         this.K=K;
+        //out.println("N "+N+" K "+K);
     }
     int count1(int s)
     {
@@ -53,22 +56,53 @@ class SubArray {
             }
         }
     }
+    int head=0;
+    int tail=0;
+    PriorityQueue<Integer> pq=new PriorityQueue<>(100000, Comparator.reverseOrder());
     void cacheSum(StringBuilder sb)
     {
+        tail=N-K;
         Asum = new int[N];
         for (int i=0; i<K; i++) {
             Asum[0] += A[i];  // store sum of next K elements
         }
+        pq.add(Asum[0]);
         for (int i=1; i<N; i++) {
             Asum[i] = Asum[i-1]+A[(i+K-1)%N]-A[i-1];
+            if (i<=N-K)
+                pq.add(Asum[i]);
         }
-        out.println(Arrays.toString(Asum));
+        //out.println("head "+head+" tail "+tail);
+        for (int i=0; i<request.length(); i++) {
+            if (request.charAt(i)=='?') {
+                sb.append(pq.peek());
+                sb.append("\n");
+            }
+            else if (N>K){
+                pq.remove(new Integer(Asum[tail])); // be careful of remove overload
+                //out.println("remove "+Asum[tail]+" at "+tail);
+                head = (head+N-1)%N;
+                tail = (tail+N-1)%N;
+                pq.add(Asum[head]);
+                //out.println("add "+Asum[head]+" at "+head);
+                //out.println(pq);
+            }
+        }
     }
     void solve()
     {
         StringBuilder sb=new StringBuilder();
-        bruteforce(sb);
+        //bruteforce(sb);
+        cacheSum(sb);
         out.print(sb.toString());
+    }
+    
+    static void test1cache(int A[], StringBuilder sb, int k, String q)
+    {
+        SubArray sa=new SubArray(A, k, q);
+        sa.cacheSum(sb);
+        sb.append(Arrays.toString(sa.Asum));   
+        sb.append("\n");        
     }
     static void test()
     {
@@ -76,36 +110,45 @@ class SubArray {
         int A[]=new int[]{1,1,0,1,0,1,1};
         SubArray sa=new SubArray(A, 4, "?!!?!!!?!?!?!?");
         sa.bruteforce(sb);
-        out.println();
+        sb.append("\n");
         sa=new SubArray(A, 1, "?!!?!!!?!?!?!?");
         sa.bruteforce(sb);
-        out.println();
+        sb.append("\n");
         sa=new SubArray(A, 2, "?!!?!!!?!?!?!?");
         sa.bruteforce(sb);
-        out.println();
+        sb.append("\n");
         sa=new SubArray(A, 3, "?!!?!!!?!?!?!?");
         sa.bruteforce(sb);
-        out.println();
+        sb.append("\n");
         sa=new SubArray(A, 5, "?!!?!!!?!?!?!?");
         sa.bruteforce(sb);
-        out.println();
+        sb.append("\n");
         sa=new SubArray(A, 6, "?!!?!!!?!?!?!?");
         sa.bruteforce(sb);
-        out.println();
+        sb.append("\n");
         sa=new SubArray(A, 7, "?!!?!!!?!?!?!?");
         sa.bruteforce(sb);
-        out.println();
+        sb.append("\n");
         sa=new SubArray(A, 8, "?!!?!!!?!?!?!?");
         sa.bruteforce(sb);
         out.println(sb.toString());
         
-        sa=new SubArray(A, 4, "?!!?!!!?!?!?!?");
-        sa.cacheSum(sb);
+        sb = new StringBuilder();
+        // 1,1,0,1,0,1,1->3, 2, 2, 3, 3, 4, 3
+        test1cache(A, sb, 4, "?!!?!!!?!?!?!?");
+        test1cache(A, sb, 1, "?!!?!!!?!?!?!?");
+        test1cache(A, sb, 2, "?!!?!!!?!?!?!?");
+        test1cache(A, sb, 3, "?!!?!!!?!?!?!?");
+        test1cache(A, sb, 5, "?!!?!!!?!?!?!?");
+        test1cache(A, sb, 6, "?!!?!!!?!?!?!?");
+        test1cache(A, sb, 7, "?!!?!!!?!?!?!?");
+        test1cache(A, sb, 8, "?!!?!!!?!?!?!?");
+        out.println(sb.toString());
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();/*
+        //test();/*
         int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
         int K=sc.nextInt();
         int P=sc.nextInt();  // P=p.length
@@ -113,31 +156,6 @@ class SubArray {
         for (int j=0; j<N; j++)
             A[j]=sc.nextInt();  // 0 or 1
         String p=sc.next();
-        new SubArray(A, K, p).solve();*/
+        new SubArray(A, K, p).solve();
     }
-}
-
-// 1 based array to store segemment tree for Range Sum Query
-class SegTree
-{
-    int sum[];
-   SegTree(int N) 
-   {
-       sum=new int[2*N+1];
-       buildSum(1, 0, N-1);
-   }
-   int buildSum(int node, int first, int last)
-   {
-       if (first==last)
-           sum[node]=compute(first);
-       else {
-           int mid = (first+last)/2;
-           sum[node]=buildSum(2*node, first, mid)+buildSum(2*node+1, mid+1, last);
-       }
-       return sum[node];
-   }
-   int compute(int ind)
-   {
-       return 0;
-   }
 }
