@@ -67,7 +67,7 @@ class SubArray {
     void cacheSum(StringBuilder sb)
     {
         tail=N-K;        
-        SortedList pq = new SortedList(true);
+        SortedList pq = new SortedList(true, 100000);
         Asum = new int[N];
         for (int i=0; i<K; i++) {
             Asum[0] += A[i];  // store sum of next K elements
@@ -156,57 +156,77 @@ class SubArray {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //SortedList.perfTest(100000);
+        SortedList.perfTest(100000);
         //test();
-        int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
+        /*int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
         int K=sc.nextInt();
         int P=sc.nextInt();  // P=p.length
         int []A=new int[N];
         for (int j=0; j<N; j++)
             A[j]=sc.nextInt();  // 0 or 1
         String p=sc.next();
-        new SubArray(A, K, p).solve();
+        new SubArray(A, K, p).solve();*/
     }
 }
 
 // ArrayList is 25x faster than linkedlist for sorted list
 class SortedList
 {
-    private List<Integer> ls;
+    //private List<Integer> ls;
+    private int[] ls;
+    int size;
     Comparator<Integer> cmp;
-    SortedList(boolean reverseOrder)
+    SortedList(boolean reverseOrder, int capacity)
     {
         if (reverseOrder)
             cmp = Comparator.reverseOrder();
         else
             cmp = Comparator.naturalOrder();
-        ls = new ArrayList<>(10000);
+        //ls = new ArrayList<>(10000);
+        ls = new int[capacity+10];
     }
-    public boolean add(Integer e)
+    public void add(int i, int e)
     {
-        int i=Collections.binarySearch(ls, e, cmp);
+        for (int j=size-1; j>=i; j--)
+            ls[j+1]=ls[j];
+        ls[i]=e;
+        size++;
+    }
+    public void remove(int i, int e)
+    {
+        for (int j=i; j<size-1; j++)
+            ls[j]=ls[j+1];
+        size--;
+    }
+    public boolean add(int e)
+    {
+        //int i=Collections.binarySearch(ls, e, cmp);
+        int i=Arrays.binarySearch(ls, 0, size, e);
         if (i<0)
             i=-(i+1);
-        ls.add(i, e);
+        //ls.add(i, e);
+        add(i, e);
         return true;
     }
     public int peek()
     {
-        return ls.get(0);
+        return ls[0];//ls.get(0);
     }
     
     public boolean remove(Integer e)
     {
-        int i=Collections.binarySearch(ls, e, cmp);
+        //int i=Collections.binarySearch(ls, e, cmp);
+        int i=Arrays.binarySearch(ls, 0, size, e);
         if (i>=0) {
-            ls.remove(i);
+            //ls.remove(i);
+            remove(i, e);
             return true;
         }
         return false;
     }
     public static void test()
     {
-        SortedList sll = new SortedList(true);
+        SortedList sll = new SortedList(true, 100000);
         sll.add(10);
         sll.add(20);
         sll.add(30);
@@ -223,7 +243,7 @@ class SortedList
     public static void perfTest(int N)
     {
         Instant start = Instant.now();
-        SortedList sll = new SortedList(true);
+        SortedList sll = new SortedList(true, 100000);
         for (int i=0; i<N; i++) {
             sll.add(i%(N/3)+1);
         }        
