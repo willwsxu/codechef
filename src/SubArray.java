@@ -153,11 +153,40 @@ class SubArray {
         test1cache(A, sb, 8, "?!!?!!!?!?!?!?");
         out.println(sb.toString());
     }
+    static void testList()
+    {
+        StringBuilder sb=new StringBuilder();
+        int A[]=new int[]{3, 2, 2, 3, 3, 4, 3};
+        ListBackedPQ pq = new ListBackedPQ(A, 4, true);
+        out.println(pq.peek());
+        pq.add(6);
+        pq.remove(3);
+        pq.add(5);
+        pq.remove(2);
+        out.println(pq.peek());
+        pq.add(4);
+        pq.remove(1);
+        pq.add(3);
+        pq.remove(0);
+        pq.add(2);
+        pq.remove(6);
+        out.println(pq.peek());
+        pq.add(1);
+        pq.remove(5);
+        out.println(pq.peek());
+        pq.add(0);
+        pq.remove(4);
+        out.println(pq.peek());
+        pq.add(6);
+        pq.remove(3);
+        out.println(pq.peek());
+        out.println();
+    }
+    
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        SortedList.perfTest(100000);
-        //test();
+        ListBackedPQ.perfTest(100000);
         /*int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
         int K=sc.nextInt();
         int P=sc.nextInt();  // P=p.length
@@ -170,6 +199,7 @@ class SubArray {
 }
 
 // ArrayList is 25x faster than linkedlist for sorted list
+// ArrayList is also faster than int[] impl, up to 3 times
 class SortedList
 {
     //private List<Integer> ls;
@@ -213,7 +243,7 @@ class SortedList
         return ls[0];//ls.get(0);
     }
     
-    public boolean remove(Integer e)
+    public boolean remove(int e)
     {
         //int i=Collections.binarySearch(ls, e, cmp);
         int i=Arrays.binarySearch(ls, 0, size, e);
@@ -255,7 +285,101 @@ class SortedList
             int a=i%(N/7)+1;
             int d=i%(N/3)+1;
             sll.add(a);
-            sll.remove(new Integer(d));
+            sll.remove(d);
+        }
+        Instant end = Instant.now();   
+        out.println("usec "+ChronoUnit.MICROS.between(mid, end));   
+        // when N=100000, LinkedList 83 sec, ArrayList 1.3 sec, PriorityQueue 3.6 sec
+    }
+}
+
+// copied from shared class
+class Pi  // pair of int
+{
+    int first;
+    int second;
+    Pi(int f, int s)
+    {
+        first=f;
+        second=s;
+    }
+    @Override
+    public boolean equals(Object s)
+    {
+        if (s instanceof Pi) {
+            Pi other =(Pi)s;
+            return first==other.first && second==other.second;
+        }
+        return false;
+    }
+    @Override
+    public int hashCode()
+    {
+        return (int)(first*second);
+    }
+    @Override
+    public String toString()
+    {
+        return first+":"+second;
+    }
+}
+
+// Avoid priority Queue remove method call as it is slow
+class ListBackedPQ
+{    
+    int A[];
+    boolean []b;
+    Comparator<Pi> cmp;
+    PriorityQueue<Pi> pq;
+    ListBackedPQ(int a[], int k, boolean reverseOrder)
+    {
+        if (reverseOrder)
+            cmp = (r1,r2)->r2.second-r1.second;
+        else
+            cmp = (r1,r2)->r1.second-r2.second;
+        pq = new PriorityQueue<>(a.length, cmp);
+        A=a;
+        b=new boolean[a.length];
+        // first k are valid
+        for (int i=0; i<k; i++) {
+            pq.add(new Pi(i, A[i]));
+            b[i]=true;
+        }
+    }
+    void remove(int ind)
+    {
+        b[ind]=false;
+    }
+    void add(int ind)
+    {
+        b[ind]=true;
+        pq.add(new Pi(ind, A[ind]));
+    }
+    public int peek()
+    {
+        Pi p=pq.peek();
+        while (!b[p.first]) {
+            pq.poll();  // discard items no longer valid
+            p=pq.peek();
+        }
+        return p.second;
+    }
+    public static void perfTest(int N)
+    {
+        Instant start = Instant.now();
+        int A[]=new int[N];
+        for (int i=0; i<N; i++) {
+            A[i]=i%(N/3)+1;
+        }    
+        ListBackedPQ pq=new ListBackedPQ(A, N-2, true);
+        Instant mid = Instant.now();
+        out.println("usec "+ChronoUnit.MICROS.between(start, mid));
+        // when N=100000, LinkedList 11 sec, ArrayList .45 sec, PriorityQueue 15msec
+        
+        int K=N-2;
+        for (int i=0; i<N; i++) {
+            pq.add((K+i)%N);
+            pq.remove(i);
         }
         Instant end = Instant.now();   
         out.println("usec "+ChronoUnit.MICROS.between(mid, end));   
