@@ -8,15 +8,11 @@ import static java.lang.Integer.max;
 import static java.lang.Integer.min;
 import static java.lang.System.out;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.LinkedBlockingQueue;
-
-/*
-
- */
-
 
 // Buffered Read class did not help Stable Market TLE issue (
 class MyReader
@@ -82,7 +78,7 @@ class MyReader
 
 class GothamPD {
     int N, Q;
-    GraphEx g;
+    Graph g;
     boolean dirty=true;
     GothamPD(int n, int q)  // for unit testing
     {
@@ -93,19 +89,19 @@ class GothamPD {
         N=sc.nextInt();  // 1 ≤ N ≤ 100,000, PD
         Q=sc.nextInt();  // 1 ≤ Q ≤ 200,000
         readNodes();
-        readQuery(g, Q);
+        readQuery(Q);
     }
     private void readNodes()
     {        
-        g=new GraphEx(N);
+        g=new Graph(10000);
         int R=sc.nextInt();  // 1 ≤ R ≤ N
         int key=sc.nextInt();// 1 ≤ R, ui, vi, key, ki ≤ 2^31− 1
-        g.setKey(R-1, key);
+        g.addNode(R-1, key);
         for (int i=0; i<N-1; i++) {
             int u=sc.nextInt();
             int v=sc.nextInt();
             int k=sc.nextInt();
-            g.setKey(u-1, k);
+            g.addNode(u-1, k);
             g.addEdge(u-1, v-1);
         }
         dirty=true;
@@ -138,13 +134,13 @@ class GothamPD {
         v ^=last_answer;
         k ^=last_answer;
         //out.println(" add u "+u+" v "+v+" k "+k);
+        g.addNode(u-1, k);
         g.addEdge(u-1, v-1);  // must call this first to expand graph node
-        g.setKey(u-1, k);  
         dirty=true;
         if ( bf !=null) // did initial bsf
             bf.bfsMore(v-1);
     }
-    private void readQuery(GraphEx g, int Q)
+    private void readQuery(int Q)
     {
         StringBuilder sb = new StringBuilder();
         int last_answer = 0;
@@ -167,9 +163,9 @@ class GothamPD {
     public static void test()
     {
         GothamPD gpd = new GothamPD(6, 4);
-        gpd.g=new GraphEx(6);
+        gpd.g=new Graph(1000);
         StringBuilder sb = new StringBuilder();
-        gpd.g.setKey(0, 2);  // 1 2, index from 0
+        gpd.g.addNode(0, 2);  // 1 2, index from 0
         gpd.add(5, 1, 3, 0);    // 5 1 3
         gpd.add(2, 1, 4, 0);    // 2 1 4
         gpd.add(3, 2, 5, 0);    // 3 2 5
@@ -186,6 +182,7 @@ class GothamPD {
         assert(t==1);
         last_answer = gpd.query(12, 7, last_answer, sb); // 1 10 1
         gpd.bf.pathTo(9).forEach(gpd.g::printKey);
+        out.println();
         // 4 0 7
         t = 4^last_answer;
         assert(t==1);
@@ -203,59 +200,83 @@ class GothamPD {
 }
 
 class Graph { // unweighted, bidirectional
-    protected int   V; // number of vertices
     private   int   E; // number of edges
     private   int   capacity;
 
-    List<List<Integer>> adj;
-    Graph(int V, int capacity)
+    class Node
+    {
+        int key;
+        List<Integer> adj;
+        Node(int k) {
+            key=k;
+            adj=new ArrayList<>(10);
+        }
+    }
+    Map<Integer, Node> nodes;
+    Graph(int capacity)
     {
         this.capacity=capacity;
-        adj=new ArrayList<>(capacity);
-        this.V = V;
+        nodes=new HashMap<>();
         E=0;
-        for (int v = 0; v < V; v++) // Initialize all lists
-            adj.add( new ArrayList<>(10));
     }
-    public int V() { return V; }
+    public void addNode(int v, int k)
+    {
+        nodes.put(v, new Node(k));
+    }
+    public int V() { return nodes.size(); }
     public int E() { return E; }
     public int capacity() { return capacity; }
     
-    boolean expand(int newsize)
-    {
-        if ( newsize<=adj.size())
-            return false;
-        V = newsize;
-        while (adj.size()<newsize)
-            adj.add( new ArrayList<>(10));  
-        return true;
-    }
     public void addEdge(int u, int v)
     {
-        int newsize=max(u,v)+1;
-        if (newsize>adj.size())
-            expand(newsize);
-        adj.get(u).add(v);
-        adj.get(v).add(u);
+        nodes.get(u).adj.add(v);
+        nodes.get(v).adj.add(u);
         E++;
     }
     public List<Integer> adj(int u)
     {
-        return adj.get(u);
+        return nodes.get(u).adj;
+    }
+    int[] findMinMax(Iterable<Integer> p, int k)
+    {
+        //p.forEach (out::println) ;
+        int minX=Integer.MAX_VALUE;
+        int maxX=0;
+        for (int w: p) {
+            int k2=nodes.get(w).key^k;
+            minX=min(minX, k2);
+            maxX=max(maxX, k2);
+        }
+        return new int[]{minX, maxX};
+    }
+    void printKey(int i)
+    {
+        out.println((i+1)+" "+nodes.get(i).key);
     }
 }
 
 class BreadthFirstPaths
 {
-    private boolean[] marked; // Is a shortest path to this vertex known?
-    private int[] edgeTo; // last vertex on known path to this vertex
+    class State
+    {
+        boolean marked;
+        int     edgeTo;
+        State(int e)
+        {
+            marked=true;
+            edgeTo=e;
+        }
+    }
+    Map<Integer, State> states=new HashMap<>();
+    //private boolean[] marked; // Is a shortest path to this vertex known?
+    //private int[] edgeTo; // last vertex on known path to this vertex
     private final int s; // source
     private Graph G;
     LinkedBlockingQueue<Integer> queue;
     public BreadthFirstPaths(Graph G, int s)
     {
-        marked = new boolean[G.capacity()];
-        edgeTo = new int[G.capacity()];
+        //marked = new boolean[G.capacity()];
+        //edgeTo = new int[G.capacity()];
         this.s = s;
         this.G =G;
         
@@ -264,88 +285,46 @@ class BreadthFirstPaths
     }
     private void bfs(int s)
     {
-        marked[s] = true; // Mark the source
+        //marked[s] = true; // Mark the source
+        if (!states.containsKey(s))
+            states.put(s, new State(0));
         queue.add(s); // and put it on the queue.
         while (!queue.isEmpty())
         {
             int v = queue.poll(); // Remove next vertex from the queue.
-            for (int w : G.adj(v))
-            if (!marked[w]) // For every unmarked adjacent vertex,
-            {
-                edgeTo[w] = v; // save last edge on a shortest path,
-                marked[w] = true; // mark it because path is known,
-                queue.add(w); // and add it to the queue.
+            for (int w : G.adj(v)) {
+                //if (!marked[w]) // For every unmarked adjacent vertex,
+                if ( states.get(w)==null )
+                {
+                    //out.println("path "+w +" to "+v);
+                    states.put(w, new State(v));
+                    //edgeTo[w] = v; // save last edge on a shortest path,
+                    //marked[w] = true; // mark it because path is known,
+                    queue.add(w); // and add it to the queue.
+                }
             }
         }
     }
     // 
     public void bfsMore(int n)  // 
     {
-        assert(marked[n]);
+        //assert(marked[n]);
         bfs(n);
     }
     public boolean hasPathTo(int v)
     { 
-        return marked[v]; 
+        return states.get(v) != null; 
     }
     public Iterable<Integer> pathTo(int v)
     {
         if (!hasPathTo(v)) return null;
         Stack<Integer> path = new Stack<Integer>();
-        for (int x = v; x != s; x = edgeTo[x])
+        for (int x = v; x != s; x = states.get(x).edgeTo) {
             path.push(x);
+            //out.println(" pathTo "+x);
+        }
         path.push(s);
         return path;
-    }
-}
-
-class GraphEx extends Graph
-{
-    private int K[]; // encriptionKey for each node
-    static final int capacity=200005;  // trade off memory for performance
-    GraphEx(int V)
-    {
-        super(V, capacity);
-        K=new int[capacity];
-    }
-
-    @Override
-    boolean expand(int newsize)
-    {
-        if ( !super.expand(newsize))
-            return false;
-        if ( K.length<newsize ) {
-            //out.println("expand "+newsize+" V "+V);
-            int newK[]=new int[newsize];
-            for (int i=0; i<K.length; i++)
-                newK[i]=K[i];
-            K=newK;
-        }
-        return true;
-    }
-    void setKey(int v, int k)
-    {
-        if (v<V)
-            K[v]=k;
-        else 
-            out.println("Error bad node "+v);
-    }
-    
-    int[] findMinMax(Iterable<Integer> p, int k)
-    {
-        //p.forEach (out::println) ;
-        int minX=Integer.MAX_VALUE;
-        int maxX=0;
-        for (int w: p) {
-            int k2=K[w]^k;
-            minX=min(minX, k2);
-            maxX=max(maxX, k2);
-        }
-        return new int[]{minX, maxX};
-    }
-    void printKey(int i)
-    {
-        out.println((i+1)+" "+K[i]);
     }
 }
 
