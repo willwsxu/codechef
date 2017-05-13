@@ -87,7 +87,7 @@ class SubArray {
             else if (N>K){
                 head = (head+N-1)%N;
                 if (Asum[tail] !=Asum[head]) {
-                    pq.remove(new Integer(Asum[tail]));
+                    pq.remove(Asum[tail]);
                     //out.println("remove "+Asum[tail]+" at "+tail);
                     pq.add(Asum[head]);
                     //out.println("add "+Asum[head]+" at "+head);
@@ -117,28 +117,14 @@ class SubArray {
         StringBuilder sb=new StringBuilder();
         int A[]=new int[]{1,1,0,1,0,1,1};
         SubArray sa=new SubArray(A, 4, "?!!?!!!?!?!?!?");
-        sa.bruteforce(sb);
-        sb.append("\n");
-        sa=new SubArray(A, 1, "?!!?!!!?!?!?!?");
-        sa.bruteforce(sb);
-        sb.append("\n");
-        sa=new SubArray(A, 2, "?!!?!!!?!?!?!?");
-        sa.bruteforce(sb);
-        sb.append("\n");
-        sa=new SubArray(A, 3, "?!!?!!!?!?!?!?");
-        sa.bruteforce(sb);
-        sb.append("\n");
-        sa=new SubArray(A, 5, "?!!?!!!?!?!?!?");
-        sa.bruteforce(sb);
-        sb.append("\n");
-        sa=new SubArray(A, 6, "?!!?!!!?!?!?!?");
-        sa.bruteforce(sb);
-        sb.append("\n");
-        sa=new SubArray(A, 7, "?!!?!!!?!?!?!?");
-        sa.bruteforce(sb);
-        sb.append("\n");
-        sa=new SubArray(A, 8, "?!!?!!!?!?!?!?");
-        sa.bruteforce(sb);
+        sa.bruteforce(sb);         sb.append("\n");
+        sa=new SubArray(A, 1, "?!!?!!!?!?!?!?"); sa.bruteforce(sb); sb.append("\n");
+        sa=new SubArray(A, 2, "?!!?!!!?!?!?!?"); sa.bruteforce(sb); sb.append("\n");
+        sa=new SubArray(A, 3, "?!!?!!!?!?!?!?"); sa.bruteforce(sb); sb.append("\n");
+        sa=new SubArray(A, 5, "?!!?!!!?!?!?!?"); sa.bruteforce(sb); sb.append("\n");
+        sa=new SubArray(A, 6, "?!!?!!!?!?!?!?"); sa.bruteforce(sb); sb.append("\n");
+        sa=new SubArray(A, 7, "?!!?!!!?!?!?!?"); sa.bruteforce(sb); sb.append("\n");
+        sa=new SubArray(A, 8, "?!!?!!!?!?!?!?"); sa.bruteforce(sb);
         out.println(sb.toString());
         
         sb = new StringBuilder();
@@ -186,15 +172,16 @@ class SubArray {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        ListBackedPQ.perfTest(100000);
-        /*int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
+        //ListBackedPQ.perfTest(100000);
+        //test();
+        int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
         int K=sc.nextInt();
         int P=sc.nextInt();  // P=p.length
         int []A=new int[N];
         for (int j=0; j<N; j++)
             A[j]=sc.nextInt();  // 0 or 1
         String p=sc.next();
-        new SubArray(A, K, p).solve();*/
+        new SubArray(A, K, p).solve();
     }
 }
 
@@ -202,9 +189,7 @@ class SubArray {
 // ArrayList is also faster than int[] impl, up to 3 times
 class SortedList
 {
-    //private List<Integer> ls;
-    private int[] ls;
-    int size;
+    private List<Integer> ls;
     Comparator<Integer> cmp;
     SortedList(boolean reverseOrder, int capacity)
     {
@@ -212,44 +197,26 @@ class SortedList
             cmp = Comparator.reverseOrder();
         else
             cmp = Comparator.naturalOrder();
-        //ls = new ArrayList<>(10000);
-        ls = new int[capacity+10];
-    }
-    public void add(int i, int e)
-    {
-        for (int j=size-1; j>=i; j--)
-            ls[j+1]=ls[j];
-        ls[i]=e;
-        size++;
-    }
-    public void remove(int i, int e)
-    {
-        for (int j=i; j<size-1; j++)
-            ls[j]=ls[j+1];
-        size--;
+        ls = new ArrayList<>(capacity);
     }
     public boolean add(int e)
     {
-        //int i=Collections.binarySearch(ls, e, cmp);
-        int i=Arrays.binarySearch(ls, 0, size, e);
+        int i=Collections.binarySearch(ls, e, cmp);
         if (i<0)
             i=-(i+1);
-        //ls.add(i, e);
-        add(i, e);
+        ls.add(i, e);
         return true;
     }
     public int peek()
     {
-        return ls[0];//ls.get(0);
+        return ls.get(0);
     }
     
     public boolean remove(int e)
     {
-        //int i=Collections.binarySearch(ls, e, cmp);
-        int i=Arrays.binarySearch(ls, 0, size, e);
+        int i=Collections.binarySearch(ls, e, cmp);
         if (i>=0) {
-            //ls.remove(i);
-            remove(i, e);
+            ls.remove(i);
             return true;
         }
         return false;
