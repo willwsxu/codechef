@@ -93,7 +93,7 @@ class GothamPD {
     }
     private void readNodes()
     {        
-        g=new Graph(10000);
+        g=new Graph();
         int R=sc.nextInt();  // 1 ≤ R ≤ N
         int key=sc.nextInt();// 1 ≤ R, ui, vi, key, ki ≤ 2^31− 1
         g.addNode(R-1, key);
@@ -101,8 +101,7 @@ class GothamPD {
             int u=sc.nextInt();
             int v=sc.nextInt();
             int k=sc.nextInt();
-            g.addNode(u-1, k);
-            g.addEdge(u-1, v-1);
+            g.add(u-1, v-1, k);
         }
         dirty=true;
     }
@@ -134,8 +133,7 @@ class GothamPD {
         v ^=last_answer;
         k ^=last_answer;
         //out.println(" add u "+u+" v "+v+" k "+k);
-        g.addNode(u-1, k);
-        g.addEdge(u-1, v-1);  // must call this first to expand graph node
+        g.add(u-1, v-1, k);  // must call this first to expand graph node
         dirty=true;
         if ( bf !=null) // did initial bsf
             bf.bfsMore(v-1);
@@ -163,7 +161,7 @@ class GothamPD {
     public static void test()
     {
         GothamPD gpd = new GothamPD(6, 4);
-        gpd.g=new Graph(1000);
+        gpd.g=new Graph();
         StringBuilder sb = new StringBuilder();
         gpd.g.addNode(0, 2);  // 1 2, index from 0
         gpd.add(5, 1, 3, 0);    // 5 1 3
@@ -188,20 +186,22 @@ class GothamPD {
         assert(t==1);
         last_answer = gpd.query(0, 7, last_answer, sb); // 1 5 2
         out.print(sb.toString());
+        gpd.g.add(Integer.MAX_VALUE-1, 9, Integer.MAX_VALUE-2);
+        gpd.bf.bfsMore(9);
+        gpd.bf.pathTo(Integer.MAX_VALUE-1).forEach(gpd.g::printKey);
     }
     
     static MyReader sc = new MyReader();  // for large input
     //static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {     
-        //test();
+        test();
         new GothamPD();
     }
 }
 
 class Graph { // unweighted, bidirectional
     private   int   E; // number of edges
-    private   int   capacity;
 
     class Node
     {
@@ -213,25 +213,28 @@ class Graph { // unweighted, bidirectional
         }
     }
     Map<Integer, Node> nodes;
-    Graph(int capacity)
+    Graph()
     {
-        this.capacity=capacity;
         nodes=new HashMap<>();
         E=0;
     }
-    public void addNode(int v, int k)
+    public void addNode(int u, int k)
     {
-        nodes.put(v, new Node(k));
+        nodes.put(u, new Node(k));
     }
     public int V() { return nodes.size(); }
     public int E() { return E; }
-    public int capacity() { return capacity; }
     
     public void addEdge(int u, int v)
     {
         nodes.get(u).adj.add(v);
         nodes.get(v).adj.add(u);
         E++;
+    }
+    public void add (int u, int v, int k) 
+    {        
+        addNode(u,k);
+        addEdge(u, v);
     }
     public List<Integer> adj(int u)
     {
