@@ -61,36 +61,24 @@ class SubArray {
             }
         }
     }
-    int head=0;
-    int tail=0;
+    
     void cacheSum(StringBuilder sb)
-    {
-        tail=N-K;        
+    { 
         Asum = new int[N];
         for (int i=0; i<K; i++) {
             Asum[0] += A[i];  // store sum of next K elements
         }
-        //pq.add(Asum[0]);
         for (int i=1; i<N; i++) {
             Asum[i] = Asum[i-1]+A[(i+K-1)%N]-A[i-1];
-            //if (i<=N-K)
-            //    pq.add(Asum[i]);
         }
         CircularListMax pq = new CircularListMax(Asum, N-K+1);
-        //out.println("head "+head+" tail "+tail);
         for (int i=0; i<request.length(); i++) {
             if (request.charAt(i)=='?') {
                 sb.append(pq.peek());
                 sb.append("\n");
             }
-            else if (N>K){
-                //if (Asum[tail] !=Asum[head]) 
-                {
-                    //pq.remove(Asum[tail]);
-                    //pq.add(Asum[head]);
-                }
+            else if (N>K && K>1){
                 pq.shiftL();
-                //out.println(pq);
             }
         }
     }
@@ -147,9 +135,6 @@ class SubArray {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //testPQList();
-        //test();
-        //ListBackedPQ.perfTest(100000);
         int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
         int K=sc.nextInt();
         int P=sc.nextInt();  // P=p.length
@@ -193,6 +178,7 @@ class Pi  // pair of int
 }
 
 // Avoid priority Queue remove method call as it is slow
+// super fast, 5x better than SortedList class
 class ListBackedPQ
 {    
     int A[];
