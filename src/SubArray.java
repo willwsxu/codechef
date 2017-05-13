@@ -63,21 +63,20 @@ class SubArray {
     }
     int head=0;
     int tail=0;
-    //PriorityQueue<Integer> pq=new PriorityQueue<>(100000, Comparator.reverseOrder());
     void cacheSum(StringBuilder sb)
     {
         tail=N-K;        
-        SortedList pq = new SortedList(true, 100000);
         Asum = new int[N];
         for (int i=0; i<K; i++) {
             Asum[0] += A[i];  // store sum of next K elements
         }
-        pq.add(Asum[0]);
+        //pq.add(Asum[0]);
         for (int i=1; i<N; i++) {
             Asum[i] = Asum[i-1]+A[(i+K-1)%N]-A[i-1];
-            if (i<=N-K)
-                pq.add(Asum[i]);
+            //if (i<=N-K)
+            //    pq.add(Asum[i]);
         }
+        CircularListMax pq = new CircularListMax(Asum, N-K+1);
         //out.println("head "+head+" tail "+tail);
         for (int i=0; i<request.length(); i++) {
             if (request.charAt(i)=='?') {
@@ -85,14 +84,12 @@ class SubArray {
                 sb.append("\n");
             }
             else if (N>K){
-                head = (head+N-1)%N;
-                if (Asum[tail] !=Asum[head]) {
-                    pq.remove(Asum[tail]);
-                    //out.println("remove "+Asum[tail]+" at "+tail);
-                    pq.add(Asum[head]);
-                    //out.println("add "+Asum[head]+" at "+head);
+                //if (Asum[tail] !=Asum[head]) 
+                {
+                    //pq.remove(Asum[tail]);
+                    //pq.add(Asum[head]);
                 }
-                tail = (tail+N-1)%N;
+                pq.shiftL();
                 //out.println(pq);
             }
         }
@@ -125,7 +122,7 @@ class SubArray {
         sa=new SubArray(A, 6, "?!!?!!!?!?!?!?"); sa.bruteforce(sb); sb.append("\n");
         sa=new SubArray(A, 7, "?!!?!!!?!?!?!?"); sa.bruteforce(sb); sb.append("\n");
         sa=new SubArray(A, 8, "?!!?!!!?!?!?!?"); sa.bruteforce(sb);
-        out.println(sb.toString());
+        out.println(sb.toString()+"brute force");
         
         sb = new StringBuilder();
         // 1,1,0,1,0,1,1->3, 2, 2, 3, 3, 4, 3
@@ -139,41 +136,20 @@ class SubArray {
         test1cache(A, sb, 8, "?!!?!!!?!?!?!?");
         out.println(sb.toString());
     }
-    static void testList()
+    static void testPQList()
     {
-        StringBuilder sb=new StringBuilder();
         int A[]=new int[]{3, 2, 2, 3, 3, 4, 3};
-        ListBackedPQ pq = new ListBackedPQ(A, 4, true);
-        out.println(pq.peek());
-        pq.add(6);
-        pq.remove(3);
-        pq.add(5);
-        pq.remove(2);
-        out.println(pq.peek());
-        pq.add(4);
-        pq.remove(1);
-        pq.add(3);
-        pq.remove(0);
-        pq.add(2);
-        pq.remove(6);
-        out.println(pq.peek());
-        pq.add(1);
-        pq.remove(5);
-        out.println(pq.peek());
-        pq.add(0);
-        pq.remove(4);
-        out.println(pq.peek());
-        pq.add(6);
-        pq.remove(3);
-        out.println(pq.peek());
-        out.println();
+        CircularListMax.test(A, 4);
+        CircularListMax.test(A, 1);
+        CircularListMax.test(A, 7);
     }
     
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //ListBackedPQ.perfTest(100000);
+        //testPQList();
         //test();
+        //ListBackedPQ.perfTest(100000);
         int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
         int K=sc.nextInt();
         int P=sc.nextInt();  // P=p.length
@@ -182,81 +158,6 @@ class SubArray {
             A[j]=sc.nextInt();  // 0 or 1
         String p=sc.next();
         new SubArray(A, K, p).solve();
-    }
-}
-
-// ArrayList is 25x faster than linkedlist for sorted list
-// ArrayList is also faster than int[] impl, up to 3 times
-class SortedList
-{
-    private List<Integer> ls;
-    Comparator<Integer> cmp;
-    SortedList(boolean reverseOrder, int capacity)
-    {
-        if (reverseOrder)
-            cmp = Comparator.reverseOrder();
-        else
-            cmp = Comparator.naturalOrder();
-        ls = new ArrayList<>(capacity);
-    }
-    public boolean add(int e)
-    {
-        int i=Collections.binarySearch(ls, e, cmp);
-        if (i<0)
-            i=-(i+1);
-        ls.add(i, e);
-        return true;
-    }
-    public int peek()
-    {
-        return ls.get(0);
-    }
-    
-    public boolean remove(int e)
-    {
-        int i=Collections.binarySearch(ls, e, cmp);
-        if (i>=0) {
-            ls.remove(i);
-            return true;
-        }
-        return false;
-    }
-    public static void test()
-    {
-        SortedList sll = new SortedList(true, 100000);
-        sll.add(10);
-        sll.add(20);
-        sll.add(30);
-        sll.add(5);
-        sll.add(15);
-        System.out.println(sll);
-        System.out.println(sll.peek());
-        sll.remove(new Integer(30));
-        System.out.println(sll.peek());
-        sll.add(4);
-        sll.remove(0);
-        System.out.println(sll);
-    }
-    public static void perfTest(int N)
-    {
-        Instant start = Instant.now();
-        SortedList sll = new SortedList(true, 100000);
-        for (int i=0; i<N; i++) {
-            sll.add(i%(N/3)+1);
-        }        
-        Instant mid = Instant.now();
-        out.println("usec "+ChronoUnit.MICROS.between(start, mid));
-        // when N=100000, LinkedList 11 sec, ArrayList .45 sec, PriorityQueue 15msec
-        
-        for (int i=0; i<N; i++) {
-            int a=i%(N/7)+1;
-            int d=i%(N/3)+1;
-            sll.add(a);
-            sll.remove(d);
-        }
-        Instant end = Instant.now();   
-        out.println("usec "+ChronoUnit.MICROS.between(mid, end));   
-        // when N=100000, LinkedList 83 sec, ArrayList 1.3 sec, PriorityQueue 3.6 sec
     }
 }
 
@@ -341,15 +242,53 @@ class ListBackedPQ
         ListBackedPQ pq=new ListBackedPQ(A, N-2, true);
         Instant mid = Instant.now();
         out.println("usec "+ChronoUnit.MICROS.between(start, mid));
-        // when N=100000, LinkedList 11 sec, ArrayList .45 sec, PriorityQueue 15msec
+        // when N=100000, 20 msec
+        out.println("size "+N+" pq size "+pq.pq.size());
         
         int K=N-2;
         for (int i=0; i<N; i++) {
-            pq.add((K+i)%N);
             pq.remove(i);
+            pq.add((K+i)%N);
         }
         Instant end = Instant.now();   
         out.println("usec "+ChronoUnit.MICROS.between(mid, end));   
-        // when N=100000, LinkedList 83 sec, ArrayList 1.3 sec, PriorityQueue 3.6 sec
+        // when N=100000, 12 msec
+        out.println("size "+N+" pq size "+pq.pq.size());
+    }
+}
+
+class CircularListMax extends ListBackedPQ
+{
+    int head, tail, size;
+    CircularListMax(int a[], int k){
+        super(a, k, true);
+        size=a.length;
+        head=0; tail=k-1;
+    }
+    void shiftL()
+    {
+        remove(tail);      
+        //out.println("remove "+A[tail]+" at "+tail);  
+        head = (head+size-1)%size;    
+        add(head);
+        //out.println("add "+A[head]+" at "+head); 
+        tail = (tail+size-1)%size;  
+        //out.println(Arrays.toString(b));
+    }
+    static void test(int A[], int frame)
+    {
+        CircularListMax pq = new CircularListMax(A, A.length-frame+1);
+        out.println(pq.peek()+" "+Arrays.toString(pq.A));
+        pq.shiftL();    pq.shiftL();
+        out.println(pq.peek()+" "+pq.pq.toString());
+        pq.shiftL();    pq.shiftL();    pq.shiftL();
+        out.println(pq.peek()+" "+pq.pq.toString());
+        pq.shiftL();
+        out.println(pq.peek()+" "+pq.pq.toString());
+        pq.shiftL();
+        out.println(pq.peek()+" "+pq.pq.toString());
+        pq.shiftL();
+        out.println(pq.peek()+" "+pq.pq.toString());
+        out.println();
     }
 }
