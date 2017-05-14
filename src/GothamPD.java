@@ -7,10 +7,15 @@ import java.io.InputStreamReader;
 import static java.lang.Integer.max;
 import static java.lang.Integer.min;
 import static java.lang.System.out;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -190,13 +195,47 @@ class GothamPD {
         gpd.bf.bfsMore(9);
         gpd.bf.pathTo(Integer.MAX_VALUE-1).forEach(gpd.g::printKey);
     }
+    static void largeTest()
+    {
+        Instant start = Instant.now();
+        int n=100000;
+        int q=200000;
+        GothamPD gpd = new GothamPD(n, q);
+        gpd.g=new Graph();
+        StringBuilder sb = new StringBuilder();
+        Random rnd=new Random();
+        gpd.g.addNode(0, rnd.nextInt(100));
+        for (int i=1; i<n; i++){
+            int prev=rnd.nextInt(i);// ensure connect to previous connected node
+            gpd.add(i+1, prev+1, rnd.nextInt(100), 0);
+        }
+        Instant mid = Instant.now();
+        out.println(n+" test takes usec "+ChronoUnit.MICROS.between(start, mid)); 
+        Set<Integer> nodes= new HashSet<>();
+        int bound=1<<31-n-1;
+        for (int i=1; i<n; i++) {
+            int u=rnd.nextInt(bound);
+            while (nodes.contains(u+n+1))
+                u=rnd.nextInt(bound);
+            u += (n+1);
+            nodes.add(u);
+            int v=rnd.nextInt(n);
+            //out.println("add "+u+" "+v);
+            gpd.add(u, v+1, rnd.nextInt(100), 0);
+            gpd.query(u, 99, 0, sb);
+        }
+        Instant end = Instant.now();
+        out.println(n+" query takes usec "+ChronoUnit.MICROS.between(mid, end));  
+        out.print(sb.toString()); 
+    }
     
     static MyReader sc = new MyReader();  // for large input
     //static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {     
-        test();
-        new GothamPD();
+        //test();
+        largeTest();
+        //new GothamPD();
     }
 }
 
@@ -220,6 +259,7 @@ class Graph { // unweighted, bidirectional
     }
     public void addNode(int u, int k)
     {
+        //out.println("node "+u);
         nodes.put(u, new Node(k));
     }
     public int V() { return nodes.size(); }
@@ -227,6 +267,7 @@ class Graph { // unweighted, bidirectional
     
     public void addEdge(int u, int v)
     {
+        //out.println("edge "+u+" to "+v);
         nodes.get(u).adj.add(v);
         nodes.get(v).adj.add(u);
         E++;
