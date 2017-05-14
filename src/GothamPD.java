@@ -82,12 +82,12 @@ class MyReader
 }
 
 class GothamPD {
-    int N, Q;
+    int N, Q, R;
     Graph g;
     boolean dirty=true;
     GothamPD(int n, int q)  // for unit testing
     {
-        N=n; Q=q;
+        N=n; Q=q; R=1;
     }
     GothamPD()
     {
@@ -99,7 +99,7 @@ class GothamPD {
     private void readNodes()
     {        
         g=new Graph();
-        int R=sc.nextInt();  // 1 ≤ R ≤ N
+        R=sc.nextInt();  // 1 ≤ R ≤ N
         int key=sc.nextInt();// 1 ≤ R, ui, vi, key, ki ≤ 2^31− 1
         g.addNode(R-1, key);
         for (int i=0; i<N-1; i++) {
@@ -115,7 +115,7 @@ class GothamPD {
     int query(int v, int k, int last_answer, StringBuilder sb)
     {
         if ( bf==null ) { // first time
-            bf = new BreadthFirstPaths(g, 0);    
+            bf = new BreadthFirstPaths(g, R-1);    
             dirty=false;
         }
         v = (v^last_answer)-1;
@@ -234,8 +234,8 @@ class GothamPD {
     public static void main(String[] args)
     {     
         //test();
-        largeTest();
-        //new GothamPD();
+        //largeTest();
+        new GothamPD();
     }
 }
 
