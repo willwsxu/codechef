@@ -35,9 +35,41 @@ class SubSeqProd {
         else
             return binarysearch(num, mid, hi);
     }
-    void solve()
+    long solve()
     {
         Arrays.sort(val);
+        int start=0;
+        int end=val.length-1;
+        while(end>=0 &&val[end]>lim)
+            end--;
+        if (end<0)
+            return 0;
+        if (end<10)
+            return bruteforce(end+1);
+        long total=end+1;
+        for (int i=0; i<=end; i++) {
+            
+        }
+        return total;
+    }
+    long bruteforce(int N)
+    {
+        long count=0;
+        outterfor:
+        for (long i=1; i< (1<<N); i++) {  // bit for all subset of A
+            long prod=1;
+            for (int j=0; j<N; j++) {
+                if (((1<<j)&i)>0) {
+                    long prod2 = prod *val[j]; // check over flow
+                    if ( prod2<prod || prod2>lim)
+                        continue outterfor;
+                    prod = prod2;
+                }
+            }
+            if (prod<=lim)
+                count++;
+        }   
+        return count;
     }
     static void bruteforce(long A[], long K)
     {

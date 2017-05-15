@@ -206,7 +206,7 @@ class GothamPD {
         Random rnd=new Random();
         gpd.g.addNode(0, rnd.nextInt(100));
         for (int i=1; i<n; i++){
-            int prev=rnd.nextInt(i);// ensure connect to previous connected node
+            int prev=i-1;//rnd.nextInt(i);// ensure connect to previous connected node
             gpd.add(i+1, prev+1, rnd.nextInt(100), 0);
         }
         Instant mid = Instant.now();
@@ -226,7 +226,8 @@ class GothamPD {
         }
         Instant end = Instant.now();
         out.println(n+" query takes usec "+ChronoUnit.MICROS.between(mid, end));  
-        out.print(sb.toString()); 
+        //out.print(sb.toString()); 
+        gpd.bf.pathTo(n-1).forEach(gpd.g::printKey);
     }
     
     static MyReader sc = new MyReader();  // for large input
@@ -234,8 +235,8 @@ class GothamPD {
     public static void main(String[] args)
     {     
         //test();
-        //largeTest();
-        new GothamPD();
+        largeTest();
+        //new GothamPD();
     }
 }
 
