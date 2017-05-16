@@ -56,10 +56,10 @@ class SubSeqProd {
     // multi 3,
     long recurse(int start, int end, int multi, long prod)
     {
-        out.println("recur "+start+" end "+end+" multiply times "+multi+" prod "+prod);
+        //out.print("-recur "+start+" end "+end+" multiply times "+multi+" prod "+prod);
         long newProd=multiply(prod, val[start]);
         if (newProd>lim) {
-            out.println("newProd "+newProd);
+            //out.println(" count=0, newProd "+newProd);
             return 0;
         }
         else if ( multi==1) {
@@ -67,7 +67,7 @@ class SubSeqProd {
             long count=found-start;
             if ( multiply(prod, val[found])<=lim)
                 count++;
-            out.println("binarysearch "+found+" count "+count);
+            //out.println(" binarysearch "+found+" count "+count);
             return count;
         } else {
             long count=0;
@@ -92,13 +92,16 @@ class SubSeqProd {
         int n=end+1;
         long total=n;
         int maxMulti=findMaxMulti(n);
-        out.println(" numbers "+n+" multi "+maxMulti);
+        //out.println(" numbers "+n+" multi "+maxMulti);
         if ( maxMulti<=1 )
             return total;
         else if (maxMulti>end)
             return (1<<n)-1;  // watch out for precedence
+        // 2 3 4 5 6 maxMulti=3
+        // recurse maxMulti=2, 0 5, 1 5, 2 5, 3 5
+        // recurse maxMulti=3, 0 1 5, 0 2 5, 0 3 5; 1 2 5, 1 3 5; 2 3 5
         for (int i=2; i<=maxMulti; i++) {
-            for (int j=0; j<=n-maxMulti; j++)
+            for (int j=0; j<=n-i; j++)
                 total += recurse(j, n, i, 1);
         }
         return total;
@@ -156,11 +159,20 @@ class SubSeqProd {
         
         A = new long[]{10,9,8,7,6,5,4,3,2,1};
         bruteforce(A, 10);  //10+9+3+3
-        out.println("new "+new SubSeqProd(A, 10).solve());
-        /*
+        out.println("new "+new SubSeqProd(A, 10).solve());        
+        
+        A = new long[]{6, 5,4,3,2};
+        bruteforce(A, 40);
+        out.println("new "+new SubSeqProd(A, 40).solve());
+        
+        A = new long[]{10,9,8,7,6,5,4,3,2};
+        bruteforce(A, 72576);
+        out.println("new "+new SubSeqProd(A, 72576).solve());
+        
         A = new long[]{100, 200, 300};
         bruteforce(A, 4);  // 0
         bruteforce(A, 100);// 1
+        out.println("new "+new SubSeqProd(A, 100).solve());
         bruteforce(A, 200);// 2
         bruteforce(A, 300);// 3
         out.println("new "+new SubSeqProd(A, 300).solve());
@@ -171,17 +183,16 @@ class SubSeqProd {
         A = new long[]{10,9,8,7,6,5,4,3,2,1, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
         //bruteforce(A, 4000);//9783
         out.println("new "+new SubSeqProd(A, 4000).solve());  // 84610
-        */
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();
-        /*int N=sc.nextInt();  // 1 ≤ N ≤ 30
+        //test();
+        int N=sc.nextInt();  // 1 ≤ N ≤ 30
         int K=sc.nextInt();  // 1 ≤ K, Ai ≤ 10^18
         long A[] = new long[N];
         for (int j=0; j<N; j++)
             A[j] = sc.nextLong();
-        new SubSeqProd(A, K).solve();*/
+        out.println(new SubSeqProd(A, K).solve());
     }
 }
