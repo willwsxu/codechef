@@ -1,5 +1,8 @@
 package LunchTime.apr2017;
-
+/*
+score of a segment (consecutive subsequence) as its sum of elements modulo P (not necessarily prime). 
+Find the maximum score of a non-empty segment, and also find the number of segments with this maximum score
+*/
 
 import static java.lang.System.out;
 import java.util.Arrays;
@@ -7,7 +10,40 @@ import java.util.Scanner;
 
 
 class Segments {
-      
+     
+    static long[] prefixSum(long a[])  // set first elem to 0
+    {
+        long s[]=new long[a.length+1];
+        s[0]=0;
+        for (int i=1; i<=a.length; i++)
+            s[i] = s[i-1]+a[i-1];
+        return s;
+    }
+    long a[];
+    long p;
+    Segments(long A[], long P)
+    {
+        a=A; p=P;
+    }
+    void partialsum()
+    {
+        long s[] = prefixSum(a);
+        long countMaxSum =0, maxSum = 0;
+        for (int left=0; left <s.length; left++)
+        {            
+            for (int right=left; right <s.length; left++) {
+                long sum=(s[right+1]-s[left])%p;
+                if (sum>maxSum)
+                {
+                    maxSum=sum;
+                    countMaxSum=1;
+                }
+                else if (sum==maxSum)
+                    countMaxSum++;         
+            }
+        }
+        out.println(maxSum+" "+countMaxSum);
+    }
     static void maxSeg(long A[], long P, long ans)// brute force
     {
         int N=A.length;
