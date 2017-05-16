@@ -9,10 +9,17 @@ import java.util.Scanner;
 class SubSeqProd {
     long val[];
     long lim;
+    int  n;
     SubSeqProd(long a[], long k)
     {
+        //out.println("SubSeqProd "+k);
         val=a;
         lim=k;
+        Arrays.sort(a);
+        n=a.length;
+        while (n>0 && a[n-1]>k) {
+            n--;
+        }
     }
         
     long seqProduct(int ind, int num) // sequential prod
@@ -117,21 +124,16 @@ class SubSeqProd {
     }
     long solve()
     {
-        Arrays.sort(val);
-        int end=val.length-1;
-        while(end>=0 &&val[end]>lim)
-            end--;
-        if (end<0)
+        if (n<=0)
             return 0;
         //if (end<10)
         //    return bruteforce(end+1);
-        int n=end+1;
         long total=n;
         int maxMulti=findMaxMulti(n);
         //out.println(" numbers "+n+" multi "+maxMulti);
         if ( maxMulti<=1 )
             return total;
-        else if (maxMulti>end)
+        else if (maxMulti>=n)
             return (1<<n)-1;  // watch out for precedence
         //dp=new long[n][n+1][maxMulti+1][maxMulti+1];
         // 2 3 4 5 6 maxMulti=3
@@ -156,18 +158,20 @@ class SubSeqProd {
         }
         return total;
     }
-    long bruteforce(int N)
+    long bruteforce()
     {
+        //out.println("bruteforce");
         long count=0;
         outterfor:
-        for (long i=1; i< (1<<N); i++) {  // bit for all subset of A
+        for (long i=1; i< (1<<n); i++) {  // bit for all subset of A
             long prod=1;
-            for (int j=0; j<N; j++) {
+            for (int j=0; j<n; j++) {
                 if (((1<<j)&i)>0) {
                     long prod2 = prod *val[j]; // check over flow
                     if ( prod2<prod || prod2>lim)
                         continue outterfor;
                     prod = prod2;
+                    //out.println("bruteforce i="+i+" j="+j);
                 }
             }
             if (prod<=lim)
@@ -177,26 +181,7 @@ class SubSeqProd {
     }
     static void bruteforce(long A[], long K)
     {
-        Arrays.sort(A);
-        int N=A.length;
-        while (N>0 && A[N-1]>K) {
-            N--;
-        }
-        long count=0;
-        outterfor:
-        for (long i=1; i< (1<<N); i++) {  // bit for all subset of A
-            long prod=1;
-            for (int j=0; j<N; j++) {
-                if (((1<<j)&i)>0) {
-                    long prod2 = prod *A[j]; // check over flow
-                    if ( prod2<prod || prod2>K)
-                        continue outterfor;
-                    prod = prod2;
-                }
-            }
-            if (prod<=K)
-                count++;
-        }
+        long count = new SubSeqProd(A, K).bruteforce();
         out.println(count);
     }
     static void test()
@@ -248,13 +233,13 @@ class SubSeqProd {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
-        int N=sc.nextInt();  // 1 ≤ N ≤ 30
+        test();
+        /*int N=sc.nextInt();  // 1 ≤ N ≤ 30
         int K=sc.nextInt();  // 1 ≤ K, Ai ≤ 10^18
         long A[] = new long[N];
         for (int j=0; j<N; j++)
             A[j] = sc.nextLong();
-        out.println(new SubSeqProd(A, K).solve());
+        out.println(new SubSeqProd(A, K).solve());*/
     }
 }
 
