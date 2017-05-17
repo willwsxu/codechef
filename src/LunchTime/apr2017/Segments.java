@@ -1,4 +1,5 @@
-// package LunchTime.apr2017;
+package LunchTime.apr2017;
+
 /*
 score of a segment (consecutive subsequence) as its sum of elements modulo P (not necessarily prime). 
 Find the maximum score of a non-empty segment, and also find the number of segments with this maximum score
