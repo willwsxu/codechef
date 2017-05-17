@@ -11,6 +11,7 @@ sub can only be higher if Sj>Si, furthermore, max sub would be the least of Sj (
 **TreeMap higherEntry is nicely suited for this purpose
 */
 
+import codechef.PreCalc;
 import static java.lang.System.out;
 import java.util.Map;
 import java.util.Scanner;
@@ -19,14 +20,6 @@ import java.util.TreeMap;
 // BEARSEG easy? (or medium as it requires special optimization technique)
 class Segments {
      
-    static long[] prefixSum(int a[])  // set first elem to 0
-    {
-        long s[]=new long[a.length+1];
-        s[0]=0;
-        for (int i=1; i<=a.length; i++)
-            s[i] = s[i-1]+a[i-1];
-        return s;
-    }
     int a[];
     int p;
     Segments(int A[], int P)
@@ -60,7 +53,7 @@ class Segments {
     }
     void partialSumMax()  // 2 partialSumMax are comparable, O(n^2)
     {
-        long s[] = prefixSum(a);
+        long s[] = PreCalc.prefixSum(a);
         long countMaxSum =0, maxSum = 0;
         for (int left=0; left <a.length; left++)
         {            
