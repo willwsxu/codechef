@@ -8,7 +8,7 @@ import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Scanner;
 
-
+// DIGVIRUS medium
 class DigitVirus {
     static void bruteforce(String v)
     {
@@ -18,7 +18,6 @@ class DigitVirus {
         int ans=0;
         boolean change=false;
         do {
-            change=false;
             for (int i=0; i<v.length(); i++) {
                 // for each virus at i, check its +- 9 neighbors to see it it can mutate them
                 for (int j=max(0, i-9); j<min(i+9, s.length); j++) {
@@ -30,9 +29,15 @@ class DigitVirus {
             }
             if ( change )
                 ans++;
+            else 
+                break;
             //out.println(Arrays.toString(ns));
-            for (int i=0; i<v.length(); i++)
-                s[i]=ns[i];
+            change=false;        
+            for (int i=0; i<v.length(); i++) {
+                s[i]=ns[i];  // copy ns to s
+                if ( ns[i]!=ns[0] )
+                    change=true;  // still some difference
+            }
         } while (change);
         out.println(ans);
     }
