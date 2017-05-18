@@ -17,7 +17,8 @@ class DigitVirus {
         Arrays.fill(ns, '0');
         int ans=0;
         boolean change=false;
-        {
+        do {
+            change=false;
             for (int i=0; i<v.length(); i++) {
                 // for each virus at i, check its +- 9 neighbors to see it it can mutate them
                 for (int j=max(0, i-9); j<min(i+9, s.length); j++) {
@@ -27,11 +28,12 @@ class DigitVirus {
                     }
                 }
             }
-            ans++;
-            out.println(Arrays.toString(ns));
-            s=ns;
-        }
-        while (change);
+            if ( change )
+                ans++;
+            //out.println(Arrays.toString(ns));
+            for (int i=0; i<v.length(); i++)
+                s[i]=ns[i];
+        } while (change);
         out.println(ans);
     }
     static void test()
@@ -43,11 +45,11 @@ class DigitVirus {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
-        test();
-        /*
+        //test();
         int TC = sc.nextInt();  // between 1 and 3
         for (int i=0; i<TC; i++) {
             String s = sc.next(); //1 ≤ N ≤ 150,000
-        }*/
+            bruteforce(s);
+        }
     }
 }
