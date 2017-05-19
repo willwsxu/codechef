@@ -1,8 +1,12 @@
 
 import static java.lang.System.out;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
+import java.util.stream.LongStream;
 
+// CHEFCODE medium
+// Technique meet in the middle, http://www.infoarena.ro/blog/meet-in-the-middle
 
 // any sub sequence, product < K
 // use bit for subset, int is enough for N=30
@@ -22,6 +26,35 @@ class SubSeqProd {
         }
     }
         
+    void meetMiddle()
+    {
+        
+    }
+    long count=0;
+    
+    long completeSearch() {
+        val = LongStream.of(val).boxed()
+                .sorted(Comparator.reverseOrder())
+                .mapToLong(i->i).toArray();
+        //out.println(Arrays.toString(val));
+        completeSearch(0, 1);
+        return count-1;
+    }
+    
+    void completeSearch(int k, long prod)
+    {
+        if (prod>lim)
+            return;
+        if ( k==n ) {
+            count++;
+            //out.println("count "+count+" prod="+prod);
+            return;
+        }
+        completeSearch(k+1, prod);
+        long newprod = multiply(prod, val[k]);
+        completeSearch(k+1, newprod);
+    }
+    
     long seqProduct(int ind, int num) // sequential prod
     {
         long prod=1;
@@ -190,44 +223,56 @@ class SubSeqProd {
         long A[] = new long[]{1, 2, 3};
         bruteforce(A, 4);  // 5
         out.println("new "+new SubSeqProd(A, 4).solve());
+        out.println("complete search "+new SubSeqProd(A, 4).completeSearch()); 
         bruteforce(A, 6);  // 7
         out.println("new "+new SubSeqProd(A, 7).solve());
+        out.println("complete search "+new SubSeqProd(A, 7).completeSearch()); 
         
         A = new long[]{10,9,8,7,6,5,4,3,2,1};
         bruteforce(A, 10);  //10+9+3+3
-        out.println("new "+new SubSeqProd(A, 10).solve());        
+        out.println("new "+new SubSeqProd(A, 10).solve());  
+        out.println("complete search "+new SubSeqProd(A, 10).completeSearch());       
         
         A = new long[]{6, 5,4,3,2};
         bruteforce(A, 40);
         out.println("new "+new SubSeqProd(A, 40).solve());
+        out.println("complete search "+new SubSeqProd(A, 40).completeSearch());      
         
         A = new long[]{10,9,8,7,6,5,4,3,2};
         bruteforce(A, 72576);
         out.println("new "+new SubSeqProd(A, 72576).solve());
+        out.println("complete search "+new SubSeqProd(A, 72576).completeSearch());      
         
         A = new long[]{100, 200, 300};
         bruteforce(A, 4);  // 0
         bruteforce(A, 100);// 1
         out.println("new "+new SubSeqProd(A, 100).solve());
+        out.println("complete search "+new SubSeqProd(A, 100).completeSearch());    
         bruteforce(A, 200);// 2
         bruteforce(A, 300);// 3
         out.println("new "+new SubSeqProd(A, 300).solve());
+        out.println("complete search "+new SubSeqProd(A, 300).completeSearch());    
         
         A = new long[]{100000000000000000L, 200000000000000000L, 4000000000000000000L};
         bruteforce(A, 4);  // 0
         out.println("new "+new SubSeqProd(A, 4).solve());
+        out.println("complete search "+new SubSeqProd(A, 4).completeSearch());    
         A = new long[]{10,9,8,7,6,5,4,3,2,1, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
         //bruteforce(A, 4000);//9783
         out.println("new "+new SubSeqProd(A, 4000).solve());  // 9783
+        out.println("complete search "+new SubSeqProd(A, 4000).completeSearch());    
         
         A = new long[]{10,9,8,7,6,5,4,3,2,31, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
-        out.println("new "+new SubSeqProd(A, 1000000000000000000L).solve());  // 672779816
+        //out.println("new "+new SubSeqProd(A, 1000000000000000000L).solve());  // 672779816
+        out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch());     // 672295666
         
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,14,15,16,17,18,19,20,19,19,18,17,16,15,14,13,12,11};
-        out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 909178996
+        //out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 909178996
+        out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch());     // 908224121
         
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,4,5,6,7,8,9,10,9,9,8,7,16,15,14,13,12,11};
-        out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 1051752556
+        //out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 1051752556
+        out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch());     // 1051641446
         
     }
     static Scanner sc = new Scanner(System.in);
