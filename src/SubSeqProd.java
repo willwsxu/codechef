@@ -1,7 +1,10 @@
 
 import static java.lang.System.out;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.LongStream;
 
@@ -10,6 +13,7 @@ import java.util.stream.LongStream;
 
 // any sub sequence, product < K
 // use bit for subset, int is enough for N=30
+// CHEFCODE medium
 class SubSeqProd {
     long val[];
     long lim;
@@ -27,9 +31,61 @@ class SubSeqProd {
         }
     }
         
-    void meetMiddle()
+    void recurseProd(List<Long> s, long[] v, int k, long prod)
     {
-        
+        if (prod>lim)
+            return;
+        if ( k==v.length ) {
+            s.add(prod);
+            out.println("count "+count+" prod="+prod);
+            return;
+        }
+        recurseProd(s, v, k+1, prod);
+        recurseProd(s, v, k+1, multiply(prod, v[k]));        
+    }
+    
+    int binarysearch(List<Long> s, long p, int lo, int hi) {
+        if (lo>=hi-1)
+            return lo;
+        int mid = (lo+hi)/2;
+        if ( multiply(p, s.get(mid))>lim)
+            return binarysearch(p, lo, mid);
+        else
+            return binarysearch(p, mid, hi);
+    }
+    long meetMiddle()
+    {
+        if (n<=1)
+            return n;
+        long v1[]=new long[(n+1)/2];
+        long v2[]=new long[n/2];
+        for (int i=0; i<n; i++) {
+            if (i%2==0)
+                v1[i/2]=val[i];
+            else
+                v2[i/2]=val[i];
+        }
+        List<Long> s1=new ArrayList<>();
+        List<Long> s2=new ArrayList<>();
+        recurseProd(s1, v1, 0, 1);
+        recurseProd(s2, v2, 0, 1);
+        Collections.sort(s1);
+        Collections.sort(s2);
+        out.println(Arrays.toString(v1)+"-"+s1);
+        out.println(Arrays.toString(v2)+"-"+s2);
+        if (s1.size()>s2.size()) { // swap so s1 is smaller
+            List<Long> temp=s2;
+            s1=s2;
+            s2=temp;
+        }
+        long count =0;
+        for (Long i: s1) {
+            int pos = binarysearch(s2, i, 0, s2.size());
+            if (multiply(s2.get(pos), i)>lim)
+                pos--;
+            count += ++pos;
+        }
+        return count;
     }
     long count=0;
     
@@ -70,10 +126,10 @@ class SubSeqProd {
     {
         if (prod>lim)
             return 0;
-//        else if (prod==lim) {
-//            out.println(" prod==lim k="+k+" ans="+(n-k+1));
-//            return n-k+1;
-//        } 
+        else if (prod==lim) {
+            //out.println(" prod==lim k="+k+" ans="+(n-k+1));
+            return n-k+1;
+        } 
         else if ( k==n ) {
             //out.println("count "+count+" prod="+prod);
             if ( prod<=k)
@@ -266,7 +322,8 @@ class SubSeqProd {
         out.println("new "+new SubSeqProd(A, 7).solve());
         out.println("complete search "+new SubSeqProd(A, 7).completeSearch(true)); 
         out.println("complete search2 "+new SubSeqProd(A, 7).completeSearch(false)); 
-        
+        out.println("meet middle "+new SubSeqProd(A, 7).meetMiddle());
+        /*
         A = new long[]{10,9,8,7,6,5,4,3,2,1};
         bruteforce(A, 10);  //10+9+3+3
         out.println("new "+new SubSeqProd(A, 10).solve());  
@@ -312,7 +369,7 @@ class SubSeqProd {
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,4,5,6,7,8,9,10,9,9,8,7,16,15,14,13,12,11};
         //out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 1051752556
         out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch(false));     // 1051641446
-        
+        */
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
