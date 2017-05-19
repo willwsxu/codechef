@@ -20,8 +20,10 @@ class DigitVirus {
         Queue<Integer> qb=new ConcurrentLinkedQueue<>();
         char[] s=v.toCharArray();
         char[] ns=new char[s.length];
-        for (int i=0; i<s.length; i++)
+        for (int i=0; i<s.length; i++) {
             qa.add(i);
+            ns[i]=s[i];
+        }
         int vis[]=new int[s.length];
         Arrays.fill(vis, 0);  // an efficient to add only modified virus to qb once
         int count=0;
@@ -58,7 +60,9 @@ class DigitVirus {
     {
         char[] s=v.toCharArray();
         char[] ns=new char[s.length];
-        Arrays.fill(ns, '0');
+        for (int i=0; i<s.length; i++) {
+            ns[i]=s[i];
+        }
         int ans=0;
         boolean change=false;
         do {
@@ -88,14 +92,17 @@ class DigitVirus {
     static void test()
     {
         bruteforce("555755555");        // 3
-        out.print("bfs ");
-        bfs("555755555"); 
+        out.print("bfs ");        bfs("555755555"); 
         bruteforce("311110000000000");  // 6
-        out.print("bfs ");
-        bfs("311110000000000"); 
+        out.print("bfs ");        bfs("311110000000000"); 
         bruteforce("07788000744");      // 4
-        out.print("bfs ");
-        bfs("07788000744"); 
+        out.print("bfs ");        bfs("07788000744"); 
+        bruteforce("7777");
+        out.print("bfs ");        bfs("7777"); 
+        bruteforce("1");
+        out.print("bfs ");        bfs("1"); 
+        bruteforce("10");
+        out.print("bfs ");        bfs("10"); 
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
