@@ -1,3 +1,5 @@
+package LunchTime.apr2017;
+
 /* Virus of strength 0 to 9 in a string e.g. "8761", a virus of higher strength
  * can infect neighbor of lower strength if the difference of strength is no less than
  * difference of distance, i.e. S[i] - S[j] >= |i - j|, infection takes a sec regardless
