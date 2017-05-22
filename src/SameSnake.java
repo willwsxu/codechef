@@ -11,7 +11,7 @@ import java.util.Set;
  */
 class Snake
 {
-    Point[] p;
+    int x1, y1, x2, y2;
     boolean bHorizontal=true;
     Snake(int x1, int y1, int x2, int y2)
     {
@@ -21,24 +21,52 @@ class Snake
                 y1 = y2;
                 y2=y;
             }
-            bHorizontal=true;
+            bHorizontal=false;
         } else {
             if ( x2<x1) {
                 int x=x1;
                 x1 = x2;
                 x2=x;
             }
-            bHorizontal=false;
-        }        
+            bHorizontal=true;
+        }     
+        this.x1=x1; this.y1=y1;
+        this.x2=x2; this.y2=y2;
+    }
+    boolean checkX(Snake s2) {
+        if (x2 <s2.x1 || s2.x2<x1)
+            return false;
+        return true;
+    }
+    boolean checkY(Snake s2) {
+        if (y2 <s2.y1 || s2.y2<y1)
+            return false;
+        return true;
+    }
+    boolean checkXY(Snake s2) { // s2 is vertical
+        if (x1 == s2.x1 && y1==s2.y1)
+            return true;
+        if (x1 == s2.x2 && y1==s2.y2)
+            return true;
+        if (x2 == s2.x1 && y2==s2.y1)
+            return true;
+        if (x2 == s2.x2 && y2==s2.y2)
+            return true;
+        return false;
     }
     boolean same(Snake s2) {
         if (bHorizontal==s2.bHorizontal) {  // same direction
-            
+            if (bHorizontal)
+                return checkX(s2);
+            else
+                return checkY(s2);
         } else
         {
-            
+            if (bHorizontal)
+                return this.checkXY(s2);
+            else
+                return s2.checkXY(this);            
         }
-        return false;
     }
 }
 class SameSnake {
@@ -88,48 +116,72 @@ class SameSnake {
         s.addCells(11, 1, 7, 1);
         s.g.print();
         out.println(s.same()==true);
+        Snake s1=new Snake(2, 1, 8, 1);
+        Snake s2=new Snake(11, 1, 7, 1);
+        out.println(s1.same(s2)==true);
         
         s = new SameSnake();
         s.addCells(2, 1, 8, 1);
         s.addCells(11, 1, 9, 1);
         s.g.print();
         out.println(s.same()==false);
+        s1=new Snake(2, 1, 8, 1);
+        s2=new Snake(11, 1, 9, 1);
+        out.println(s1.same(s2)==false);
         
         s = new SameSnake();
         s.addCells(2, 1, 8, 1);
         s.addCells(3, 1, 3, -2);
         s.g.print();
         out.println(s.same()==false);
+        s1=new Snake(2, 1, 8, 1);
+        s2=new Snake(3, 1, 3, -2);
+        out.println(s1.same(s2)==false);
         
         s = new SameSnake();
         s.addCells(2, 1, 8, 1);
         s.addCells(2, 1, 2, -2);
         s.g.print();
         out.println(s.same()==true);
+        s1=new Snake(2, 1, 8, 1);
+        s2=new Snake(2, 1, 2, -2);
+        out.println(s1.same(s2)==true);
                 
         s = new SameSnake();
         s.addCells(2, 1, 2, 1);
         s.addCells(2, 1, 2, -2);
         s.g.print();
         out.println(s.same()==true);
+        s1=new Snake(2, 1, 2, 1);
+        s2=new Snake(2, 1, 2, -2);
+        out.println(s1.same(s2)==true);
         
         s = new SameSnake();
         s.addCells(2, 0, 2, 0);
         s.addCells(2, 1, 2, -2);
         s.g.print();
         out.println(s.same()==true);
+        s1=new Snake(2, 0, 2, 0);
+        s2=new Snake(2, 1, 2, -2);
+        out.println(s1.same(s2)==true);
         
         s = new SameSnake();
         s.addCells(2, 0, 2, 0);
         s.addCells(2, 1, 2, 1);
         s.g.print();
         out.println(s.same()==false);
+        s1=new Snake(2, 0, 2, 0);
+        s2=new Snake(2, 1, 2, 1);
+        out.println(s1.same(s2)==false);
         
         s = new SameSnake();
         s.addCells(2, 0, 2, 0);
         s.addCells(2, 0, 2, 0);
         s.g.print();
         out.println(s.same()==true);
+        s1=new Snake(2, 0, 2, 0);
+        s2=new Snake(2, 0, 2, 0);
+        out.println(s1.same(s2)==true);
     }
         
     static int[] ria(int N) { // read int array
@@ -146,10 +198,13 @@ class SameSnake {
         StringBuilder sb=new StringBuilder();
         for (int i=0; i<T; i++) {
             int xy[]=ria(8); // -109 ≤ Xij,Yij ≤ 109
-            SameSnake s = new SameSnake();
-            s.addCells(xy[0], xy[1], xy[2], xy[3]);
-            s.addCells(xy[4], xy[5], xy[6], xy[7]);
-            sb.append(s.same()?"yes\n":"no\n");
+            //SameSnake s = new SameSnake();
+            //s.addCells(xy[0], xy[1], xy[2], xy[3]);
+            //s.addCells(xy[4], xy[5], xy[6], xy[7]);
+            //sb.append(s.same()?"yes\n":"no\n");
+            Snake s1=new Snake(xy[0], xy[1], xy[2], xy[3]);
+            Snake s2=new Snake(xy[4], xy[5], xy[6], xy[7]);
+            sb.append(s1.same(s2)?"yes\n":"no\n");
         }
         out.println(sb.toString());
     }
