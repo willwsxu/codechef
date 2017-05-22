@@ -9,7 +9,38 @@ import java.util.Set;
 
 /*
  */
-
+class Snake
+{
+    Point[] p;
+    boolean bHorizontal=true;
+    Snake(int x1, int y1, int x2, int y2)
+    {
+        if ( x1==x2) {
+            if ( y2<y1) {
+                int y=y1;
+                y1 = y2;
+                y2=y;
+            }
+            bHorizontal=true;
+        } else {
+            if ( x2<x1) {
+                int x=x1;
+                x1 = x2;
+                x2=x;
+            }
+            bHorizontal=false;
+        }        
+    }
+    boolean same(Snake s2) {
+        if (bHorizontal==s2.bHorizontal) {  // same direction
+            
+        } else
+        {
+            
+        }
+        return false;
+    }
+}
 class SameSnake {
     PointGraph g=new PointGraph();
     SameSnake()
@@ -112,13 +143,15 @@ class SameSnake {
     {      
         //test();
         int T=sc.nextInt();     // 1 ≤ T ≤ 10^5
+        StringBuilder sb=new StringBuilder();
         for (int i=0; i<T; i++) {
             int xy[]=ria(8); // -109 ≤ Xij,Yij ≤ 109
             SameSnake s = new SameSnake();
             s.addCells(xy[0], xy[1], xy[2], xy[3]);
             s.addCells(xy[4], xy[5], xy[6], xy[7]);
-            out.println(s.same()?"yes":"no");
+            sb.append(s.same()?"yes\n":"no\n");
         }
+        out.println(sb.toString());
     }
 }
 
