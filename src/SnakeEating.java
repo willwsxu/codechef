@@ -11,62 +11,57 @@ import java.util.stream.IntStream;
 
 class SnakeEating {
     Integer L[];
-    long prefix[];
+    long prefix[];  // start from 1
     int Q;
     SnakeEating(Integer a[], int q)
     {
         L=a;
         Arrays.sort(L, Comparator.reverseOrder());
         Q=q;
-        prefix = new long[L.length];
-        prefix[0]=L[0];
-        for (int i=1; i<L.length; i++)
-            prefix[i]=prefix[i-1]+L[i];
+        prefix = new long[L.length+1];
+        prefix[0]=0;
+        for (int i=0; i<L.length; i++)
+            prefix[i+1]=prefix[i]+L[i];
         //out.println(Arrays.toString(L));
         //out.println(Arrays.toString(prefix));
     }
     long diff(int start, int next, int k) {
-        long diff=prefix[next];
-        if (start>0)
-            diff -= prefix[start-1];
+        long diff=prefix[next+1];
+        diff -= prefix[start];
         int eater=next-start+1;
         int eaten=L.length-next-1;
         diff = (long)k*eater-diff; // use cast to fix overflow
+        //out.println("start "+start+" next="+next+" diff="+diff+" snakes="+eaten);
         if (diff>eaten) 
-            return 1;
+            return -1;
         else if (diff==eaten)
             return 0;
-        return -1;
+        return 1;
     }
     // find position that enough snakes can be eaten to grow snake from start to pos to length k
     int binarySnake(int start, int pos, int end, int k)
     {
         if ( pos>end) {
-            //out.println("pos == "+pos+" end "+end);
+            out.println("start "+start+"pos == "+pos+" end "+end);
             return 0;
         }
         if (pos==end || pos==end-1) {
             //out.println("pos == "+pos+" end "+end);
-            if ( diff(start, end, k)<=0)
+            if ( diff(start, end, k)>=0)
                 return end-start+1;
-            if ( diff(start, pos, k)>0)
+            if ( diff(start, pos, k)<0)
                 pos--;
             return pos-start+1;            
         }
         int next=(pos+end)/2;
-        long diff=prefix[next];
-        if (start>0)
-            diff -= prefix[start-1];
-        int eater=next-start+1;
-        int eaten=L.length-next-1;
-        diff = (long)k*eater-diff; // use cast to fix overflow
+        long diff=diff(start, next, k);
         //out.println("pos "+pos+" end="+end+" diff="+diff+" snakes="+eaten);
-        if (diff>eaten) {
+        if (diff<0) {
             return binarySnake(start, pos, next-1, k);
         }
-        else if (diff==eaten) {
+        else if (diff==0) {
             //out.println("diff == "+diff+" count "+eater);
-            return eater;
+            return next-start+1;
         } else {
             return binarySnake(start, next, end, k);            
         }
@@ -158,14 +153,14 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
-        int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        test();
+        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             new SnakeEating(L, Q).query();
-        }
+        }*/
     }
 }
 /*
