@@ -8,12 +8,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
  */
 
-public class SameSnake {
+class SameSnake {
     PointGraph g=new PointGraph();
     SameSnake()
     {        
@@ -95,7 +92,7 @@ public class SameSnake {
         s.addCells(2, 0, 2, 0);
         s.addCells(2, 1, 2, 1);
         s.g.print();
-        out.println(s.same()==true);
+        out.println(s.same()==false);
         
         s = new SameSnake();
         s.addCells(2, 0, 2, 0);
@@ -173,6 +170,11 @@ class PointGraph { // unweighted, bidirectional
         {
             return adj.toString();
         }
+        void add(Point p) {
+            if (adj.contains(p))
+                return;
+            adj.add(p);
+        }
     }
     Map<Point, Node> nodes;
     PointGraph()
@@ -197,8 +199,8 @@ class PointGraph { // unweighted, bidirectional
     public void addEdge(Point u, Point v)
     {
         //out.println("edge "+u+" to "+v);
-        nodes.get(u).adj.add(v);
-        nodes.get(v).adj.add(u);
+        nodes.get(u).add(v);
+        nodes.get(v).add(u);
         E++;
     }
     public void add (int x1, int y1, int x2, int y2) 
