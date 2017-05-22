@@ -103,16 +103,20 @@ class SnakeEating {
         out.println(sn.query(100)==0);
         out.println(sn.query(8)==1);
         out.println(sn.query(6)==2);
-        out.println(sn.query(1)==5);
-        out.println(sn.query(2)==4);
-        out.println(sn.query(3)==4);
         out.println(sn.query(5)==2);
+        out.println(sn.query(3)==4);
+        out.println(sn.query(2)==4);
+        out.println(sn.query(1)==5);
         sn = new SnakeEating(new Integer[]{1,4,7,10,13,16,19,22,25}, 2);
         out.println(sn.query(26)==2);
         sn = new SnakeEating(new Integer[]{1,2,3,4,5,7,10,13,16,19,22,25}, 2);
         out.println(sn.query(25)==3);
         sn = new SnakeEating(new Integer[]{1,2,3,4,5,7,9,11,13,15,17,19,21}, 2);
         out.println(sn.query(22)==3);
+        sn = new SnakeEating(new Integer[]{1,2,3,4,5,7,9,11,13,15,17,19,20,20,20,21}, 2);
+        out.println(sn.query(20)==7);
+        out.println(sn.query(7)==12);
+        out.println(sn.query(6)==13);
         
         sn = new SnakeEating(new Integer[]{15}, 3);
         out.println(sn.query(15)==1);
@@ -131,11 +135,24 @@ class SnakeEating {
             v -=3;
         }
         sn = new SnakeEating(large, 3);
+        out.println("v="+v);
         out.println(sn.query(v+3)==100000);
         out.println(sn.query(v+4)==99999);
         out.println(sn.query(v+7)==99999);
         out.println(sn.query(v+8)==99998);
         out.println(sn.query(1000000001)==258);
+        out.println(sn.query(1000000000));
+        out.println(sn.query(999999999));
+        out.println(sn.query(999999997));
+        out.println(sn.query(999999800));
+        out.println(sn.query(999999600));
+        out.println(sn.query(999999300));
+        out.println(sn.query(999999000));
+        out.println(sn.query(999998000));
+        out.println(sn.query(999990000));
+        out.println(sn.query(999900000));
+        out.println(sn.query(999800000));
+        out.println(sn.query(999700005));
     }
     static int[] sortIaR(int a[])  // sort int array reverse
     {
@@ -153,14 +170,14 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();
-        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        //test();
+        int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             new SnakeEating(L, Q).query();
-        }*/
+        }
     }
 }
 /*
