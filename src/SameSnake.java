@@ -8,6 +8,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 /*
+ * cases: same direction, either horizontal or vertical, including single cell
+ *           one same line, overlap or no
+ * different direction, must share one end point, out of 4.
  */
 class Snake
 {
