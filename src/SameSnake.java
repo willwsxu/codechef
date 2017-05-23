@@ -37,16 +37,23 @@ class Snake
         this.x2=x2; this.y2=y2;
     }
     boolean checkX(Snake s2) {
+        //out.println("checkX "+this.toString()+";"+s2.toString());
+        if ( y1 != s2.y1 )
+            return false;
         if (x2 <s2.x1 || s2.x2<x1)
             return false;
         return true;
     }
     boolean checkY(Snake s2) {
+        //out.println("checkY "+this.toString()+";"+s2.toString());
+        if ( x1 != s2.x1 )
+            return false;
         if (y2 <s2.y1 || s2.y2<y1)
             return false;
         return true;
     }
     boolean checkXY(Snake s2) { // s2 is vertical
+        //out.println("checkXY "+this.toString()+";"+s2.toString());
         if (x1 == s2.x1 && y1==s2.y1)
             return true;
         if (x1 == s2.x2 && y1==s2.y2)
@@ -71,6 +78,11 @@ class Snake
                 return s2.checkXY(this);            
         }
     }
+    @Override
+    public String toString()
+    {
+        return "("+x1+","+y1+"):("+x2+","+y2+")";
+    }    
 }
 class SameSnake {
     PointGraph g=new PointGraph();
@@ -131,6 +143,7 @@ class SameSnake {
         s1=new Snake(2, 1, 8, 1);
         s2=new Snake(11, 1, 9, 1);
         out.println(s1.same(s2)==false);
+        out.println(s2.same(s1)==false);
         
         s = new SameSnake();
         s.addCells(2, 1, 8, 1);
@@ -185,10 +198,16 @@ class SameSnake {
         s1=new Snake(2, 0, 2, 0);
         s2=new Snake(2, 1, 2, -1);
         out.println(s1.same(s2)==true);
+        out.println(s2.same(s1)==true);
         s2=new Snake(3, 0, 1, 0);
         out.println(s1.same(s2)==true);
+        out.println(s2.same(s1)==true);
         s2=new Snake(2, 0, 2, 0);
         out.println(s1.same(s2)==true);
+        s2=new Snake(3, 1, 1, 1);
+        out.println(s1.same(s2)==false);
+        s2=new Snake(3, 1, 3, -1);
+        out.println(s1.same(s2)==false);
     }
         
     static int[] ria(int N) { // read int array
@@ -200,11 +219,11 @@ class SameSnake {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();
-        /*int T=sc.nextInt();     // 1 ≤ T ≤ 10^5
+        //test();
+        int T=sc.nextInt();     // 1 ≤ T ≤ 10^5
         StringBuilder sb=new StringBuilder();
         for (int i=0; i<T; i++) {
-            int xy[]=ria(8); // -109 ≤ Xij,Yij ≤ 109
+            int xy[]=ria(8); // -10^9 ≤ Xij,Yij ≤ 10^9
             //SameSnake s = new SameSnake();
             //s.addCells(xy[0], xy[1], xy[2], xy[3]);
             //s.addCells(xy[4], xy[5], xy[6], xy[7]);
@@ -213,7 +232,7 @@ class SameSnake {
             Snake s2=new Snake(xy[4], xy[5], xy[6], xy[7]);
             sb.append(s1.same(s2)?"yes\n":"no\n");
         }
-        out.println(sb.toString());*/
+        out.println(sb.toString());
     }
 }
 
