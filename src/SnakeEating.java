@@ -101,7 +101,16 @@ class SnakeEating {
     {
         SnakeEating sn = new SnakeEating(new Integer[]{21, 9, 5, 8, 10}, 2);
         out.println(sn.query(10)==3);
-        out.println(sn.query(15)==1);
+        out.println(sn.query(11)==2);
+        out.println(sn.query(13)==2);
+        out.println(sn.query(14)==1);
+        out.println(sn.query(25)==1);
+        out.println(sn.query(26)==0);
+        out.println(sn.query(1)==5);
+        out.println(sn.query(5)==5);
+        out.println(sn.query(6)==4);
+        out.println(sn.query(9)==4);
+        out.println();
         sn = new SnakeEating(new Integer[]{1, 2, 3, 4, 5}, 2);
         out.println(sn.query(100)==0);
         out.println(sn.query(8)==1);
@@ -173,14 +182,14 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
-        int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        test();
+        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             new SnakeEating(L, Q).query();
-        }
+        }*/
     }
 }
 /*
