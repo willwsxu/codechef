@@ -11,24 +11,27 @@ import java.util.Set;
  */
 class Snake
 {
+    enum DIR {HORI, VERT, DOT};
     int x1, y1, x2, y2;
-    boolean bHorizontal=true;
+    DIR d=DIR.HORI;
     Snake(int x1, int y1, int x2, int y2)
     {
-        if ( x1==x2) {
+        if ( x1==x2 && y1==y2)
+            d=DIR.DOT;
+        else if ( x1==x2) {
             if ( y2<y1) {
                 int y=y1;
                 y1 = y2;
                 y2=y;
             }
-            bHorizontal=false;
+            d=DIR.VERT;
         } else {
             if ( x2<x1) {
                 int x=x1;
                 x1 = x2;
                 x2=x;
             }
-            bHorizontal=true;
+            d=DIR.HORI;
         }     
         this.x1=x1; this.y1=y1;
         this.x2=x2; this.y2=y2;
@@ -55,14 +58,14 @@ class Snake
         return false;
     }
     boolean same(Snake s2) {
-        if (bHorizontal==s2.bHorizontal) {  // same direction
-            if (bHorizontal)
+        if (d==DIR.DOT || s2.d==DIR.DOT || d==s2.d) {  // same direction
+            if (d==DIR.HORI || s2.d==DIR.HORI)
                 return checkX(s2);
             else
                 return checkY(s2);
         } else
         {
-            if (bHorizontal)
+            if (d==DIR.HORI)
                 return this.checkXY(s2);
             else
                 return s2.checkXY(this);            
@@ -180,8 +183,10 @@ class SameSnake {
         s.g.print();
         out.println(s.same()==true);
         s1=new Snake(2, 0, 2, 0);
-        s2=new Snake(2, 0, 2, 0);
+        s2=new Snake(2, 1, 2, -1);
         out.println(s1.same(s2)==true);
+        s2=new Snake(3, 0, 1, 0);
+        out.println(s1.same(s1)==true);
     }
         
     static int[] ria(int N) { // read int array
@@ -193,8 +198,8 @@ class SameSnake {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
-        int T=sc.nextInt();     // 1 ≤ T ≤ 10^5
+        test();
+        /*int T=sc.nextInt();     // 1 ≤ T ≤ 10^5
         StringBuilder sb=new StringBuilder();
         for (int i=0; i<T; i++) {
             int xy[]=ria(8); // -109 ≤ Xij,Yij ≤ 109
@@ -206,7 +211,7 @@ class SameSnake {
             Snake s2=new Snake(xy[4], xy[5], xy[6], xy[7]);
             sb.append(s1.same(s2)?"yes\n":"no\n");
         }
-        out.println(sb.toString());
+        out.println(sb.toString());*/
     }
 }
 
