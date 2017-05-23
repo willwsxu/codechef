@@ -42,7 +42,7 @@ class SnakeEating {
     int binarySnake(int start, int pos, int end, int k)
     {
         if ( pos>end) {
-            out.println("start "+start+"pos == "+pos+" end "+end);
+            out.println("error start > end"+start+"pos == "+pos+" end "+end);
             return 0;
         }
         if (pos==end || pos==end-1) {
@@ -79,7 +79,10 @@ class SnakeEating {
         }
         // snake from x, eat snake at the end
         if (x>=L.length-1)  // edge test case
+        {
+            //out.println("bs done at "+x+" count "+count+" len="+L.length+" k="+k+" last="+L[L.length-1]);
             return count;
+        }
         int c=binarySnake(x, x, L.length-1, k);
         //out.println("count "+count+" x="+x+" c="+c);
         return count+c;
@@ -88,7 +91,7 @@ class SnakeEating {
     {
         StringBuilder sb = new StringBuilder();
         for (int i=0; i<Q; i++) {
-            int k=sc.nextInt(); // 1 ≤ Ki ≤ 109
+            int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
             sb.append(query(k));
             sb.append("\n");
         }
@@ -181,7 +184,7 @@ class SnakeEating {
     }
 }
 /*
-2
+3
 5 2
 21 9 5 8 10
 10
@@ -189,4 +192,9 @@ class SnakeEating {
 5 1
 1 2 3 4 5
 100
+16 3
+1 2 3 4 5 7 9 11 13 15 17 19 20 20 20 21
+20
+7
+6
 */
