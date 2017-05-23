@@ -186,7 +186,9 @@ class SameSnake {
         s2=new Snake(2, 1, 2, -1);
         out.println(s1.same(s2)==true);
         s2=new Snake(3, 0, 1, 0);
-        out.println(s1.same(s1)==true);
+        out.println(s1.same(s2)==true);
+        s2=new Snake(2, 0, 2, 0);
+        out.println(s1.same(s2)==true);
     }
         
     static int[] ria(int N) { // read int array
