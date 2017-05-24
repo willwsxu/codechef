@@ -26,6 +26,21 @@ class SnakeEating {
         //out.println(Arrays.toString(L));
         //out.println(Arrays.toString(prefix));
     }
+    int maxK=100000;
+    // Editorial idea
+    SnakeEating(Integer a[], int q, boolean ascending)
+    {
+        L=new Integer[a.length+1];
+        Arrays.sort(a);
+        Q=q;
+        prefix = new long[L.length+1];
+        prefix[0]=0;
+        L[0]=0;
+        for (int i=0; i<L.length; i++) {
+            L[i+1]=a[i];
+            prefix[i+1]=prefix[i]+maxK-a[i];
+        }
+    }
     long diff(int start, int next, int k) {
         long diff=prefix[next+1];
         diff -= prefix[start];
@@ -88,6 +103,37 @@ class SnakeEating {
         //out.println("count "+count+" x="+x+" c="+c);
         return count+c;
     }
+    
+    /*
+        0 1  2  3  4  5   N=5, K=5
+        0 14 13 12 11 10
+        0 14 27 39 50 50 prefix
+    */
+    int binaryEatSnakeAsc(int p1, int p2, int p3, int k)
+    {
+        if (p1>=p2)
+            return p1;
+        int mid = (p1+p2)/2;
+        long eat=prefix[p3]-prefix[mid]-(p3-mid)*(maxK-k);
+        if (eat>mid)
+            return binaryEatSnakeAsc(mid+1, p2, p3, k);
+        else 
+            return binaryEatSnakeAsc(p1, mid-1, p3, k);
+    }
+    // keep track index of snakes to be eaten(p1), and no less than k (p3)
+    int queryAsc(int k)  // sorted ascending
+    {
+        int p3=Arrays.binarySearch(L, k);
+        if (p3<0) {
+            p3 = -(p3+1);
+        }
+        if ( p3<=2)
+            return L.length-p3;
+        p3--;
+        int p1= binaryEatSnakeAsc(1, p3-1, p3, k);
+        out.println("p1="+p1+" p3="+p3);
+        return L.length-p1-1;
+    }
     void query()
     {
         //StringBuilder sb = new StringBuilder();
@@ -118,7 +164,7 @@ class SnakeEating {
     static void autotest()
     {
         Random rnd=new Random();
-        Integer[] large=new Integer[100000];
+        Integer[] large=new Integer[100];
         int v=1000000000;
         for (int i=0; i<large.length; i++) {
             large[i]=rnd.nextInt(v)+1;
@@ -127,9 +173,12 @@ class SnakeEating {
         for (int i=0; i<100000; i++)
         {
             int k=rnd.nextInt(v)+1;
-            if (sn.query(k)!=sn.bruteforce(k)) {
-                out.println("not equal k"+ k);
+            int a1=sn.query(k);
+            int a2=sn.queryAsc(k);
+            if (a1 !=a2) {
+                out.println("not equal k="+ k+" a1="+a1+" a2="+a2);
                 out.println(Arrays.toString(large));
+                break;
             }
         }       
     }
@@ -220,7 +269,7 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();
+        autotest();
         /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
