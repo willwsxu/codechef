@@ -43,7 +43,7 @@ class SnakeEating {
     int binarySnake(int start, int pos, int end, int k)
     {
         if ( pos>end) {
-            out.println("error start > end"+start+"pos == "+pos+" end "+end);
+            //out.println("error start > end"+start+"pos == "+pos+" end "+end);
             return 0;
         }
         if (pos==end || pos==end-1) {
@@ -95,7 +95,8 @@ class SnakeEating {
             int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
             //sb.append(query(k));
             //sb.append("\n");
-            out.println(query(k));
+            //out.println(query(k));
+            out.println(bruteforce(k));
         }
         //out.print(sb.toString());
     }
@@ -174,6 +175,8 @@ class SnakeEating {
         out.println(sn.query(1500000000)==1);  // 1
         out.println(sn.query(1500000001)==1);  // 1
         out.println(sn.query(1500000002)==0);  // 0
+        out.println(sn.query(1)==2);
+        out.println(sn.query(2000000000)==0);
         
         Integer[] large=new Integer[100000];
         int v=1000000000;
@@ -217,14 +220,14 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //autotest();
-        int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        test();
+        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             new SnakeEating(L, Q).query();
-        }
+        }*/
     }
 }
 /*
