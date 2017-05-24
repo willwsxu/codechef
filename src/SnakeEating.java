@@ -2,6 +2,7 @@
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
@@ -89,13 +90,47 @@ class SnakeEating {
     }
     void query()
     {
-        StringBuilder sb = new StringBuilder();
+        //StringBuilder sb = new StringBuilder();
         for (int i=0; i<Q; i++) {
             int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
-            sb.append(query(k));
-            sb.append("\n");
+            //sb.append(query(k));
+            //sb.append("\n");
+            out.println(query(k));
         }
-        out.print(sb.toString());
+        //out.print(sb.toString());
+    }
+    int bruteforce(int k)
+    {
+        int count=0;
+        for (;count<L.length; count++)
+            if (L[count]<k)
+                break;
+        int left=L.length-count;
+        while (left>0) {
+            //out.println("len "+L.length+" count="+count+" left="+left);
+            if (L[count]+left-1<k)  // minus it self
+                break;
+            left -= (k-L[count++]+1);            
+        }
+        return count;
+    }
+    static void autotest()
+    {
+        Random rnd=new Random();
+        Integer[] large=new Integer[100000];
+        int v=1000000000;
+        for (int i=0; i<large.length; i++) {
+            large[i]=rnd.nextInt(v)+1;
+        }
+        SnakeEating sn = new SnakeEating(large, 2);
+        for (int i=0; i<100000; i++)
+        {
+            int k=rnd.nextInt(v)+1;
+            if (sn.query(k)!=sn.bruteforce(k)) {
+                out.println("not equal k"+ k);
+                out.println(Arrays.toString(large));
+            }
+        }       
     }
     static void test()
     {
@@ -182,14 +217,14 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();
-        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        //autotest();
+        int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             new SnakeEating(L, Q).query();
-        }*/
+        }
     }
 }
 /*
