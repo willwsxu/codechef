@@ -117,12 +117,12 @@ public class PointGraph { // unweighted, bidirectional
         }
         return d;
     }
-    void print()
+    public void print()
     {
         out.println(nodes);
     }
     
-    boolean sameSnake() // connected and degress <=2
+    public boolean sameSnake() // connected and degress <=2
     {
         PointCC cc=new PointCC(this);
         if (!cc.connected()) {

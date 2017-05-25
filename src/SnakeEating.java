@@ -10,6 +10,105 @@ import java.util.stream.IntStream;
 
  */
 
+class SnakeBase
+{
+    Integer L[];
+    long prefix[];  // start from 1
+    int Q;
+    final int maxK=1000000000;    
+    
+    // copied from preCalc class
+    public static long[] prefixSumI(Integer a[])  // set first elem to 0
+    {
+        long s[]=new long[a.length+1];
+        s[0]=0;
+        for (int i=1; i<=a.length; i++)
+            s[i] = s[i-1]+a[i-1];
+        return s;
+    }
+    void trace(int p1, int p3, int k)
+    {
+        long total=0;
+            out.println(k-L[p1-1]);
+            out.println(k-L[p1]);
+        for (int i=p1+1; i<=p3; i++) {
+            total += L[i];
+            out.println(k-L[i]);
+        }
+        total=(long)k*(p3-p1)-total;
+        out.println("total eat "+total);
+    }
+    
+    static int findCurr(Integer[] a, long k) {
+        int n = a.length;
+        if (a[n-1] < k)
+            return n;
+        int l = -1, r = n - 1;
+        while (r - l > 1) {
+            int mid = (l + r) >> 1;
+            if (a[mid] >= k) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        return r;
+    }        
+    static int findCurr2(long[] L, long k) {
+        int p3=Arrays.binarySearch(L, k);
+        if (p3<0) {
+            p3 = -(p3+1);
+        }
+        if ( p3<=2)
+            return L.length-p3;
+        p3--;
+        return p3;
+    }
+    static long sum(long[] p, int s, int e) {
+        long ans = p[e];
+        if (s > 0)
+            ans -= p[s - 1];
+        return ans;
+    }	
+    static int findAfter(long[] p, Integer[] a, long k, int ind) {
+        int end=ind-1;
+        if( k-a[end]>end ) return 0;
+        int l=0,r=end;
+        while( r-l>1 ){
+            int mid=(l+r)>>1;
+            long req = (end-mid+1)*k-(p[mid+1]-p[end]); //sum(p, mid,end)
+            if( req<=mid ){
+                r=mid;
+            }
+            else{
+                l=mid;
+            }
+        }
+        return end-r+1;
+    }
+}
+
+class SnakeEating3 extends SnakeBase
+{
+    SnakeEating3(Integer a[], int q)
+    {
+        L=a;    Q=q;
+        Arrays.sort(L);
+        prefix=prefixSumI(L);
+    }
+    int query(int k)  // sorted ascending
+    {
+        int p3=findCurr(L, k);
+        if (p3==0)
+            return L.length;
+        int res=L.length-p3;
+        int p1= findAfter(prefix, L, p3, k);
+        out.println("p1="+p1+" p3="+p3+" k="+k+" L[p1]="+L[p1]+" L[p3]"+L[p3]);
+
+        return res+p1;
+    }
+}
+
 class SnakeEating {
     Integer L[];
     long prefix[];  // start from 1
@@ -194,10 +293,10 @@ class SnakeEating {
         for (int i=0; i<large.length; i++) {
             large[i]=rnd.nextInt(v)+1;
         }
+        SnakeEating sn2 = new SnakeEating(large, 2, true);
+        SnakeEating3 sn = new SnakeEating3(large, 2);
         for (int i=0; i<n*2; i++)
         {
-            SnakeEating sn2 = new SnakeEating(large, 2, true);
-            SnakeEating sn = new SnakeEating(large, 2);
             int k=rnd.nextInt(v)+1;
             int a1=sn.query(k);
             int a2=sn2.queryAsc(k);
@@ -319,7 +418,7 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        for (int i=0; i<100; i++)
+        //for (int i=0; i<100; i++)
             autotest();
         /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
