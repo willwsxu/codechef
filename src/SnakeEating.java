@@ -187,17 +187,19 @@ class SnakeEating {
     static void autotest()
     {
         Random rnd=new Random();
-        Integer[] large=new Integer[10000];
+        int N=100000;
+        int n=rnd.nextInt(N)+1;
+        Integer[] large=new Integer[n];
         int v=1000000000;
         for (int i=0; i<large.length; i++) {
             large[i]=rnd.nextInt(v)+1;
         }
-        for (int i=0; i<100000; i++)
+        for (int i=0; i<n*2; i++)
         {
             SnakeEating sn2 = new SnakeEating(large, 2, true);
             SnakeEating sn = new SnakeEating(large, 2);
             int k=rnd.nextInt(v)+1;
-            int a1=sn.bruteforce(k);
+            int a1=sn.query(k);
             int a2=sn2.queryAsc(k);
             if (a1 !=a2) {
                 out.println(i+" not equal k="+ k+" a1="+a1+" a2="+a2);
@@ -209,7 +211,7 @@ class SnakeEating {
     
     static void test2()
     {
-        sc = codechef.ContestHelper.getFileScanner("snake-eat-t.txt");
+        //sc = codechef.ContestHelper.getFileScanner("snake-eat-t.txt");
         /*SnakeEating sn = new SnakeEating(new Integer[]{1, 2, 3, 4, 5}, 2, true);
         out.println(sn.queryAsc(100)==0);
         out.println(sn.queryAsc(8)==1);
@@ -317,14 +319,15 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test2();
-        int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        for (int i=0; i<100; i++)
+            autotest();
+        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             new SnakeEating(L, Q, true).queryAsc();
-        }
+        }*/
     }
 }
 /*
