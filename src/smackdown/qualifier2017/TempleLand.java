@@ -6,8 +6,10 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 /*
+ * Brief Description: N integers of height in a good pattern
+ * From 1 go up to a unique center in increment of 1, then go down to 1
  */
-
+// very easy
 class TempleLand {
     
     static boolean check(int h[])
@@ -33,19 +35,13 @@ class TempleLand {
         return h[0]==1;
     }
     
-    static int[] ria(int N) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
-    }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
         int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt();
-            int h[]=ria(N);
+            int h[]=codechef.ContestHelper.ria(N, sc);
             System.out.println(check(h)?"yes":"no");
         }
     }
