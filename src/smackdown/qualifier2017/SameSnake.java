@@ -6,7 +6,13 @@ import static java.lang.System.out;
 import java.util.Scanner;
 
 /*
- * cases: same direction, either horizontal or vertical, including single cell
+ * Brief Desc: Give snake coordiantes in a 2D grid, each snake sighting is represented by 2 points
+ * either horizontal or vertical. Find out if the two sightings are of same snake
+ *  if both these conditions are satisfied:
+ *  The union of the set of cells in the first snake and the set of cells in the second snake, should form a connected component in this graph.
+ *  No vertex should have degree more than 2 in the graph.
+ * cases: 
+ * same direction, either horizontal or vertical, including single cell
  *           one same line, overlap or no
  * different direction, must share one end point, out of 4.
  */
@@ -87,9 +93,7 @@ class Snake
 }
 class SameSnake {
     PointGraph g=new PointGraph();
-    SameSnake()
-    {        
-    }
+
     void addCells(int x1, int y1, int x2, int y2)
     {
         g.addNode(x1, y1);
