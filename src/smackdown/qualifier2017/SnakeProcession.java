@@ -4,6 +4,9 @@ package smackdown.qualifier2017;
 import java.util.Scanner;
 
 /*
+ * Brief Desc: Snake one after another, record procession using H for head,
+ *  T for tail, . for body
+ * Algorithm: count H, invlaid if H>0 when see H, invalid if H<0 when see T.
  */
 
 class SnakeProcession {
@@ -35,7 +38,6 @@ class SnakeProcession {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
         int R=sc.nextInt(); //  ≤ R ≤ 500
         for (int i=0; i<R; i++) {
             int L=sc.nextInt();
