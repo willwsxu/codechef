@@ -120,7 +120,8 @@ class SnakeEating {
         if (p1>=p2)
             return p1;
         int mid = (p1+p2)/2;
-        long eat=prefix[p3]-prefix[mid]-(p3-mid)*(maxK-k);
+        long eat=prefix[p3]-prefix[mid]-(long)(p3-mid)*(maxK-k);
+        //out.println("eat="+eat+" mid="+mid);
         if (eat>mid)
             return binaryEatSnakeAsc(mid+1, p2, p3, k);
         else 
@@ -137,7 +138,16 @@ class SnakeEating {
             return L.length-p3;
         p3--;
         int p1= binaryEatSnakeAsc(1, p3, p3, k);
-        //out.println("p1="+p1+" p3="+p3+" k="+k);
+        /*out.println("p1="+p1+" p3="+p3+" k="+k+" L[p1]="+L[p1]+" L[p3]"+L[p3]);
+        long total=0;
+            out.println(k-L[p1-1]);
+            out.println(k-L[p1]);
+        for (int i=p1+1; i<=p3; i++) {
+            total += L[i];
+            out.println(k-L[i]);
+        }
+        total=(long)k*(p3-p1)-total;
+        out.println("total eat "+total);*/
         return L.length-p1-1;
     }
     void query()
@@ -307,14 +317,14 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test2();
-        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        //test2();
+        int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             new SnakeEating(L, Q, true).queryAsc();
-        }*/
+        }
     }
 }
 /*
