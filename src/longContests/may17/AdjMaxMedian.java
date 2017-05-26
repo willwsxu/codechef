@@ -12,15 +12,19 @@ any permutation for which this maximum is achieved.
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Scanner;
-
-// Median of adjacent maximum numbers, MXMEDIAN, beginner
+// Greedy, sort and take second half of A as B
+// Median of adjacent maximum numbers, MXMEDIAN, easy
 class AdjMaxMedian {
     
-    // sorted array, swap to pair top half to bottom half
+    // sorted array, recursive swap to pair top half to bottom half
+    // 0,1,2,3,4,5,6,7,8,9,10 low=2, hi=6
+    // 0,1,6,3,7,5,2,4,8,9,10 (swap 2 withm N+1, 4, N+2, etc.), compute next low and hi 6 and 8
+    // 0,1,6,3,7,5,8,4,2,9,10 next lo hi 8, 9
+    // 0,1,6,3,7,5,8,4,9,2,10
     static void swap(int[] a, int low, int hi)
     {
-        int newLow=hi;
-        for (; low<newLow; low +=2, hi++) {
+        int oldHi=hi; 
+        for (; low<oldHi; low +=2, hi++) {  // don't pass oldHi
             int temp=a[low];
             a[low]=a[hi];
             a[hi]=temp;
@@ -33,6 +37,9 @@ class AdjMaxMedian {
     {        
         int N=A.length/2;
         Arrays.sort(A);
+        // median is middle of second half (N to 2N)
+        // N is odd, N+N/2+1 is the middle number (5), 0 1 2 3 4 5 6
+        // N is even, N+N/2+1 is the midlle to rigtht(7), 0 1 2 3 4 5 6 7 8
         out.println(A[N+N/2+1]);
         swap(A, 2, N+1);
         StringBuilder sb=new StringBuilder();
@@ -50,6 +57,14 @@ class AdjMaxMedian {
             A[i]=i;
         swap(A, 2, 6);
         out.println(Arrays.toString(A));
+        for (int i=0; i<A.length; i++)
+            A[i]=i;
+        codechef.Calculation.swap(A, 2, 6);
+        out.println(Arrays.toString(A));
+        for (int i=0; i<A.length; i++)
+            A[i]=i;
+        codechef.Calculation.swap(A, 1, 6);
+        out.println(Arrays.toString(A));
         
         A=new int[]{0, 1, 3, 3, 3, 2, 2};
         solve(A);
@@ -61,7 +76,6 @@ class AdjMaxMedian {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {        
-        //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
         int TC = sc.nextInt();  // between 1 and 10
         for (int i=0; i<TC; i++) {
             int N=sc.nextInt();  // 1 ≤ N ≤ 50000, N is odd

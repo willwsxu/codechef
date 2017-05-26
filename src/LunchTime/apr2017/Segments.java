@@ -12,7 +12,7 @@ sub can only be higher if Sj>Si, furthermore, max sub would be the least of Sj (
 **TreeMap higherEntry is nicely suited for this purpose
 */
 
-import codechef.PreCalc;
+import codechef.Calculation;
 import static java.lang.System.out;
 import java.util.Map;
 import java.util.Scanner;
@@ -54,7 +54,7 @@ class Segments {
     }
     void partialSumMax()  // 2 partialSumMax are comparable, O(n^2)
     {
-        long s[] = PreCalc.prefixSum(a);
+        long s[] = Calculation.prefixSum(a);
         long countMaxSum =0, maxSum = 0;
         for (int left=0; left <a.length; left++)
         {            
