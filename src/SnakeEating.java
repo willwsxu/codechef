@@ -54,14 +54,11 @@ class SnakeBase
         }
         return r;
     }        
-    static int findCurr2(long[] L, long k) {
+    static int findCurr2(Integer[] L, int k) {
         int p3=Arrays.binarySearch(L, k);
         if (p3<0) {
             p3 = -(p3+1);
         }
-        if ( p3<=2)
-            return L.length-p3;
-        p3--;
         return p3;
     }
     static long sum(long[] p, int s, int e) {
@@ -70,13 +67,12 @@ class SnakeBase
             ans -= p[s - 1];
         return ans;
     }	
-    static int findAfter(long[] p, Integer[] a, long k, int ind) {
-        int end=ind-1;
+    static int findAfter(long[] p, Integer[] a, int end, long k) {
         if( k-a[end]>end ) return 0;
         int l=0,r=end;
         while( r-l>1 ){
-            int mid=(l+r)>>1;
-            long req = (end-mid+1)*k-(p[mid+1]-p[end]); //sum(p, mid,end)
+            int mid=(l+r)>>1;  // mid to end inclusive at both ends
+            long req = (end-mid+1)*k-(p[end+1]-p[mid]); //sum(p, mid,end)
             if( req<=mid ){
                 r=mid;
             }
@@ -99,11 +95,11 @@ class SnakeEating3 extends SnakeBase
     int query(int k)  // sorted ascending
     {
         int p3=findCurr(L, k);
-        if (p3==0)
-            return L.length;
         int res=L.length-p3;
-        int p1= findAfter(prefix, L, p3, k);
-        out.println("p1="+p1+" p3="+p3+" k="+k+" L[p1]="+L[p1]+" L[p3]"+L[p3]);
+        if (p3<=1)
+            return res;
+        int p1= findAfter(prefix, L, p3-1, k);
+        //out.println("p1="+p1+" p3="+p3+" k="+k);//+" L[p1]="+L[p1]+" L[p3]"+L[p3]);
 
         return res+p1;
     }
@@ -308,6 +304,35 @@ class SnakeEating {
         }       
     }
     
+    static void testFindCurr(Integer[] a, int k)
+    {
+        int c1=SnakeBase.findCurr(a, k);
+        int c2=SnakeBase.findCurr2(a, k);
+        out.println("find k="+k+":"+c1+"=="+c2);        
+    }
+    static void test3()// test static functions
+    {
+        Integer[] a=new Integer[]{21, 9, 5, 8, 10};
+        Arrays.sort(a);
+        out.println(Arrays.toString(a));
+        testFindCurr(a, 22);
+        testFindCurr(a, 21);
+        testFindCurr(a, 20);
+        testFindCurr(a, 6);
+        testFindCurr(a, 5);
+        testFindCurr(a, 1);
+        SnakeEating3 sn=new SnakeEating3(a, 2);
+        out.println(sn.query(10)==3);
+        out.println(sn.query(11)==2);
+        out.println(sn.query(13)==2);
+        out.println(sn.query(14)==1);
+        out.println(sn.query(25)==1);
+        out.println(sn.query(26)==0);
+        out.println(sn.query(1)==5);
+        out.println(sn.query(5)==5);
+        out.println(sn.query(6)==4);
+        out.println(sn.query(9)==4);
+    }
     static void test2()
     {
         //sc = codechef.ContestHelper.getFileScanner("snake-eat-t.txt");
@@ -419,14 +444,20 @@ class SnakeEating {
     public static void main(String[] args)
     {      
         //for (int i=0; i<100; i++)
-            autotest();
-        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        //    autotest();
+        int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
-            new SnakeEating(L, Q, true).queryAsc();
-        }*/
+            StringBuilder sb = new StringBuilder();
+            for (int j=0; j<Q; j++) {
+                int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
+                sb.append(new SnakeEating3(L, Q).query(k));
+                sb.append("\n");
+            }
+            out.print(sb.toString());
+        }
     }
 }
 /*
