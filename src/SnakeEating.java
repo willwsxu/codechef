@@ -84,6 +84,7 @@ class SnakeBase
     }
 }
 
+// borrow idea from a contentant
 class SnakeEating3 extends SnakeBase
 {
     SnakeEating3(Integer a[], int q)
@@ -325,8 +326,8 @@ class SnakeEating {
             L[i+1]=a[i];
             prefix[i+1]=prefix[i]+maxK-a[i];
         }
-        //out.println(Arrays.toString(L));
-        //out.println(Arrays.toString(prefix));
+        out.println(Arrays.toString(L));
+        out.println(Arrays.toString(prefix));
     }
     
     /*
@@ -338,14 +339,14 @@ class SnakeEating {
     */
     int binaryEatSnakeAsc(int p1, int p2, int p3, int k)
     {
-        //out.println("p1="+p1+" p2="+p2);
-        if (p1>=p2)
-            return p1;
-        int mid = (p1+p2)/2;
-        long eat=prefix[p3]-prefix[mid]-(long)(p3-mid)*(maxK-k);
-        //out.println("eat="+eat+" mid="+mid);
-        if (eat>mid)
-            return binaryEatSnakeAsc(mid+1, p2, p3, k);
+        out.println("p1="+p1+" p2="+p2);
+        if (p2-p1<=1)
+            return p2;
+        int mid = (p1+p2)>>1;  // include mid as snakes to eat
+        long eat=prefix[p3]-prefix[mid-1]-(long)(p3-mid+1)*(maxK-k);
+        out.println("eat="+eat+" mid="+mid);
+        if (eat>mid-1)
+            return binaryEatSnakeAsc(mid, p2, p3, k);
         else 
             return binaryEatSnakeAsc(p1, mid, p3, k);
     }
@@ -356,11 +357,12 @@ class SnakeEating {
         if (p3<0) {
             p3 = -(p3+1);
         }
-        if ( p3<=2)
-            return L.length-p3;
+        int res=L.length-p3;
+        if ( p3<=2)  // L is 1 based
+            return res;
         p3--;
         int p1= binaryEatSnakeAsc(1, p3, p3, k);
-        /*out.println("p1="+p1+" p3="+p3+" k="+k+" L[p1]="+L[p1]+" L[p3]"+L[p3]);
+        out.println("p1="+p1+" p3="+p3+" k="+k+" L[p1]="+L[p1]+" L[p3]"+L[p3]);
         long total=0;
             out.println(k-L[p1-1]);
             out.println(k-L[p1]);
@@ -369,8 +371,8 @@ class SnakeEating {
             out.println(k-L[i]);
         }
         total=(long)k*(p3-p1)-total;
-        out.println("total eat "+total);*/
-        return L.length-p1-1;
+        out.println("total eat "+total);
+        return res+p3-p1;
     }
     void queryAsc()
     {
@@ -406,16 +408,21 @@ class SnakeEating {
     
     static void test2()
     {
-        //sc = codechef.ContestHelper.getFileScanner("snake-eat-t.txt");
-        /*SnakeEating sn = new SnakeEating(new Integer[]{1, 2, 3, 4, 5}, 2, true);
-        out.println(sn.queryAsc(100)==0);
-        out.println(sn.queryAsc(8)==1);
-        out.println(sn.queryAsc(6)==2);
-        out.println(sn.queryAsc(5)==2);
-        out.println(sn.queryAsc(3)==4);
-        out.println(sn.queryAsc(2)==4);
-        out.println(sn.queryAsc(1)==5);*/
+        Integer[] a=new Integer[]{1, 2, 3, 4, 5};
+        SnakeEating sn = new SnakeEating(a, 2);
+        SnakeEating3 sn3 = new SnakeEating3(a, 2);
+        //out.println(sn.query(100)==0);
+        out.println(sn.query(8)==1);
+        out.println(sn3.query(8)==1);
+        out.println(sn3.query(9)==1);
+        out.println(sn3.query(10)==0);
+        //out.println(sn.query(6)==2);
+        //out.println(sn.query(5)==2);
+        //out.println(sn.query(3)==4);
+        //out.println(sn.query(2)==4);
+        //out.println(sn.query(1)==5);
         
+        /*sc = codechef.ContestHelper.getFileScanner("snake-eat-t.txt");
         int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
         int Q=sc.nextInt();
         Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
@@ -424,7 +431,7 @@ class SnakeEating {
         out.println(sn.query(k));
         SnakeEating1 sn1 = new SnakeEating1(L, 2);
         out.println(sn1.bruteforce(k));
-        out.println(sn1.query(k));
+        out.println(sn1.query(k));*/
     }
     
     static Integer[] ria(int N) { // read int array
@@ -438,8 +445,8 @@ class SnakeEating {
     public static void main(String[] args)
     {      
         //for (int i=0; i<100; i++)
-        //    autotest();
-        int T=sc.nextInt(); // 1 ≤ T ≤ 5
+            test2();
+        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
@@ -453,7 +460,7 @@ class SnakeEating {
                 sb.append("\n");
             }
             out.print(sb.toString());
-        }
+        }*/
     }
 }
 /*
