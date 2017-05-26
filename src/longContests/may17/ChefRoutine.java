@@ -1,6 +1,8 @@
 package longContests.may17;
 
-
+/*
+ * Brief Desc: Chef routine for a day, Cook, Eat,  Sleep
+*/
 import static java.lang.System.out;
 import java.util.Scanner;
 
@@ -49,7 +51,6 @@ class ChefRoutine {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {        
-        //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
         int TC = sc.nextInt();  // between 1 and 20
         for (int i=0; i<TC; i++) {
             String N = sc.next();   // 1 ≤ len(N) ≤ 10^5

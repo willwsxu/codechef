@@ -12,7 +12,6 @@ class UnivCourse {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {        
-        //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
         int TC = sc.nextInt();  // between 1 and 20
         for (int i=0; i<TC; i++) {
             int N=sc.nextInt();  // 1 ≤ n ≤ 10^5, courses
