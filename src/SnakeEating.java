@@ -451,9 +451,10 @@ class SnakeEating {
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             StringBuilder sb = new StringBuilder();
+            SnakeEating3 sn=new SnakeEating3(L, Q);
             for (int j=0; j<Q; j++) {
                 int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
-                sb.append(new SnakeEating3(L, Q).query(k));
+                sb.append(sn.query(k));
                 sb.append("\n");
             }
             out.print(sb.toString());
