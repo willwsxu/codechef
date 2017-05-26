@@ -103,6 +103,36 @@ class SnakeEating3 extends SnakeBase
 
         return res+p1;
     }
+    
+    static void testFindCurr(Integer[] a, int k)
+    {
+        int c1=SnakeBase.findCurr(a, k);
+        int c2=SnakeBase.findCurr2(a, k);
+        out.println("find k="+k+":"+c1+"=="+c2);        
+    }
+    static void test3()// test static functions
+    {
+        Integer[] a=new Integer[]{21, 9, 5, 8, 10};
+        Arrays.sort(a);
+        out.println(Arrays.toString(a));
+        testFindCurr(a, 22);
+        testFindCurr(a, 21);
+        testFindCurr(a, 20);
+        testFindCurr(a, 6);
+        testFindCurr(a, 5);
+        testFindCurr(a, 1);
+        SnakeEating3 sn=new SnakeEating3(a, 2);
+        out.println(sn.query(10)==3);
+        out.println(sn.query(11)==2);
+        out.println(sn.query(13)==2);
+        out.println(sn.query(14)==1);
+        out.println(sn.query(25)==1);
+        out.println(sn.query(26)==0);
+        out.println(sn.query(1)==5);
+        out.println(sn.query(5)==5);
+        out.println(sn.query(6)==4);
+        out.println(sn.query(9)==4);
+    }
 }
 class SnakeEating1 extends SnakeBase
 {
@@ -282,7 +312,7 @@ class SnakeEating {
     int Q;
     int maxK=1000000000;
     // Editorial idea
-    SnakeEating(Integer a[], int q, boolean ascending)
+    SnakeEating(Integer a[], int q)
     {
         int n=a.length;
         L=new Integer[n+1];
@@ -320,7 +350,7 @@ class SnakeEating {
             return binaryEatSnakeAsc(p1, mid, p3, k);
     }
     // keep track index of snakes to be eaten(p1), and no less than k (p3)
-    int queryAsc(int k)  // sorted ascending
+    int query(int k)  // sorted ascending
     {
         int p3=Arrays.binarySearch(L, k);
         if (p3<0) {
@@ -346,7 +376,7 @@ class SnakeEating {
     {
         for (int i=0; i<Q; i++) {
             int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
-            out.println(queryAsc(k));
+            out.println(query(k));
         }
     }
     static void autotest()
@@ -359,13 +389,13 @@ class SnakeEating {
         for (int i=0; i<large.length; i++) {
             large[i]=rnd.nextInt(v)+1;
         }
-        SnakeEating sn2 = new SnakeEating(large, 2, true);
+        SnakeEating sn2 = new SnakeEating(large, 2);
         SnakeEating3 sn = new SnakeEating3(large, 2);
         for (int i=0; i<n*2; i++)
         {
             int k=rnd.nextInt(v)+1;
             int a1=sn.query(k);
-            int a2=sn2.queryAsc(k);
+            int a2=sn2.query(k);
             if (a1 !=a2) {
                 out.println(i+" not equal k="+ k+" a1="+a1+" a2="+a2);
                 out.println(Arrays.toString(large));
@@ -374,35 +404,6 @@ class SnakeEating {
         }       
     }
     
-    static void testFindCurr(Integer[] a, int k)
-    {
-        int c1=SnakeBase.findCurr(a, k);
-        int c2=SnakeBase.findCurr2(a, k);
-        out.println("find k="+k+":"+c1+"=="+c2);        
-    }
-    static void test3()// test static functions
-    {
-        Integer[] a=new Integer[]{21, 9, 5, 8, 10};
-        Arrays.sort(a);
-        out.println(Arrays.toString(a));
-        testFindCurr(a, 22);
-        testFindCurr(a, 21);
-        testFindCurr(a, 20);
-        testFindCurr(a, 6);
-        testFindCurr(a, 5);
-        testFindCurr(a, 1);
-        SnakeEating3 sn=new SnakeEating3(a, 2);
-        out.println(sn.query(10)==3);
-        out.println(sn.query(11)==2);
-        out.println(sn.query(13)==2);
-        out.println(sn.query(14)==1);
-        out.println(sn.query(25)==1);
-        out.println(sn.query(26)==0);
-        out.println(sn.query(1)==5);
-        out.println(sn.query(5)==5);
-        out.println(sn.query(6)==4);
-        out.println(sn.query(9)==4);
-    }
     static void test2()
     {
         //sc = codechef.ContestHelper.getFileScanner("snake-eat-t.txt");
@@ -418,20 +419,14 @@ class SnakeEating {
         int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
         int Q=sc.nextInt();
         Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
-        SnakeEating sn = new SnakeEating(L, Q, true);
+        SnakeEating sn = new SnakeEating(L, Q);
         int k=sc.nextInt();
-        out.println(sn.queryAsc(k));
+        out.println(sn.query(k));
         SnakeEating1 sn1 = new SnakeEating1(L, 2);
         out.println(sn1.bruteforce(k));
         out.println(sn1.query(k));
     }
     
-    static int[] sortIaR(int a[])  // sort int array reverse
-    {
-        return IntStream.of(a).boxed()
-                .sorted(Comparator.reverseOrder())
-                .mapToInt(i->i).toArray();        
-    }
     static Integer[] ria(int N) { // read int array
         Integer L[]=new Integer[N];
         for (int i=0; i<N; i++)
@@ -451,6 +446,7 @@ class SnakeEating {
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             StringBuilder sb = new StringBuilder();
             SnakeEating3 sn=new SnakeEating3(L, Q);
+            //SnakeEating sn=new SnakeEating(L, Q);  //WA
             for (int j=0; j<Q; j++) {
                 int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
                 sb.append(sn.query(k));

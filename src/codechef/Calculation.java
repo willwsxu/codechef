@@ -3,6 +3,9 @@
  */
 package codechef;
 
+import java.util.Comparator;
+import java.util.stream.IntStream;
+
 public class Calculation {
     
     // swap(a, 2, N+1) swap second half of array as even
@@ -22,5 +25,12 @@ public class Calculation {
         for (int i=1; i<=a.length; i++)
             s[i] = s[i-1]+a[i-1];
         return s;
+    }
+    
+    static int[] sortIaR(int a[])  // sort int array reverse
+    {
+        return IntStream.of(a).boxed()
+                .sorted(Comparator.reverseOrder())
+                .mapToInt(i->i).toArray();        
     }
 }
