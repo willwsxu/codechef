@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
-
+// https://discuss.codechef.com/questions/98090/chefsuba-editorial
+// Easy medium
 class SubArray {    
     int start=0;
     int N;  // Array size
