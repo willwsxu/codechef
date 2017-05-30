@@ -1,4 +1,10 @@
 
+
+/* 
+ * Snake imprint as 2xN cells on a plate, # is snake boday, . is not
+ * snake body parts don't overlap
+ * find out if a plate has complete snake body, celld are connected if they share a side
+*/
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +14,7 @@ import java.util.Scanner;
 /*4 basic column patterns, #. .# ## .. (p1 to P4)
 We don't need to consider p4 as graph is connected
 it is always OK if only one end has pattern p1 or p2
-if both ends has p1 or p2
+if both ends has p1 or p2, 4 basic patterns to consider
 .##  good (odd p3)
 ##
 .#   bad  (odd p3)
@@ -18,16 +24,21 @@ if both ends has p1 or p2
 ###
 .##  good (even p3)
 ####
+
+ Borrow idea from editorial. key is to seaprate as 2 tasks
+ Find out if all cells are connected
+ If so, analyze patterns to determine if it can form a single path without visiting a node twice
 */
+// ISSNAKE easy
 class IsSnake {
-    SnakeGraph g;
+    SimpleGraph g;
     String[] sp;
     int blackcells=0;
     IsSnake(String[] s)
     {
         sp=s;
         int N=s[0].length();
-        g=new SnakeGraph(2*N);
+        g=new SimpleGraph(2*N);
         for (int i=0; i<2; i++) {
             for (int j=0; j<N; j++) {
                 if (s[i].charAt(j)=='.')
@@ -40,7 +51,6 @@ class IsSnake {
                     g.addEdge(u, u+N);
             }
         }
-        //g.check();        
     }
     int pattern(String[] s, int i)
     {
@@ -138,8 +148,6 @@ class IsSnake {
             return false;
         if ( blackcells==1 )
             return true;
-        //out.println("vis "+g.getVisCount()+" black="+blackcells);
-        //return g.getVisCount()==blackcells;
         CC c = new CC(g);
         if (c.numCompoments(1)!=blackcells) {
             return false;
@@ -172,18 +180,19 @@ interface IGraph
     int V();
     public List<Integer> adj(int u);
 }
-// vertex from 1
+
+// vertex from 0
 class SimpleGraph implements IGraph { // unweighted, bidirectional
     protected int   V; // number of vertices
     private   int   E; // number of edges
 
-    List<List<Integer>> adj;
+    private List<List<Integer>> adj;
     SimpleGraph(int V)
     {
-        adj=new ArrayList<>(V+1);
+        adj=new ArrayList<>(V);
         this.V = V;
         E=0;
-        for (int v = 0; v <= V; v++) // Initialize all lists
+        for (int v = 0; v < V; v++) // Initialize all lists
             adj.add( new ArrayList<>(10));
     }
     public int V() { return V; }
@@ -199,73 +208,6 @@ class SimpleGraph implements IGraph { // unweighted, bidirectional
     public List<Integer> adj(int u)
     {
         return adj.get(u);
-    }
-}
-
-class SnakeGraph extends SimpleGraph
-{
-    boolean vis[];
-    int n[]=new int[4];// nodes of degree 0, 1, 2, 3
-    int v1; //first node of degree 1
-    int v2; //first node of degree 2;
-    int visCount=0;
-    public SnakeGraph(int v){
-        super(v);
-        vis = new boolean[v+1];
-    }
-    void check()
-    {
-        for (int i=1; i<=V; i++)
-        {
-            //out.println(i+" node edges "+adj.get(i));
-            n[adj.get(i).size()]++;
-            if ( n[1]==1 && v1==0) {
-                v1=i;
-            }
-            if ( n[2]==1 && v2==0)
-                v2=i;
-        }
-        //out.println(Arrays.toString(n)+" v1="+v1+" v2="+v2);
-        if ( v1>0)
-            singlePath(v1);
-        else if (v2>0)
-            singlePath(v2);
-    }
-    void singlePath(int u)
-    {
-        //out.println("visit "+u+" count "+visCount);
-        if (vis[u])
-            return;
-        visCount++;
-        vis[u]=true;
-        List<Integer> q=new ArrayList<>();
-        for (int v:adj.get(u)) {
-            if (vis[v])
-                continue;
-            if (adj.get(v).size()<=2) {
-                q.add(v);
-            }
-        }
-        for (int v:adj.get(u)) {
-            if (vis[v])
-                continue;
-            if (adj.get(v).size()<=2) 
-                continue;
-            if (q.isEmpty()) {
-                q.add(v);
-            } else {
-                //out.println(v+" remove "+u);
-                adj.get(v).remove(new Integer(u));
-            }
-        }
-        for (int v: q) {
-            singlePath(v);
-            break;
-        }
-    }
-    int getVisCount()
-    {
-        return visCount;
     }
 }
 
