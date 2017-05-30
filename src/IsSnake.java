@@ -126,16 +126,22 @@ class IsSnake {
         out.println(snake.isOnePath());
         snake=new IsSnake(new String[]{".","."});
         out.println(!snake.isOnePath());
+        
+        snake=new IsSnake(new String[]{"....","##.#"});
+        out.println(!snake.isOnePath());
+        snake=new IsSnake(new String[]{"...","#.#"});
+        out.println(!snake.isOnePath());
     }
     boolean isOnePath()
     {
         if ( blackcells<1 )
             return false;
+        if ( blackcells==1 )
+            return true;
         //out.println("vis "+g.getVisCount()+" black="+blackcells);
         //return g.getVisCount()==blackcells;
         CC c = new CC(g);
-        if (!c.singleGraph()) {
-            //out.println("not connected");
+        if (c.numCompoments(1)!=blackcells) {
             return false;
         }
         //out.println("connected");
@@ -273,6 +279,7 @@ class CC
         this.g=g;
         visId = new int[g.V()];
         for (int s = 0; s < g.V(); s++)
+            // no need to visit nodes without any edge
             if (visId[s]==0 && !g.adj(s).isEmpty())
             {
                 dfs(s, ++id);
@@ -285,13 +292,17 @@ class CC
             if (visId[w]==0)
                 dfs(w, id);
     }
-    public boolean singleGraph()
+    public int numCompoments(int ID)  // components with id=ID
     {
+        int count=0;
+        for (int s = 0; s < g.V(); s++)
+            if (visId[s]==ID)
+                count++;
         //out.println("singleGraph "+id);
-        return id<=1;
+        return count;
     }
     public boolean connected(int v, int w)
     {
-        return visId[v]==visId[w];
+        return visId[v]==visId[w] && visId[v]!=0;
     }
 }
