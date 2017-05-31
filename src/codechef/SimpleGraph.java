@@ -1,13 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Adjacency list Graph
  */
 package codechef;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 // vertex from 0
 public class SimpleGraph implements IGraph { // unweighted, bidirectional
