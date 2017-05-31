@@ -11,14 +11,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author WXU
+ * Put Chef into 2 teams by age, team should be balanced at all times, young team will get the odd extra
  */
 
 class ChefTeams2 {
@@ -175,18 +168,9 @@ class ChefTeam4
     
     int addChef(int age, int rating)
     {
-        if (yng.isEmpty()) {
-            yng.add(new IntPair(age, rating));
-            total[0] += rating;
-            return rating;
-        } else if (old.isEmpty()) {
-            old.add(new IntPair(age, rating));
-            total[1] += rating;
-            return rating;
-        }
         if (yng.size()<=old.size()) {
             IntPair p=old.peek();
-            if (p.first<age) {
+            if (p!=null && p.first<age) {
                 p=old.poll();
                 old.add(new IntPair(age, rating));
                 yng.add(p);
@@ -198,7 +182,7 @@ class ChefTeam4
                 total[0] += rating;            
             }
         } else {  // add to old group
-            IntPair p=old.peek();
+            IntPair p=yng.peek();
             if (p.first>age) {
                 p=yng.poll();
                 yng.add(new IntPair(age, rating));
@@ -212,7 +196,7 @@ class ChefTeam4
             }
         }
         int diff=total[0]-total[1];
-        return diff>0?diff:diff;
+        return diff>0?diff:-diff;
     }
 }
 
@@ -250,7 +234,14 @@ class ChefTeams {
         team.addChef(1,7);
         team.addChef(5,5);
         team.addChef(3,1);
-        team.addChef(8,15);        
+        team.addChef(8,15);  
+        
+        ChefTeam4 team4 = new ChefTeam4();
+        out.println(team4.addChef(2,3));
+        out.println(team4.addChef(1,7));
+        out.println(team4.addChef(5,5));
+        out.println(team4.addChef(3,1));
+        out.println(team4.addChef(8,15));        
     }
     static void autoTest()
     {        
@@ -267,6 +258,6 @@ class ChefTeams {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
-        autoTest();
+        manualTest();
     }
 }
