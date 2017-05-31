@@ -13,7 +13,7 @@ import java.util.TreeMap;
 /*
  * Put Chef into 2 teams by age, team should be balanced at all times, young team will get the odd extra
  */
-
+// CTEAMS EASY
 class ChefTeams2 {
     int rating1=0;
     int rating2=0;
@@ -245,19 +245,21 @@ class ChefTeams {
     }
     static void autoTest()
     {        
-        ChefTeams2 team = new ChefTeams2();
-        Scanner scan = new Scanner(System.in);
-        int N = scan.nextInt();
+        ChefTeam4 team = new ChefTeam4();
+        StringBuilder sb=new StringBuilder();
+        int N = sc.nextInt();          //1 <= N <= 10^5
         for (int i=0; i<N; i++)
         {
-            int age = scan.nextInt();
-            int rating = scan.nextInt();
-            team.addChef(age, rating);
+            int age = sc.nextInt();    // 1 <= Ai <= 10^9
+            int rating = sc.nextInt(); // 1 <= Ri <= 1000
+            sb.append(team.addChef(age, rating));
+            sb.append("\n");
         }
+        out.print(sb.toString());
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
-        manualTest();
+        autoTest();
     }
 }
