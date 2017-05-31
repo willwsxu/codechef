@@ -1,3 +1,5 @@
+package smackdown.roundb;
+
 /*
  * Brief Desc: snake houses in a n x m grid
  * A bill has been passed for making a smooth transition from capitalism to socialism. 
