@@ -1,3 +1,5 @@
+package codechef;
+
 
 import codechef.IntPair;
 import static java.lang.System.out;
