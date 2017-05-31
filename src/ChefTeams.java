@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -135,6 +136,75 @@ class ChefTeams3 {
         out.println(dif);
     }
 }
+// copied from subArray
+class IntPair  // pair of int
+{
+    int first;
+    int second;
+    IntPair(int f, int s)
+    {
+        first=f;
+        second=s;
+    }
+    @Override
+    public boolean equals(Object s)
+    {
+        if (s instanceof IntPair) {
+            IntPair other =(IntPair)s;
+            return first==other.first && second==other.second;
+        }
+        return false;
+    }
+    @Override
+    public int hashCode()
+    {
+        return (int)(first*second);
+    }
+    @Override
+    public String toString()
+    {
+        return first+":"+second;
+    }
+}
+
+class ChefTeam4
+{
+    PriorityQueue<IntPair> yng=new PriorityQueue<>(50000, (p1,p2)->p2.first-p1.first); // max heap
+    PriorityQueue<IntPair> old=new PriorityQueue<>(50000, (p1,p2)->p1.first-p2.first); // min heap
+    int total[]=new int[2];
+    
+    int addChef(int age, int rating)
+    {
+        if (yng.isEmpty()) {
+            yng.add(new IntPair(age, rating));
+            total[0] += rating;
+            return rating;
+        } else if (old.isEmpty()) {
+            old.add(new IntPair(age, rating));
+            total[1] += rating;
+            return rating;
+        }
+        if (yng.size()<=old.size()) {
+            IntPair p=old.peek();
+            if (p.first<age) {
+                p=old.poll();
+                old.add(new IntPair(age, rating));
+                yng.add(p);
+            } else {
+                yng.add(new IntPair(age, rating));                
+            }
+        } else {  // add to old group
+            IntPair p=old.peek();
+            if (p.first>age) {
+                p=yng.poll();
+                yng.add(new IntPair(age, rating));
+                old.add(p);
+            } else {
+                old.add(new IntPair(age, rating));                
+            }
+        }
+    }
+}
 
 class ChefTeams {
     Map<Integer,Integer> chefs = new TreeMap<>();
@@ -184,6 +254,7 @@ class ChefTeams {
             team.addChef(age, rating);
         }
     }
+    static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
         autoTest();
