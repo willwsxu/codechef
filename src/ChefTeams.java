@@ -190,19 +190,29 @@ class ChefTeam4
                 p=old.poll();
                 old.add(new IntPair(age, rating));
                 yng.add(p);
+                total[1] += rating;
+                total[1] -= p.second;
+                total[0] += p.second;
             } else {
-                yng.add(new IntPair(age, rating));                
+                yng.add(new IntPair(age, rating));    
+                total[0] += rating;            
             }
         } else {  // add to old group
             IntPair p=old.peek();
             if (p.first>age) {
                 p=yng.poll();
                 yng.add(new IntPair(age, rating));
-                old.add(p);
+                old.add(p);  
+                total[0] += rating;   
+                total[0] -= p.second;
+                total[1] += p.second;         
             } else {
-                old.add(new IntPair(age, rating));                
+                old.add(new IntPair(age, rating));   
+                total[1] += rating;             
             }
         }
+        int diff=total[0]-total[1];
+        return diff>0?diff:diff;
     }
 }
 
