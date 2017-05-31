@@ -27,32 +27,32 @@ class ChefTeams3 {
     int addChef(int age, int rating)
     {
         if(youngTeam.size()<=oldTeam.size()) {
-                if ( oldTeam.isEmpty() || age <oldTeam.first().int1()) { // insert to first half
-                    youngTeam.add(new IntPair(age, rating));
-                    rating1 += rating;
-                } else {
-                    oldTeam.add(new IntPair(age, rating));
-                    IntPair p = oldTeam.pollFirst();
-                    youngTeam.add(p);
-                    rating1 += p.int2();
-                    rating2 -= p.int2();
-                    rating2 += rating;
-                    //out.println("even add. shift left "+shift);
-                }
+            if ( oldTeam.isEmpty() || age <oldTeam.first().int1()) { // insert to first half
+                youngTeam.add(new IntPair(age, rating));
+                rating1 += rating;
             } else {
-                if ( age > youngTeam.last().int1()) { // insert to second half
-                    oldTeam.add(new IntPair(age, rating));
-                    rating2 += rating;
-                } else {
-                    youngTeam.add(new IntPair(age, rating));
-                    IntPair p = youngTeam.pollLast();
-                    oldTeam.add(p);
-                    rating1 += rating;
-                    rating1 -= p.int2();
-                    rating2 += p.int2();
-                    //out.println("odd add. shift right "+shift);
-                }
+                oldTeam.add(new IntPair(age, rating));
+                IntPair p = oldTeam.pollFirst();
+                youngTeam.add(p);
+                rating1 += p.int2();
+                rating2 -= p.int2();
+                rating2 += rating;
+                //out.println("even add. shift left "+shift);
             }
+        } else {
+            if ( age > youngTeam.last().int1()) { // insert to second half
+                oldTeam.add(new IntPair(age, rating));
+                rating2 += rating;
+            } else {
+                youngTeam.add(new IntPair(age, rating));
+                IntPair p = youngTeam.pollLast();
+                oldTeam.add(p);
+                rating1 += rating;
+                rating1 -= p.int2();
+                rating2 += p.int2();
+                //out.println("odd add. shift right "+shift);
+            }
+        }
         //out.println(rating1+":"+rating2);
         return rating1>rating2?rating1-rating2:rating2-rating1;
     }
