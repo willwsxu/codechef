@@ -1,16 +1,13 @@
 package smackdown.rounda;
 
-
-
 /* 
  * Snake imprint as 2xN cells on a plate, # is snake boday, . is not
  * snake body parts don't overlap
  * find out if a plate has complete snake body, celld are connected if they share a side
 */
+import codechef.CC;
+import codechef.SimpleGraph;
 import static java.lang.System.out;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 /*4 basic column patterns, #. .# ## .. (p1 to P4)
@@ -161,7 +158,7 @@ class IsSnake {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
+        test();
         int T=sc.nextInt(); // 1 ≤ T ≤ 500
         for (int i=0; i<T;i++) {
             int N=sc.nextInt(); //1 ≤ n ≤ 500
@@ -174,79 +171,5 @@ class IsSnake {
             }
             out.println(new IsSnake(snake).isOnePath()?"yes":"no");
         }
-    }
-}
-
-interface IGraph
-{
-    int V();
-    public List<Integer> adj(int u);
-}
-
-// vertex from 0
-class SimpleGraph implements IGraph { // unweighted, bidirectional
-    protected int   V; // number of vertices
-    private   int   E; // number of edges
-
-    private List<List<Integer>> adj;
-    SimpleGraph(int V)
-    {
-        adj=new ArrayList<>(V);
-        this.V = V;
-        E=0;
-        for (int v = 0; v < V; v++) // Initialize all lists
-            adj.add( new ArrayList<>(10));
-    }
-    public int V() { return V; }
-    public int E() { return E; }
-    
-    public void addEdge(int u, int v)
-    {
-        //out.println("add edge "+u+","+v);
-        adj.get(u).add(v);
-        adj.get(v).add(u);
-        E++;
-    }
-    public List<Integer> adj(int u)
-    {
-        return adj.get(u);
-    }
-}
-
-class CC
-{
-    private IGraph g;
-    private int visId[];  // dual purpose, for component id and is visited
-    private int id=0;
-    public CC(IGraph g)
-    {
-        this.g=g;
-        visId = new int[g.V()];
-        for (int s = 0; s < g.V(); s++)
-            // no need to visit nodes without any edge
-            if (visId[s]==0 && !g.adj(s).isEmpty())
-            {
-                dfs(s, ++id);
-            }
-    }
-    private void dfs(int v, int id) {
-        //out.println("dfs v"+v+" id="+id);
-        visId[v]=id;
-        for (int w: g.adj(v))
-            if (visId[w]==0)
-                dfs(w, id);
-    }
-    public int numCompoments(int ID)  // components with id=ID
-    {
-        int count=0;
-        for (int s = 0; s < g.V(); s++)
-            if (visId[s]==ID)
-                count++;
-        //out.println("singleGraph "+id);
-        return count;
-    }
-    public boolean connected(int v, int w)
-    {
-        return visId[v]==visId[w] && visId[v]!=0;
     }
 }
