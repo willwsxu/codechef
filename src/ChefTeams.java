@@ -101,7 +101,7 @@ class ChefTeams3 {
     int rating1=0;
     int rating2=0;
     
-    void addChef(int age, int rating)
+    int addChef(int age, int rating)
     {
         if(youngTeam.size()<=oldTeam.size()) {
                 if ( oldTeam.isEmpty() || age <oldTeam.first().first) { // insert to first half
@@ -131,8 +131,7 @@ class ChefTeams3 {
                 }
             }
         //out.println(rating1+":"+rating2);
-        int dif = rating1>rating2?rating1-rating2:rating2-rating1;
-        out.println(dif);
+        return rating1>rating2?rating1-rating2:rating2-rating1;
     }
 }
 
@@ -205,11 +204,11 @@ class ChefTeams {
     static void manualTest()
     {
         ChefTeams3 team = new ChefTeams3();
-        team.addChef(2,3);
-        team.addChef(1,7);
-        team.addChef(5,5);
-        team.addChef(3,1);
-        team.addChef(8,15);  
+        out.println(team.addChef(2,3));
+        out.println(team.addChef(1,7));
+        out.println(team.addChef(5,5));
+        out.println(team.addChef(3,1));
+        out.println(team.addChef(8,15));  
         
         ChefTeam4 team4 = new ChefTeam4();
         out.println(team4.addChef(2,3));
@@ -220,7 +219,7 @@ class ChefTeams {
     }
     static void autoTest()
     {        
-        ChefTeam4 team = new ChefTeam4();
+        ChefTeams3 team = new ChefTeams3();
         StringBuilder sb=new StringBuilder();
         int N = sc.nextInt();          //1 <= N <= 10^5
         for (int i=0; i<N; i++)
@@ -235,6 +234,6 @@ class ChefTeams {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {
-        manualTest();
+        autoTest();
     }
 }
