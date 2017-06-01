@@ -13,7 +13,7 @@ import static java.lang.System.out;
 import java.util.Scanner;
 import java.util.Stack;
 
-// SNELECT EASY
+// SNELECT, EASY
 class SnakeElection {
     
     static void greedy(String sm)

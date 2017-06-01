@@ -13,6 +13,11 @@ package smackdown.roundb;
  * Strategy:
  * find the cells with highest wealth and put them in a list, transform all its neighbors.
  * Add all new wealthy cells into list, and repeat until no more cells transformed
+ ************************************
+ * Use Graph theory, multi source BFS:
+ * Construct graph from grid, find the nodes with max wealth, BFS and the furtherest distance
+ * will be the answer. 
+ * Create a artificial node to connect to max nodes, so it becomes single source BFS
 */
 import static java.lang.System.out;
 import java.util.AbstractMap.SimpleEntry;
@@ -21,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-// SNSOCIAL
+// SNSOCIAL, Easy - Medium, BFS
 class SnakeSocial {
     int a[][];
     int maxV;
@@ -35,7 +40,7 @@ class SnakeSocial {
             }
         this.a=a;
         maxV=m;
-        out.println(scan(maxEntry));
+        out.println(adhoc(maxEntry));
     }
     void update(int i, int j, List<Map.Entry<Integer, Integer>> newEntry)
     {
@@ -46,25 +51,21 @@ class SnakeSocial {
         a[i][j]=maxV;
         newEntry.add(new SimpleEntry<Integer,Integer>(i,j));
     }
-    int scan(List<Map.Entry<Integer, Integer>> entry)
+    int adhoc(List<Map.Entry<Integer, Integer>> entry)
     {
         List<Map.Entry<Integer, Integer>> newEntry=new ArrayList<>();
         for (Map.Entry<Integer, Integer> e: entry) {
             int i=e.getKey();
             int j=e.getValue();
-            update(i-1, j-1, newEntry);
-            update(i-1, j, newEntry);
-            update(i-1, j+1, newEntry);
-            update(i, j-1, newEntry);
-            update(i, j+1, newEntry);
-            update(i+1, j-1, newEntry);
-            update(i+1, j, newEntry);
-            update(i+1, j+1, newEntry);
+            int x[]=new int[]{-1,-1,-1,0,0,1,1,1};
+            int y[]=new int[]{-1,0,1,-1,1,-1,0,1};
+            for (int k=0; k<x.length; k++)
+                update(i+x[k], j+y[k], newEntry);
         }
         if ( newEntry.isEmpty())
             return 0;
         else {
-            return 1+scan(newEntry);
+            return 1+adhoc(newEntry);
         }
     }
     static int fillMatrix(int [][] a, Scanner reader) // shared
