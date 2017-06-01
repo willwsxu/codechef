@@ -5,6 +5,8 @@ package smackdown.roundb;
  * Strategy: Greedy
  * mongoose will eat snake to its left if it exist, otherwise it will eat snake to its right
  * Caveat: a snake can not be eaten twice
+ *   1. use a stack to keep s and m, change m to M once it eats, pop out the eaten snake
+ *   2. use array or list to store s and m, change s to S if snake is eaten
 */
 
 import static java.lang.System.out;
