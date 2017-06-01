@@ -24,18 +24,18 @@ class SnakeElection {
                 if (stack.isEmpty() || stack.peek() !='m') {
                     stack.add('s');
                     s++;
-                } else {
+                } else {  // eaten by previous m
                     stack.pop();
-                    stack.add('M');
+                    stack.add('M');  // mark it as eaten
                 }
             } else {
                 m++;
                 if (stack.isEmpty() || stack.peek()!='s') 
-                    stack.add('m');
+                    stack.add('m'); // ready to eat rigth snake
                 else {
-                    stack.pop();
+                    stack.pop();    // eat left snake
                     s--;
-                    stack.add('M'); // already eat
+                    stack.add('M'); // mark it as eaten
                 } 
             }
         }
