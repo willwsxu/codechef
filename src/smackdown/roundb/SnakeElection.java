@@ -1,12 +1,20 @@
+package smackdown.roundb;
+/*
+ * Brief Description: snake and mongoose line up to cast vote, each mongoose will eat at most one of its neighbor snakes
+ * find out which animal would win
+ * Strategy: Greedy
+ * mongoose will eat snake to its left if it exist, otherwise it will eat snake to its right
+ * Caveat: a snake can not be eaten twice
+*/
 
 import static java.lang.System.out;
 import java.util.Scanner;
 import java.util.Stack;
 
-
+// SNELECT EASY
 class SnakeElection {
     
-    static void solve(String sm)
+    static void greedy(String sm)
     {
         int m=0;
         int s=0;
@@ -40,22 +48,22 @@ class SnakeElection {
     }
     static void manualtest()
     {
-        solve("s");  
-        solve("m");
-        solve("ms");   
-        solve("sm");   
-        solve("mss");   
-        solve("msss"); 
-        solve("mmsss"); 
-        solve("mm");
-        solve("ssssmmsm");  // tie, special case
+        greedy("s");  
+        greedy("m");
+        greedy("ms");   
+        greedy("sm");   
+        greedy("mss");   
+        greedy("msss"); 
+        greedy("mmsss"); 
+        greedy("mm");
+        greedy("ssssmmsm");  // tie, special case, snake should not be eaten twice
     }
     static void autotest()
     {
         int T=sc.nextInt();     // 1 ≤ T ≤ 100
         for (int i=0; i<T; i++) {
             String s=sc.next();
-            solve(s);
+            greedy(s);
         }
     }
     static Scanner sc = new Scanner(System.in);
