@@ -1,3 +1,5 @@
+package smackdown.roundb;
+
 
 import static java.lang.System.out;
 import java.util.Scanner;
