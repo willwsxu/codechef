@@ -10,7 +10,26 @@ class SnakeCoup {
     
     static int fences2(String[] h, int n)
     {
-        boolean hori=h[0].indexOf('*')>=0&&h[1].indexOf('*')>=0;        
+        boolean hori=h[0].indexOf('*')>=0&&h[1].indexOf('*')>=0;     
+        int f=hori?1:0;
+        //out.println("horizontal "+f);
+        boolean star[]=new boolean[]{false,false};
+        for (int i=0; i<n; i++)  {
+            for (int k=0; k<2;k++) {
+                if (h[k].charAt(i)=='*') {
+                    if (star[k]) {
+                        f++;
+                        star[0]=star[1]=false;// reset
+                        break;
+                    }
+                }
+            }
+            for (int k=0; k<2;k++)
+                if (h[k].charAt(i)=='*')
+                    star[k]=true;  // set current state
+            //out.println(f);
+        }
+        return f;
     }
     // add horizontal fence if there are snakes sharing a sidein any column
     // check 4 column patterns to add vertical fences, need to consider if there is horizontal
@@ -56,7 +75,13 @@ class SnakeCoup {
     }
     static void manualTest()
     {
-        out.println(fences(new String[]{".*.*.*.*.*","*.*.*.*.*."},10));        
+        out.println(fences2(new String[]{".*.*.*.*.*","*.*.*.*.*."},10)==5); 
+        out.println(fences2(new String[]{".*.*.*.*.*",".........."},10)==4); 
+        out.println(fences2(new String[]{".*.*.*.*.*","**********"},10)==10);  
+        out.println(fences2(new String[]{"....","...*"},4)==0);     
+        out.println(fences2(new String[]{"*...","...*"},4)==1);    
+        out.println(fences2(new String[]{"..***","***.."},5)==5);    
+        out.println(fences2(new String[]{"***..","..***"},5)==5);                
     }
     static void autotest()
     {
@@ -66,13 +91,13 @@ class SnakeCoup {
             String[] h=new String[2];
             h[0]=sc.next();
             h[1]=sc.next();
-            out.println(fences(h,n));
+            out.println(fences2(h,n));
         }        
     }
     
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        manualTest();
+        autotest();
     }
 }
