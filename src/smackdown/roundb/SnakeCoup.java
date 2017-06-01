@@ -37,47 +37,7 @@ class SnakeCoup {
         }
         return f;
     }
-    // check 4 column patterns to add vertical fences, need to consider if there is horizontal
-    static int fences(String[] h, int n)
-    {
-        int f=0;
-        boolean hori=false;
-        for (int i=0; i<n; i++)  {
-            if (!hori) {
-                if (h[0].charAt(i)=='*' && h[1].charAt(i)=='*') {
-                    hori=true;
-                    f++;
-                    out.println("horizontal fence");
-                    break;
-                }                
-            }
-        }
-        //4 patterns: .., *., .*,**
-        int prev=0; // compare to value is previous none empty
-        for (int i=0; i<n; i++)  {
-            if (h[0].charAt(i)=='.' && h[1].charAt(i)=='.')
-                continue;
-            if (h[0].charAt(i)=='*' && h[1].charAt(i)=='*') {
-                if ( prev!=0)
-                    f++;
-                prev=3;
-            } else if (h[0].charAt(i)=='*' && h[1].charAt(i)=='.') {
-                if ( prev==3 ||prev==1)
-                    f++;
-                else if (prev==2 &&!hori)
-                    f++;
-                prev=1;
-            } else {
-                if ( prev==3 ||prev==2)
-                    f++;
-                else if (prev==1 &&!hori)
-                    f++;
-                prev=2;                
-            }
-            out.println("pattern "+prev);
-        }
-        return f;
-    }
+    
     static void manualTest()
     {
         out.println(greedy(new String[]{".*.*.*.*.*","*.*.*.*.*."},10)==5); 
@@ -85,7 +45,7 @@ class SnakeCoup {
         out.println(greedy(new String[]{".*.*.*.*.*","**********"},10)==10);  
         out.println(greedy(new String[]{"....","...*"},4)==0);     
         out.println(greedy(new String[]{"*...","...*"},4)==1);    
-        out.println(greedy(new String[]{"..***","***.."},5)==5);    
+        out.println(greedy(new String[]{"..***","***.."},5)==5);  // edge case, must reset after vertical fence  
         out.println(greedy(new String[]{"***..","..***"},5)==5);                
     }
     static void autotest()
