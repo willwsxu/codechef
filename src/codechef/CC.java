@@ -34,6 +34,15 @@ public class CC
                 count++;
         //out.println("singleGraph "+id);
         return count;
+    }   
+    public int numCompoments()  // total disjoin components
+    {
+        int count=0;
+        for (int s = 0; s < g.V(); s++)
+            if (visId[s]==0)
+                count++;
+        //out.println("singleGraph "+id);
+        return count+id;
     }
     public boolean connected(int v, int w)
     {
