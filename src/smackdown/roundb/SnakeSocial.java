@@ -103,7 +103,7 @@ class SnakeSocial {
         ConcurrentLinkedQueue<Map.Entry<Integer, Integer>> q=new ConcurrentLinkedQueue<>();
         for (Map.Entry<Integer, Integer> e: maxEntry) {
             q.add(e);
-            vis[e.getKey()][e.getValue()]=true;
+            d[e.getKey()][e.getValue()]=1;
         }
         int ans=0;
         while (!q.isEmpty()) {
@@ -112,14 +112,13 @@ class SnakeSocial {
             for (int k=0; k<x.length; k++) {
                 int i=e.getKey()+x[k];
                 int j=e.getValue()+y[k];
-                if ( valid(i,j) && !vis[i][j] ) {
+                if ( valid(i,j) && d[i][j]==0 ) {
                     q.add(new SimpleEntry<Integer,Integer>(i,j) );
                     d[i][j] = d[e.getKey()][e.getValue()]+1;
-                    vis[i][j]=true;
                 }                    
             }
         }
-        return ans;
+        return ans-1;
     }
     
     void solve()
