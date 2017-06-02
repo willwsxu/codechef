@@ -1,7 +1,6 @@
 package smackdown.roundb;
 
 
-
 /*
  * Brief Desc: snake houses in a n x m grid
  * A bill has been passed for making a smooth transition from capitalism to socialism. 
@@ -95,8 +94,6 @@ class SnakeSocial {
     int d[][];  // store distance, and use as visit marker
     int bfs()
     {
-        int n=a.length;
-        int m=a[0].length;
         d=new int[n][m];
         ConcurrentLinkedQueue<Map.Entry<Integer, Integer>> q=new ConcurrentLinkedQueue<>();
         for (Map.Entry<Integer, Integer> e: maxEntry) {
@@ -150,9 +147,9 @@ class SnakeSocial {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();
-        /*int T=sc.nextInt();     // 1 ≤ T ≤ 4
+        //test();
+        int T=sc.nextInt();     // 1 ≤ T ≤ 4
         while (T-->0)
-            new SnakeSocial().solve();*/
+            new SnakeSocial().solve();
     }
 }
