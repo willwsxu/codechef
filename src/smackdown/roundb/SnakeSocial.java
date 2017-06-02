@@ -92,13 +92,11 @@ class SnakeSocial {
             return 1+adhoc(newEntry);
         }
     }
-    boolean vis[][];
-    int d[][];
+    int d[][];  // store distance, and use as visit marker
     int bfs()
     {
         int n=a.length;
         int m=a[0].length;
-        vis = new boolean[n][m];
         d=new int[n][m];
         ConcurrentLinkedQueue<Map.Entry<Integer, Integer>> q=new ConcurrentLinkedQueue<>();
         for (Map.Entry<Integer, Integer> e: maxEntry) {
