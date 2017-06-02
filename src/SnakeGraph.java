@@ -69,6 +69,15 @@ class CCx
                 count++;
         //out.println("singleGraph "+id);
         return count;
+    }    
+    public int numCompoments()
+    {
+        int count=0;
+        for (int s = 0; s < g.V(); s++)
+            if (visId[s]==0)
+                count++;
+        //out.println("singleGraph "+id);
+        return count+id;
     }
     public boolean connected(int v, int w)
     {
@@ -76,6 +85,15 @@ class CCx
     }
 }
 public class SnakeGraph {
+    static void solve(SimpleGraphX g)
+    {
+        CCx cc=new CCx(g);
+        StringBuilder sb = new StringBuilder();
+        sb.append(cc.numCompoments()-1);
+        for (int i=1; i<g.V(); i++) {
+            
+        }        
+    }
    
     static void autotest()
     {
@@ -89,7 +107,6 @@ public class SnakeGraph {
                 int v=sc.nextInt();
                 g.addEdge(u-1, v-1);
             }
-            CCx cc=new CCx(g);
         }        
     }
     
