@@ -23,7 +23,7 @@ class SnakeDiscussion {
     int x1[], y1[], x2[], y2[];
     SnakeDiscussion()
     {
-        int N=sc.nextInt(); // 1 ≤ n ≤ 50
+        int N=sc.nextInt(); // 1 ≤ n ≤ 50 snakes or line segments
         x1=new int[N];        y1=new int[N];
         x2=new int[N];        y2=new int[N];
         for (int i=0; i<N; i++) { // snake location
@@ -59,7 +59,7 @@ class SnakeDiscussion {
     }
     void solve()
     {
-        int size=50;
+        int size=50; // max grid is very small so don't bother to find the actual grid fitting n snakes
         int d=Integer.MAX_VALUE;
         for (int i=1; i<=size; i++) {
             for (int j=1; j<=size; j++) {
