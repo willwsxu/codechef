@@ -33,28 +33,35 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 // SNSOCIAL, Easy - Medium, BFS
 class SnakeSocial {
     int a[][];
-    int maxV;
+    int maxV, n, m;
     static final int x[]=new int[]{-1,-1,-1,0,0,1,1,1};
     static final int y[]=new int[]{-1,0,1,-1,1,-1,0,1};
     List<Map.Entry<Integer, Integer>> maxEntry=new ArrayList<>();
     
     SnakeSocial()
     {
-        int n=sc.nextInt();     // 1 ≤ n, m ≤ 50
-        int m=sc.nextInt();
-        int a[][]=new int[n][m];// 1 ≤ a[i][j] ≤ 10^6
-        int mx=fillMatrix(a, sc);  
-        init(a,mx);
+        n=sc.nextInt();     // 1 ≤ n, m ≤ 50
+        m=sc.nextInt();
+        a=new int[n][m];    // 1 ≤ a[i][j] ≤ 10^6
+        maxV=fillMatrix(a, sc);  
+        preCalc();
     }
-    private void init(int a[][], int m)
+    
+    SnakeSocial(int[][]a, int mx)
     {
-        for (int i=0; i<a.length; i++)
-            for (int j=0; j<a[i].length; j++) {
-                if ( a[i][j]==m)
+        n=a.length;
+        m=a[0].length;
+        this.a=a;
+        maxV=mx;
+        preCalc();
+    }
+    private void preCalc()
+    {
+        for (int i=0; i<n; i++)
+            for (int j=0; j<m; j++) {
+                if ( a[i][j]==maxV)
                     maxEntry.add(new SimpleEntry<Integer,Integer>(i,j));
             }
-        this.a=a;
-        maxV=m;
     }
     boolean valid(int i, int j) {        
         if (i<0 || j<0 || i>=a.length || j>=a[0].length)
@@ -120,6 +127,18 @@ class SnakeSocial {
         out.println(bfs());    
         //out.println(adhoc(maxEntry));        
     }
+    static void test()
+    {
+        int a[][]=new int[][]{{1,1},{1,2}};
+        out.println(new SnakeSocial(a,2).bfs()==1);
+        
+        a=new int[][]{{1,1},{1,1}};
+        out.println(new SnakeSocial(a,1).bfs()==0);
+        
+        
+        int a2[][]=new int[][]{{1,2,1,2},{1,1,1,2},{1,1,2,2}};
+        out.println(new SnakeSocial(a2,2).bfs()==2);
+    }
     static int fillMatrix(int [][] a, Scanner reader) // shared
     {
         int m=0; // max value
@@ -134,8 +153,9 @@ class SnakeSocial {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        int T=sc.nextInt();     // 1 ≤ T ≤ 4
+        test();
+        /*int T=sc.nextInt();     // 1 ≤ T ≤ 4
         while (T-->0)
-            new SnakeSocial().solve();
+            new SnakeSocial().solve();*/
     }
 }
