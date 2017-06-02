@@ -1,3 +1,5 @@
+package smackdown.roundb;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +86,9 @@ class CCx
         return visId[v]==visId[w] && visId[v]!=0;
     }
 }
-public class SnakeGraph {
+
+// SNGraph, Medium, DSU (Disjoint Set Union)
+class SnakeGraph {
     static void solve(SimpleGraphX g)
     {
         CCx cc=new CCx(g);
