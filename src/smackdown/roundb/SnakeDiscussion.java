@@ -1,3 +1,5 @@
+package smackdown.roundb;
+
 
 import static java.lang.Integer.max;
 import static java.lang.Integer.min;
@@ -16,7 +18,7 @@ import java.util.Scanner;
  * of all line segments pairwise. 
  */
 
-// SNDISCUS, Medium, Math
+// SNDISCUS, Medium, Math, practice
 // https://discuss.codechef.com/questions/99970/sndiscus-editorial
 class SnakeDiscussion {
     
