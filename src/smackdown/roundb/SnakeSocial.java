@@ -1,5 +1,9 @@
 package smackdown.roundb;
-
+/*
+ * Open Letter to vinaykandy2k16 at codechef who stole my code for Smackdown 2017
+ * I am not going to lecture you about honesty. If someone wants to cheat, please
+ * don't be so lazy to just copy and paste. Make some efforts to make the code look like yours.
+ */
 
 /*
  * Brief Desc: snake houses in a n x m grid
