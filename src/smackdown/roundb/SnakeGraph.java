@@ -1,12 +1,15 @@
 package smackdown.roundb;
 
 
+import static java.lang.System.out;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Stack;
 
 interface IGraphX
 {
@@ -44,82 +47,100 @@ class SimpleGraphX implements IGraphX { // unweighted, bidirectional
 }
 
 // only process edge if both nodes has degree>d
-class DSU
+class DSU //Union Find
 {
     private IGraphX g;
-    private int visId[];  // dual purpose, for component id and is visited
-    private int id=0;
-    PriorityQueue<Map.Entry<Integer, Integer>> degree = new PriorityQueue<>(100000, (e1,e2)->e2.getValue()-e1.getValue());
+    private int sz[];  // dual purpose, for component id and is visited
+    private int id[];
+    private int comp;
     public DSU(IGraphX g)
     {
         this.g=g;
-        visId = new int[g.V()];
+        sz = new int[g.V()];
+        id = new int[g.V()];
+        Arrays.fill(sz, 1);
+        comp=g.V();
         for (int s = 0; s < g.V(); s++)
-            // no need to visit nodes without any edge
-            if (!g.adj(s).isEmpty())
-            {
-                degree.add(new SimpleEntry(s,g.adj(s).size()));
-            }
+            id[s]=s;
     }
-    public void dfs(int d)
+    int find(int p) {
+        while (p!=id[p])
+            p=id[p];
+        return p;
+    }
+    void union(int u, int v)
     {
-        for (Map.Entry<Integer, Integer> e:degree) {
-            if (e.getValue()>d && visId[e.getKey()]==0)
-                dfs(e.getKey(), ++id);
+        u=find(u);
+        v=find(v);
+        if (u==v)
+            return;
+        if (sz[u]<sz[v]) {  // add small component to larger one
+            id[u]=v;
+            sz[v] += sz[u];
+        } else {
+            id[v]=u;
+            sz[u] += sz[v];            
         }
+        comp--;
     }
-    private void dfs(int v, int id) {
-        //out.println("dfs v"+v+" id="+id);
-        visId[v]=id;
-        for (int w: g.adj(v))
-            if (visId[w]==0)
-                dfs(w, id);
-    }
-    public int numCompoments(int ID)  // components with id=ID
+    
+    public int numCompoments()  // components with id=ID
     {
-        int count=0;
-        for (int s = 0; s < g.V(); s++)
-            if (visId[s]==ID)
-                count++;
-        //out.println("singleGraph "+id);
-        return count;
+        return comp;
     }    
-    public int numCompoments()
-    {
-        int count=0;
-        for (int s = 0; s < g.V(); s++)
-            if (visId[s]==0)
-                count++;
-        //out.println("singleGraph "+id);
-        return count+id;
-    }
     public boolean connected(int v, int w)
     {
-        return visId[v]==visId[w] && visId[v]!=0;
+        return find(w)==find(v);
     }
 }
 
 // SNGraph, Medium, DSU (Disjoint Set Union)
 class SnakeGraph {
+    SimpleGraphX g;
     SnakeGraph()
     {
         int n=sc.nextInt(); // 1 ≤ n ≤ 10^5
         int m=sc.nextInt();//0 ≤ m ≤ min(n * (n - 1) / 2, 2 * 10^5)
-        SimpleGraphX g=new SimpleGraphX(n);
+        g=new SimpleGraphX(n);
         for (int j=0; j<m; j++) {
             int u=sc.nextInt();
             int v=sc.nextInt();
             g.addEdge(u-1, v-1);
         }
     }
-    static void solve(SimpleGraphX g)
+    void solve()
     {
+        PriorityQueue<Map.Entry<Integer, Integer>> nodes = new PriorityQueue<>(100000, (e1,e2)->e2.getValue()-e1.getValue());
+        
+        for (int s = 0; s < g.V(); s++) {
+            // no need to visit nodes without any edge
+            if (!g.adj(s).isEmpty())
+            {
+                nodes.add(new SimpleEntry<>(s,g.adj(s).size()));
+            }
+        }
         DSU cc=new DSU(g);
-        StringBuilder sb = new StringBuilder();
-        sb.append(cc.numCompoments()-1);
-        for (int i=1; i<g.V(); i++) {
-            
-        }        
+        Stack<Integer> ans=new Stack<>();
+        for (int d=g.V()-1; d>=0; d--) {
+            ans.add(cc.numCompoments()-1);
+            while (!nodes.isEmpty()) {
+                Map.Entry<Integer, Integer> e=nodes.peek();
+                if (e.getValue()<d)
+                    break;
+                for (int w: g.adj(e.getKey())) {
+                    if (g.adj(w).size()<d)
+                        continue;
+                    cc.union(w, e.getKey());
+                }
+                nodes.poll();
+            }
+        } 
+        StringBuilder sb = new StringBuilder();    
+        for (int x:ans)   {
+            sb.append(x);
+            sb.append(" ");
+        }
+        out.println(sb.toString());
     }
    
     static void manualtest()
@@ -131,6 +152,6 @@ class SnakeGraph {
     {      
         int T=sc.nextInt();     // 1 ≤ T ≤ 3
         while (T-->0)
-            new SnakeGraph();
+            new SnakeGraph().solve();
     } 
 }
