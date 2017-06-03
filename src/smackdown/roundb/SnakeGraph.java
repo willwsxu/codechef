@@ -122,7 +122,7 @@ class SnakeGraph {
         DSU cc=new DSU(g);
         Stack<Integer> ans=new Stack<>();
         for (int d=g.V()-1; d>=0; d--) {
-            ans.add(cc.numCompoments()-1);
+            ans.push(cc.numCompoments()-1);
             while (!nodes.isEmpty()) {
                 Map.Entry<Integer, Integer> e=nodes.peek();
                 if (e.getValue()<d)
@@ -136,17 +136,13 @@ class SnakeGraph {
             }
         } 
         StringBuilder sb = new StringBuilder();    
-        for (int x:ans)   {
-            sb.append(x);
+        while (!ans.isEmpty()){
+            sb.append(ans.pop());
             sb.append(" ");
         }
         out.println(sb.toString());
     }
-   
-    static void manualtest()
-    {
-    }
-    
+       
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
@@ -155,3 +151,13 @@ class SnakeGraph {
             new SnakeGraph().solve();
     } 
 }
+/*
+1
+5 4
+1 2
+2 3
+2 4
+4 5
+
+0 3 4 4 4 
+*/
