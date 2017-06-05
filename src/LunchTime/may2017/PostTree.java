@@ -23,6 +23,7 @@ public class PostTree {
     long cp[];// cost of path
     int parent[];
     int w[];
+    int level[]=new int[10000];
     PostTree(int parent[], int w[])
     {
         this.parent=parent;
@@ -34,7 +35,7 @@ public class PostTree {
     {
         int N=sc.nextInt(); // 1 ≤ N ≤ 100,000
         parent=new int[N];
-        parent[0]=0;
+        parent[0]=-1;
         for (int i=1; i<N; i++) { 
             parent[i]=sc.nextInt()-1;
         }
@@ -55,8 +56,7 @@ public class PostTree {
         cp=new long[N];
         cp[0]=cn[0];
         vis=new boolean[N];
-        dfs(0);
-        print(cn);
+        dfs(0, 0);
         //Arrays.fill(vis, false);
         //dfs2(0);
         print(cp);
@@ -68,29 +68,23 @@ public class PostTree {
         out.println();        
     }
     boolean vis[];
-    void dfs(int v) {
+    void dfs(int v, int lvl) {
         vis[v]=true;
+        level[v]=lvl;
         if ( v>0) {
             int p=parent[v];
-            cp[v] = cn[v]+cp[p] ;
-            out.println((v+1)+"="+cp[v]);
+            while (p>=0 && w[p]>w[v] )
+                p=parent[p];
+            if (p<0)
+                cp[v]=0;
+            else
+                cp[v]=cp[p];
+            cp[v] += (level[v]-level[p])*w[v] ;
+            out.println((v+1)+"="+cp[v]+" p="+p);
         }
         for (int w: g.adj(v))
             if (!vis[w])
-                dfs(w);
-        int p=parent[v];
-        cn[p] = min(cn[p], cn[v]);
-    }
-    void dfs2(int v) {
-        vis[v]=true;
-        if ( v>0) {
-            int p=parent[v];
-            cp[v] = cn[v]+cp[p] ;
-            out.println((v+1)+"="+cp[v]);
-        }
-        for (int w: g.adj(v))
-            if (!vis[w])
-                dfs2(w);
+                dfs(w, lvl+1);
     }
     void update(int p)
     {
