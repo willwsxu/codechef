@@ -17,7 +17,7 @@ import java.util.Scanner;
 // POSTTREE, EASY (more like MEDIUM)
 // Binary Lifting on a tree, lowest common ancestor, DFS
 // https://discuss.codechef.com/questions/99371/posttree-editorial
-public class PostTree {
+class PostTree {
     
     long cn[];// cost of node
     long cp[];// cost of path
@@ -80,7 +80,7 @@ public class PostTree {
             else
                 cp[v]=cp[p];
             cp[v] += (level[v]-level[p])*w[v] ;
-            out.println((v+1)+"="+cp[v]+" p="+p);
+            //out.println((v+1)+"="+cp[v]+" p="+p);
         }
         for (int w: g.adj(v))
             if (!vis[w])
