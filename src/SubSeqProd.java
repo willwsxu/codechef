@@ -63,10 +63,12 @@ class SubSeqProd {
         if (lo>=hi)
             return lo;
         int mid = (lo+hi)/2;
+        if (hi-lo==1)
+            mid=hi;
         if ( multiply(p, s.get(mid))>lim)
             return binarysearch(s, p, lo, mid-1);
         else
-            return binarysearch(s, p, mid+1, hi);
+            return binarysearch(s, p, mid, hi);
     }
     long meetMiddle()
     {
@@ -409,8 +411,8 @@ class SubSeqProd {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test1();
-        //out.println(new SubSeqProd(A, K).meetMiddle());
+        //test();
+        out.println(new SubSeqProd().meetMiddle());
         //out.println(new SubSeqProd().completeSearch(true));
     }
 }
