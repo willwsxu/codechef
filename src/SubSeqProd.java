@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.LongStream;
 
-// CHEFCODE medium
 // Technique meet in the middle, http://www.infoarena.ro/blog/meet-in-the-middle
 
 // any sub sequence, product < K
@@ -19,14 +18,28 @@ class SubSeqProd {
     long lim;
     int  n;
     long prefix[];  // prefix prod fron N to 1
+    
+    SubSeqProd()
+    {
+        n=sc.nextInt();  // 1 ≤ N ≤ 30
+        lim=sc.nextInt();  // 1 ≤ K, Ai ≤ 10^18
+        val = new long[n];
+        for (int j=0; j<n; j++)
+            val[j] = sc.nextLong();
+        init();
+    }
     SubSeqProd(long a[], long k)
     {
         //out.println("SubSeqProd "+k);
         val=a;
         lim=k;
-        Arrays.sort(a);
         n=a.length;
-        while (n>0 && a[n-1]>k) {
+        init();
+    }
+    private void init()
+    {
+        Arrays.sort(val);
+        while (n>0 && val[n-1]>lim) {
             n--;
         }
     }
@@ -314,6 +327,13 @@ class SubSeqProd {
         long count = new SubSeqProd(A, K).bruteforce();
         out.println(count);
     }
+    static void test1(){
+        long A[] = new long[]{7, 2, 3};
+        out.println("meet middle "+new SubSeqProd(A, 1).meetMiddle());   
+        out.println("meet middle "+new SubSeqProd(A, 2).meetMiddle());   
+        out.println("meet middle "+new SubSeqProd(A, 6).meetMiddle()); 
+        out.println("meet middle "+new SubSeqProd(A, 42).meetMiddle());              
+    }
     static void test()
     {
         testChoose();
@@ -389,14 +409,9 @@ class SubSeqProd {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
-        int N=sc.nextInt();  // 1 ≤ N ≤ 30
-        int K=sc.nextInt();  // 1 ≤ K, Ai ≤ 10^18
-        long A[] = new long[N];
-        for (int j=0; j<N; j++)
-            A[j] = sc.nextLong();
+        test1();
         //out.println(new SubSeqProd(A, K).meetMiddle());
-        out.println(new SubSeqProd(A, K).completeSearch(true));
+        //out.println(new SubSeqProd().completeSearch(true));
     }
 }
 
