@@ -12,7 +12,7 @@ import java.util.stream.LongStream;
 
 // any sub sequence, product < K
 // use bit for subset, int is enough for N=30
-// CHEFCODE medium
+// CHEFCODE medium, https://discuss.codechef.com/questions/98092/chefcode-editorial
 class SubSeqProd {
     long val[];
     long lim;
@@ -54,7 +54,7 @@ class SubSeqProd {
             return;
         }
         recurseProd(s, v, k+1, prod);
-        recurseProd(s, v, k+1, multiply(prod, v[k]));        
+        recurseProd(s, v, k+1, safe_multi(prod, v[k]));        
     }
     
     static long completeSearch3(long[] v, int k, long prod, long lim)
@@ -66,7 +66,7 @@ class SubSeqProd {
             return 1;
         }
         long ans=completeSearch3(v, k+1, prod, lim);
-        ans+=completeSearch3(v, k+1, multiply(prod, v[k]), lim);   
+        ans+=completeSearch3(v, k+1, safe_multi(prod, v[k]), lim);   
         return ans;
     }
     
@@ -78,7 +78,7 @@ class SubSeqProd {
         int mid = (lo+hi)/2;
         if (hi-lo==1)
             mid=hi;
-        if ( multiply(p, s.get(mid))>lim)
+        if ( safe_multi(p, s.get(mid))>lim)
             return binarysearch(s, p, lo, mid-1);
         else
             return binarysearch(s, p, mid, hi);
@@ -108,11 +108,12 @@ class SubSeqProd {
         }
         //out.println(Arrays.toString(v1)+"-"+s1);
         //out.println(Arrays.toString(v2)+"-"+s2);
+        //out.println("two sets size "+s1.size()+" "+s2.size());
         long count =0;
         for (Long i: s1) {
             int pos = binarysearch(s2, i, 0, s2.size()-1);
             //out.println(i+":"+(pos));
-            if (pos <s2.size() && multiply(s2.get(pos), i)>lim)
+            if (pos <s2.size() && safe_multi(s2.get(pos), i)>lim)
                 pos--;
             //out.println(i+":"+(pos));
             count += ++pos;
@@ -197,6 +198,12 @@ class SubSeqProd {
         if ( p2<p )
             return Long.MAX_VALUE;
         return p2;
+    }
+    static long safe_multi(long p, long m)
+    {
+        if (Long.MAX_VALUE/m<p)
+            return Long.MAX_VALUE;
+        return p*m;
     }
     static long aChooseb(int a, int b)
     {
@@ -406,11 +413,17 @@ class SubSeqProd {
         out.println("meet middle "+new SubSeqProd(A, 4000).meetMiddle());  
         out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 4000)-1)); 
         
+        out.println("meet middle "+new SubSeqProd(A, 10000000000000000L).meetMiddle());    // 508131459
+        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 10000000000000000L)-1));  // 508131459
+        
+        out.println("meet middle "+new SubSeqProd(A, 100000000000000000L).meetMiddle());    // 642958481
+        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 100000000000000000L)-1));  // 642797745
+        /*
         A = new long[]{10,9,8,7,6,5,4,3,2,31, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
         //out.println("new "+new SubSeqProd(A, 1000000000000000000L).solve());  // 672779816
         //out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch(false));     // 672295666
         out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());    // 677351272
-        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 673149538
+        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 672295666
         
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,14,15,16,17,18,19,20,19,19,18,17,16,15,14,13,12,11};
         //out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 909178996
@@ -422,13 +435,13 @@ class SubSeqProd {
         //out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 1051752556
         //out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch(false));     // 1051641446
         out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle()); //1051674203
-        
+        */
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();
-        //out.println(new SubSeqProd().meetMiddle());
+        //test();
+        out.println(new SubSeqProd().meetMiddle());
         //out.println(new SubSeqProd().completeSearch(true));
     }
 }
