@@ -204,17 +204,6 @@ class SubSeqProd {
         return ans;
     }
     
-    long seqProduct(int ind, int num) // sequential prod
-    {
-        long prod=1;
-        for (int i=ind; i<ind+num; i++) {
-            long p=prod*val[i];            
-            if ( p<prod || p>lim)
-                return Long.MAX_VALUE;
-            prod=p;
-        }
-        return prod;
-    }
     static long safe_multi(long p, long m)
     {
         if (m==0)
@@ -223,35 +212,6 @@ class SubSeqProd {
             return Long.MAX_VALUE;
         return p*m;
     }
-    static long aChooseb(int a, int b)
-    {
-        if (a<b)
-            return 0; // error
-        if (a-b<b)  // 5C3 = 5C2
-            b=a-b;
-        long p=1;
-        int bb=b;
-        for (int i=0; i<b; i++) {
-            p *=(a-i);
-            while (bb>1 && p%bb==0) {
-                p /= bb--;
-            }
-        }
-        while (bb>1 && p%bb==0) {
-            p /= bb--;
-        }
-        return p;
-    }
-    static void testChoose()
-    {
-        out.println(aChooseb(5,1));
-        out.println(aChooseb(5,2));
-        out.println(aChooseb(5,3));
-        out.println(aChooseb(5,4));
-        out.println(aChooseb(5,5));
-        out.println(aChooseb(30,15));
-    }
-    
     long bruteforce()
     {
         //out.println("bruteforce");
@@ -297,7 +257,6 @@ class SubSeqProd {
     }
     static void test()
     {
-        testChoose();
         long A[] = new long[]{1, 2, 3};
         bruteforce(A, 4);  // 5
         out.println("complete search "+new SubSeqProd(A, 4).completeSearch(true)); 
@@ -373,8 +332,8 @@ class SubSeqProd {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
-        out.println(new SubSeqProd().meetMiddle());
+        test();
+        //out.println(new SubSeqProd().meetMiddle());
         //out.println(new SubSeqProd().completeSearch(true));
     }
 }
