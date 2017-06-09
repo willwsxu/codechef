@@ -59,6 +59,11 @@ class SubSeqProd {
         recurseProd(s, v, k+1, prod);
         recurseProd(s, v, k+1, safe_multi(prod, v[k]));        
     }
+    static long[] reverse(long v[]){
+        return LongStream.of(v).boxed()
+                .sorted(Comparator.reverseOrder())
+                .mapToLong(i->i).toArray();
+    }
     
     static long completeSearch3(long[] v, int k, long prod, long lim)
     {
@@ -144,10 +149,9 @@ class SubSeqProd {
         return count-1;
     }
     
+    // partially working
     long completeSearch2() {
-        val = LongStream.of(val).boxed()
-                .sorted(Comparator.reverseOrder())
-                .mapToLong(i->i).toArray();
+        val = reverse(val);
         prefix=new long[n];
         if (n>0) {
             prefix[n-1]=val[n-1];
@@ -282,21 +286,21 @@ class SubSeqProd {
         //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 100000000000000000L)-1));  // 642797745
         
         out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());    // 767476931
-        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 767476931
-        out.println("complete search2 "+new SubSeqProd(A, 1000000000000000000L).completeSearch2());    
+        out.println("completeSearch3 "+(completeSearch3(reverse(A), 0, 1, 1000000000000000000L)-1));  // 767476931
+        //out.println("complete search2 "+new SubSeqProd(A, 1000000000000000000L).completeSearch2());    
         
         A = new long[]{10,9,8,7,6,5,4,3,2,31, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
-        out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch2());     // 672295666
+        //out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch2());     // 672295666
         out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());      // 672295666
         //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 672295666
         
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,14,15,16,17,18,19,20,19,19,18,17,16,15,14,13,12,11};
-        //out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch(false));     // 908224121
+        //out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch2());     // 908224121
         out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle());     //908224121
         //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 2000000000000000000L)-1)); //909565081
         
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,4,5,6,7,8,9,10,9,9,8,7,16,15,14,13,12,11};
-        //out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch(false));     // 1051641446
+        //out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch2());     // 1051641446
         out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle()); //1051641446
        
     }
