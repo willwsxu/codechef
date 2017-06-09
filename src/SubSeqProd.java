@@ -73,6 +73,7 @@ class SubSeqProd {
         return ans;
     }
     
+    // lo and hi ar inclusive
     static int binarysearch(List<Long> s, long p, long x, int lo, int hi) {
         //out.println("p="+p+" lo="+lo+" hi="+hi);
         if (lo>=hi)
@@ -257,96 +258,7 @@ class SubSeqProd {
         out.println(aChooseb(5,5));
         out.println(aChooseb(30,15));
     }
-    // lo inclusive, hi exclusive
-    int binarysearch(long p, int lo, int hi) {
-        if (lo>=hi-1)
-            return lo;
-        int mid = (lo+hi)/2;
-        if ( multiply(p, val[mid])>lim)
-            return binarysearch(p, lo, mid);
-        else
-            return binarysearch(p, mid, hi);
-    }
-    int findMaxMulti(int n) {  // max number to multiply   
-        long p=1;
-        for (int i=0; i<n; i++) {
-            long p2 = p*val[i];
-            if (p2>lim || p2<p)
-                return i;
-            p=p2;
-        }
-        return n;
-    }
-    // 1 2 3 4 5 6 7 8
-    // multi 3,
-    //long dp[][][][];
-    long recurse(int start, int end, int multi, long prod, int multimax)
-    {
-        //out.print("-recur "+start+" end "+end+" multiply times "+multi+" prod "+prod);
-        long newProd=multiply(prod, val[start]);
-        if (newProd>lim) {
-            //out.println(" count=0, newProd "+newProd);
-            return 0;
-        }
-        else if ( multi==1) {
-            int found=binarysearch(prod, start, end);
-            long count=found-start;
-            if ( multiply(prod, val[found])<=lim)
-                count++;
-            //out.println(" binarysearch "+found+" count "+count);
-            //dp[start][end][multi]=count;
-            return count;
-        //} else if (dp[start][end][multi][multimax]>0) {
-            //out.println(" dp "+" count "+dp[start][end][multi][multimax]);
-            //return dp[start][end][multi][multimax];
-        } else {
-            long count=0;
-            for (int i=start+1; i<=end-multi+1; i++) {
-                count += recurse(i, end, multi-1, newProd, multimax);
-                if (multi==2)  // let binary search do the work when only one to multiply
-                    break;
-            }
-            //dp[start][end][multi][multimax]=count;
-            //out.println(" recurse count "+count);
-            return count;
-        }
-    }
-    long solve()
-    {
-        if (n<=0)
-            return 0;
-        //if (end<10)
-        //    return bruteforce(end+1);
-        long total=n;
-        int maxMulti=findMaxMulti(n);
-        //out.println(" numbers "+n+" multi "+maxMulti);
-        if ( maxMulti<=1 )
-            return total;
-        else if (maxMulti>=n)
-            return (1<<n)-1;  // watch out for precedence
-        //dp=new long[n][n+1][maxMulti+1][maxMulti+1];
-        // 2 3 4 5 6 maxMulti=3
-        // recurse maxMulti=2, 0 5, 1 5, 2 5, 3 5
-        // recurse maxMulti=3, 0 1 5, 0 2 5, 0 3 5; 1 2 5, 1 3 5; 2 3 5
-        for (int i=2; i<=maxMulti; i++) {
-            long largest=seqProduct(n-i, i);
-            if ( largest <= lim) {
-                long count = aChooseb(n, i);
-                //out.println(n+" aChooseb "+i+" = "+count);
-                total += count;
-                continue;
-            }
-            for (int j=0; j<=n-i; j++) {
-                long smallest=seqProduct(j, i);
-                if ( smallest > lim) {
-                    //out.println("too big "+smallest+" multi "+i+" j="+j);
-                    break;
-                }
-                total += recurse(j, n, i, 1, i);
-            }
-        }
-        return total;
-    }
+    
     long bruteforce()
     {
         //out.println("bruteforce");
@@ -395,54 +307,45 @@ class SubSeqProd {
         testChoose();
         long A[] = new long[]{1, 2, 3};
         bruteforce(A, 4);  // 5
-        out.println("new "+new SubSeqProd(A, 4).solve());
         out.println("complete search "+new SubSeqProd(A, 4).completeSearch(true)); 
         //out.println("complete search2 "+new SubSeqProd(A, 4).completeSearch(false));
         out.println("meet middle "+new SubSeqProd(A, 4).meetMiddle()); 
         bruteforce(A, 6);  // 7
-        out.println("new "+new SubSeqProd(A, 7).solve());
         out.println("complete search "+new SubSeqProd(A, 7).completeSearch(true)); 
         //out.println("complete search2 "+new SubSeqProd(A, 7).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 7).meetMiddle());
         
         A = new long[]{10,9,8,7,6,5,4,3,2,1};
         bruteforce(A, 10);  //10+9+3+3
-        out.println("new "+new SubSeqProd(A, 10).solve());  
         //out.println("complete search "+new SubSeqProd(A, 10).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 10).meetMiddle());      
         
         A = new long[]{6, 5,4,3,2};
         bruteforce(A, 40);
-        out.println("new "+new SubSeqProd(A, 40).solve());
         //out.println("complete search "+new SubSeqProd(A, 40).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 40).meetMiddle());     
         
         A = new long[]{10,9,8,7,6,5,4,3,2};
         bruteforce(A, 72576);
-        out.println("new "+new SubSeqProd(A, 72576).solve());
         //out.println("complete search "+new SubSeqProd(A, 72576).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 72576).meetMiddle());     
         
         A = new long[]{100, 200, 300};
         bruteforce(A, 4);  // 0
         bruteforce(A, 100);// 1
-        out.println("new "+new SubSeqProd(A, 100).solve());
         //out.println("complete search "+new SubSeqProd(A, 100).completeSearch(false));  
         out.println("meet middle "+new SubSeqProd(A, 100).meetMiddle());  
         bruteforce(A, 200);// 2
         bruteforce(A, 300);// 3
-        out.println("new "+new SubSeqProd(A, 300).solve());
         //out.println("complete search "+new SubSeqProd(A, 300).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 300).meetMiddle());   
         
         A = new long[]{100000000000000000L, 200000000000000000L, 4000000000000000000L};
         bruteforce(A, 4);  // 0
-        out.println("new "+new SubSeqProd(A, 4).solve());
         //out.println("complete search "+new SubSeqProd(A, 4).completeSearch(false));  
         out.println("meet middle "+new SubSeqProd(A, 4).meetMiddle());  
         A = new long[]{10,9,8,7,6,5,4,3,2,1, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
         //bruteforce(A, 4000);//9783
-        out.println("new "+new SubSeqProd(A, 4000).solve());  // 9783
         //out.println("complete search "+new SubSeqProd(A, 4000).completeSearch(false));   
         out.println("meet middle "+new SubSeqProd(A, 4000).meetMiddle());  
         out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 4000)-1)); 
