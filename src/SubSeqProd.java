@@ -143,9 +143,8 @@ class SubSeqProd {
         }
         return count-1;
     }
-    long count=0;
     
-    long completeSearch(boolean one) {
+    long completeSearch2() {
         val = LongStream.of(val).boxed()
                 .sorted(Comparator.reverseOrder())
                 .mapToLong(i->i).toArray();
@@ -157,27 +156,9 @@ class SubSeqProd {
             //out.println(Arrays.toString(prefix));
         }
         //out.println(Arrays.toString(val));
-        if (one) {
-            completeSearch(0, 1);
-            return count-1;
-        } else
-            return completeSearch2(0, 1)-1;
+        return completeSearch2(0, 1)-1;
     }
-    
-    void completeSearch(int k, long prod)
-    {
-        if (prod>lim)
-            return;
-        if ( k==n ) {
-            count++;
-            //out.println("count "+count+" prod="+prod);
-            return;
-        }
-        completeSearch(k+1, prod);
-        long newprod = safe_multi(prod, val[k]);
-        completeSearch(k+1, newprod);
-    }
-    
+        
     long completeSearch2(int k, long prod)
     {
         if (prod>lim)
@@ -259,10 +240,10 @@ class SubSeqProd {
     {
         long A[] = new long[]{1, 2, 3};
         bruteforce(A, 4);  // 5
-        out.println("complete search "+new SubSeqProd(A, 4).completeSearch(true)); 
+        out.println("complete search2 "+new SubSeqProd(A, 4).completeSearch2()); 
         out.println("meet middle "+new SubSeqProd(A, 4).meetMiddle()); 
         bruteforce(A, 6);  // 7
-        out.println("complete search "+new SubSeqProd(A, 7).completeSearch(true)); 
+        out.println("complete search2 "+new SubSeqProd(A, 7).completeSearch2()); 
         out.println("meet middle "+new SubSeqProd(A, 7).meetMiddle());
         
         A = new long[]{10,9,8,7,6,5,4,3,2,1};
@@ -292,7 +273,7 @@ class SubSeqProd {
         //bruteforce(A, 4000);//9783
         out.println("meet middle "+new SubSeqProd(A, 4000).meetMiddle());  
         out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 4000)-1)); 
-        out.println("complete search "+new SubSeqProd(A, 4000).completeSearch(true));    
+        out.println("complete search2 "+new SubSeqProd(A, 4000).completeSearch2());    // WA 9801
         
         out.println("meet middle "+new SubSeqProd(A, 10000000000000000L).meetMiddle());    // 508131459
         //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 10000000000000000L)-1));  // 508131459
@@ -302,11 +283,10 @@ class SubSeqProd {
         
         out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());    // 767476931
         out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 767476931
-        out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch(true));    
-        out.println("complete search2 "+new SubSeqProd(A, 1000000000000000000L).completeSearch(false));    
+        out.println("complete search2 "+new SubSeqProd(A, 1000000000000000000L).completeSearch2());    
         
         A = new long[]{10,9,8,7,6,5,4,3,2,31, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
-        out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch(false));     // 672295666
+        out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch2());     // 672295666
         out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());      // 672295666
         //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 672295666
         
