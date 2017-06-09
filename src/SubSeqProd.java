@@ -153,7 +153,7 @@ class SubSeqProd {
         if (n>0) {
             prefix[n-1]=val[n-1];
             for (int i=n-2; i>=0; i--)
-                prefix[i] = multiply(prefix[i+1], val[i]);
+                prefix[i] = safe_multi(prefix[i+1], val[i]);
             //out.println(Arrays.toString(prefix));
         }
         //out.println(Arrays.toString(val));
@@ -174,7 +174,7 @@ class SubSeqProd {
             return;
         }
         completeSearch(k+1, prod);
-        long newprod = multiply(prod, val[k]);
+        long newprod = safe_multi(prod, val[k]);
         completeSearch(k+1, newprod);
     }
     
@@ -193,12 +193,12 @@ class SubSeqProd {
             return 0;// reachable ?
         } 
         long ans=0;
-        if (k+1<n && multiply(prod, prefix[k+1])<=k) {
+        if (k+1<n && safe_multi(prod, prefix[k+1])<=k) {
             ans += 1<<(n-k-1);
             //out.println(" combo k="+k+" ans="+ans);
         } else
             ans += completeSearch2(k+1, prod);
-        long newprod = multiply(prod, val[k]);
+        long newprod = safe_multi(prod, val[k]);
         ans += completeSearch2(k+1, newprod);
         //out.println(" end k="+k+" ans="+ans);
         return ans;
@@ -214,13 +214,6 @@ class SubSeqProd {
             prod=p;
         }
         return prod;
-    }
-    static long multiply(long p, long m)
-    {
-        long p2=p*m;  
-        if ( p2<p )
-            return Long.MAX_VALUE;
-        return p2;
     }
     static long safe_multi(long p, long m)
     {
