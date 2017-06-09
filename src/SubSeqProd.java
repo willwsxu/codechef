@@ -24,6 +24,7 @@ class SubSeqProd {
     SubSeqProd()
     {
         n=sc.nextInt();  // 1 ≤ N ≤ 30
+        // NZEC Runtime exception if nextInt is used for long var lim!!!
         lim=sc.nextLong();  // 1 ≤ K, Ai ≤ 10^18
         val = new long[n];
         for (int j=0; j<n; j++)
@@ -115,7 +116,6 @@ class SubSeqProd {
         }
         List<Long> s1=new ArrayList<>();
         List<Long> s2=new ArrayList<>();
-        try {
         recurseProd(s1, v1, 0, 1);
         recurseProd(s2, v2, 0, 1);
         Collections.sort(s1);
@@ -141,11 +141,6 @@ class SubSeqProd {
             count += pos;
         }
         return count-1;
-        }
-        catch(Exception e)
-        {
-            return -1;
-        }
     }
     long count=0;
     
@@ -483,10 +478,7 @@ class SubSeqProd {
     public static void main(String[] args)
     {      
         //test();
-        try {
         out.println(new SubSeqProd().meetMiddle());
-        } catch (Exception e) {
-        out.println("ERR");}
         //out.println(new SubSeqProd().completeSearch(true));
     }
 }
