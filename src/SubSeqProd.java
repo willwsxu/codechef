@@ -307,8 +307,8 @@ class SubSeqProd {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        test();
-        //out.println(new SubSeqProd().meetMiddle());
+        //test();
+        out.println(new SubSeqProd().meetMiddle());
         //out.println(new SubSeqProd().completeSearch(true));
     }
 }
@@ -316,4 +316,5 @@ class SubSeqProd {
 /*
 5 400000000000
 6 5 4 3 2
+result 31
 */
