@@ -188,12 +188,12 @@ class SubSeqProd {
         } 
         else if ( k==n ) {
             //out.println("count "+count+" prod="+prod);
-            if ( prod<=k)
+            if ( prod<=lim)
                 return 1;
             return 0;// reachable ?
         } 
         long ans=0;
-        if (k+1<n && safe_multi(prod, prefix[k+1])<=k) {
+        if (k+1<n && safe_multi(prod, prefix[k+1])<=lim) {
             ans += 1<<(n-k-1);
             //out.println(" combo k="+k+" ans="+ans);
         } else
@@ -260,47 +260,39 @@ class SubSeqProd {
         long A[] = new long[]{1, 2, 3};
         bruteforce(A, 4);  // 5
         out.println("complete search "+new SubSeqProd(A, 4).completeSearch(true)); 
-        //out.println("complete search2 "+new SubSeqProd(A, 4).completeSearch(false));
         out.println("meet middle "+new SubSeqProd(A, 4).meetMiddle()); 
         bruteforce(A, 6);  // 7
         out.println("complete search "+new SubSeqProd(A, 7).completeSearch(true)); 
-        //out.println("complete search2 "+new SubSeqProd(A, 7).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 7).meetMiddle());
         
         A = new long[]{10,9,8,7,6,5,4,3,2,1};
         bruteforce(A, 10);  //10+9+3+3
-        //out.println("complete search "+new SubSeqProd(A, 10).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 10).meetMiddle());      
         
         A = new long[]{6, 5,4,3,2};
         bruteforce(A, 40);
-        //out.println("complete search "+new SubSeqProd(A, 40).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 40).meetMiddle());     
         
         A = new long[]{10,9,8,7,6,5,4,3,2};
         bruteforce(A, 72576);
-        //out.println("complete search "+new SubSeqProd(A, 72576).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 72576).meetMiddle());     
         
         A = new long[]{100, 200, 300};
         bruteforce(A, 4);  // 0
         bruteforce(A, 100);// 1
-        //out.println("complete search "+new SubSeqProd(A, 100).completeSearch(false));  
         out.println("meet middle "+new SubSeqProd(A, 100).meetMiddle());  
         bruteforce(A, 200);// 2
         bruteforce(A, 300);// 3
-        //out.println("complete search "+new SubSeqProd(A, 300).completeSearch(false)); 
         out.println("meet middle "+new SubSeqProd(A, 300).meetMiddle());   
         
         A = new long[]{100000000000000000L, 200000000000000000L, 4000000000000000000L};
         bruteforce(A, 4);  // 0
-        //out.println("complete search "+new SubSeqProd(A, 4).completeSearch(false));  
         out.println("meet middle "+new SubSeqProd(A, 4).meetMiddle());  
         A = new long[]{10,9,8,7,6,5,4,3,2,1, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
         //bruteforce(A, 4000);//9783
-        //out.println("complete search "+new SubSeqProd(A, 4000).completeSearch(false));   
         out.println("meet middle "+new SubSeqProd(A, 4000).meetMiddle());  
         out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 4000)-1)); 
+        out.println("complete search "+new SubSeqProd(A, 4000).completeSearch(true));    
         
         out.println("meet middle "+new SubSeqProd(A, 10000000000000000L).meetMiddle());    // 508131459
         //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 10000000000000000L)-1));  // 508131459
@@ -310,21 +302,20 @@ class SubSeqProd {
         
         out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());    // 767476931
         out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 767476931
+        out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch(true));    
+        out.println("complete search2 "+new SubSeqProd(A, 1000000000000000000L).completeSearch(false));    
         
         A = new long[]{10,9,8,7,6,5,4,3,2,31, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
-        //out.println("new "+new SubSeqProd(A, 1000000000000000000L).solve());  // 672779816
-        //out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch(false));     // 672295666
+        out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch(false));     // 672295666
         out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());      // 672295666
         //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 672295666
         
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,14,15,16,17,18,19,20,19,19,18,17,16,15,14,13,12,11};
-        //out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 909178996
         //out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch(false));     // 908224121
         out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle());     //908224121
         //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 2000000000000000000L)-1)); //909565081
         
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,4,5,6,7,8,9,10,9,9,8,7,16,15,14,13,12,11};
-        //out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 1051752556
         //out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch(false));     // 1051641446
         out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle()); //1051641446
        
