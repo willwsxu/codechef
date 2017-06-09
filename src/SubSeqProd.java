@@ -24,7 +24,7 @@ class SubSeqProd {
     SubSeqProd()
     {
         n=sc.nextInt();  // 1 ≤ N ≤ 30
-        lim=sc.nextInt();  // 1 ≤ K, Ai ≤ 10^18
+        lim=sc.nextLong();  // 1 ≤ K, Ai ≤ 10^18
         val = new long[n];
         for (int j=0; j<n; j++)
             val[j] = sc.nextLong();
@@ -115,6 +115,7 @@ class SubSeqProd {
         }
         List<Long> s1=new ArrayList<>();
         List<Long> s2=new ArrayList<>();
+        try {
         recurseProd(s1, v1, 0, 1);
         recurseProd(s2, v2, 0, 1);
         Collections.sort(s1);
@@ -130,16 +131,21 @@ class SubSeqProd {
         long count =0;
         if (s1.isEmpty())
             return s2.size()-1;  // avoid runtime exeption in next line
+        
         for (Long i: s1) {
+            if (i==null)
+                continue;
             //int pos = binarysearch(s2, i, 0, s2.size()-1);
             int pos = upperbound(s2, i, lim, 0, s2.size()-1);
-            //out.println(i+":"+(pos));
-            //if (pos <s2.size() && safe_multi(s2.get(pos), i)>lim)
-            //    pos--;
             //out.println(i+":"+(pos));
             count += pos;
         }
         return count-1;
+        }
+        catch(Exception e)
+        {
+            return -1;
+        }
     }
     long count=0;
     
@@ -222,6 +228,8 @@ class SubSeqProd {
     }
     static long safe_multi(long p, long m)
     {
+        if (m==0)
+            return 0;
         if (Long.MAX_VALUE/m<p)
             return Long.MAX_VALUE;
         return p*m;
@@ -475,12 +483,15 @@ class SubSeqProd {
     public static void main(String[] args)
     {      
         //test();
+        try {
         out.println(new SubSeqProd().meetMiddle());
+        } catch (Exception e) {
+        out.println("ERR");}
         //out.println(new SubSeqProd().completeSearch(true));
     }
 }
 
 /*
-5 40
+5 400000000000
 6 5 4 3 2
 */
