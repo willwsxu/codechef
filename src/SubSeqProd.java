@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 // Technique meet in the middle, http://www.infoarena.ro/blog/meet-in-the-middle
 
@@ -70,19 +72,35 @@ class SubSeqProd {
         return ans;
     }
     
-    // todo: binary mid adjusting
-    int binarysearch(List<Long> s, long p, int lo, int hi) {
+    static int binarysearch(List<Long> s, long p, long x, int lo, int hi) {
         //out.println("p="+p+" lo="+lo+" hi="+hi);
         if (lo>=hi)
             return lo;
         int mid = (lo+hi)/2;
         if (hi-lo==1)
             mid=hi;
-        if ( safe_multi(p, s.get(mid))>lim)
-            return binarysearch(s, p, lo, mid-1);
+        if ( safe_multi(p, s.get(mid))>x)
+            return binarysearch(s, p, x, lo, mid-1);
         else
-            return binarysearch(s, p, mid, hi);
+            return binarysearch(s, p, x, mid, hi);
     }
+    
+    static int upperbound(List<Long> s, long p, long x, int lo, int hi) {
+        //out.println("p="+p+" lo="+lo+" hi="+hi);
+        if (hi-lo<=1) {
+            if (hi<s.size() && safe_multi(p, s.get(hi))<=x) {
+                //out.println("hi+1="+hi);
+                return hi+1;
+            }
+            return hi;
+        }
+        int mid = (lo+hi)/2;
+        if ( safe_multi(p, s.get(mid))>x)
+            return upperbound(s, p, x, lo, mid);
+        else
+            return upperbound(s, p, x, mid, hi);
+    }
+    
     long meetMiddle()
     {
         if (n<=1)
@@ -110,13 +128,16 @@ class SubSeqProd {
         //out.println(Arrays.toString(v2)+"-"+s2);
         //out.println("two sets size "+s1.size()+" "+s2.size());
         long count =0;
+        if (s1.isEmpty())
+            return s2.size()-1;  // avoid runtime exeption in next line
         for (Long i: s1) {
-            int pos = binarysearch(s2, i, 0, s2.size()-1);
+            //int pos = binarysearch(s2, i, 0, s2.size()-1);
+            int pos = upperbound(s2, i, lim, 0, s2.size()-1);
             //out.println(i+":"+(pos));
-            if (pos <s2.size() && safe_multi(s2.get(pos), i)>lim)
-                pos--;
+            //if (pos <s2.size() && safe_multi(s2.get(pos), i)>lim)
+            //    pos--;
             //out.println(i+":"+(pos));
-            count += ++pos;
+            count += pos;
         }
         return count-1;
     }
@@ -356,6 +377,16 @@ class SubSeqProd {
         out.println("meet middle "+new SubSeqProd(A, 6).meetMiddle()); 
         out.println("meet middle "+new SubSeqProd(A, 42).meetMiddle());              
     }
+    static void test2(){
+        List<Long> s = Stream.of(10L,9L,9L,8L,7L,6L,5L,4L,3L,2L,1L).sorted().collect(Collectors.toCollection(ArrayList::new));
+        out.println(binarysearch(s, 1, 9, 0, s.size()-1));
+        out.println(upperbound(s, 1, 9, 0, s.size())==10);
+        out.println(upperbound(s, 1, 10, 0, s.size())==11);
+        out.println(upperbound(s, 2, 10, 0, s.size())==5);
+        out.println(upperbound(s, 2, 12, 0, s.size())==6);
+        out.println(upperbound(s, 2, 11, 0, s.size())==5);
+        out.println(upperbound(s, 2, 14, 0, s.size()));
+    }
     static void test()
     {
         testChoose();
@@ -414,28 +445,31 @@ class SubSeqProd {
         out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 4000)-1)); 
         
         out.println("meet middle "+new SubSeqProd(A, 10000000000000000L).meetMiddle());    // 508131459
-        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 10000000000000000L)-1));  // 508131459
+        //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 10000000000000000L)-1));  // 508131459
         
-        out.println("meet middle "+new SubSeqProd(A, 100000000000000000L).meetMiddle());    // 642958481
-        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 100000000000000000L)-1));  // 642797745
-        /*
+        out.println("meet middle "+new SubSeqProd(A, 100000000000000000L).meetMiddle());    // 642797745
+        //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 100000000000000000L)-1));  // 642797745
+        
+        out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());    // 767476931
+        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 767476931
+        
         A = new long[]{10,9,8,7,6,5,4,3,2,31, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
         //out.println("new "+new SubSeqProd(A, 1000000000000000000L).solve());  // 672779816
         //out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch(false));     // 672295666
-        out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());    // 677351272
-        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 672295666
+        out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());      // 672295666
+        //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 1000000000000000000L)-1));  // 672295666
         
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,14,15,16,17,18,19,20,19,19,18,17,16,15,14,13,12,11};
         //out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 909178996
         //out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch(false));     // 908224121
-        out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle());   //911970255
-        out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 2000000000000000000L)-1)); //909565081
+        out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle());     //908224121
+        //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 2000000000000000000L)-1)); //909565081
         
         A = new long[]{10,9,8,7,6,5,4,3,2,3, 11, 12, 13,4,5,6,7,8,9,10,9,9,8,7,16,15,14,13,12,11};
         //out.println("new "+new SubSeqProd(A, 2000000000000000000L).solve());  // 1051752556
         //out.println("complete search "+new SubSeqProd(A, 2000000000000000000L).completeSearch(false));     // 1051641446
-        out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle()); //1051674203
-        */
+        out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle()); //1051641446
+       
     }
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
