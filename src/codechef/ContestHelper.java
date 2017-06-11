@@ -26,7 +26,12 @@ public class ContestHelper {
         genTestCase(new int[]{99999,99998,99997}, 1, 10000);
         //genTestCase(new int[]{99,98,97}, 1, 8);
     }
-        
+       
+    public static int ni(Scanner sc)
+    {
+        return sc.nextInt();
+    }
+    
     public static int[] ria(int N, Scanner sc) { // read int array
         int L[]=new int[N];
         for (int i=0; i<N; i++)
