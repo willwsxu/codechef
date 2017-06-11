@@ -2,8 +2,8 @@ package smackdown.qualifier2017;
 
 
 import codechef.PointGraph;
+import codechef.ScannerEx;
 import static java.lang.System.out;
-import java.util.Scanner;
 
 /*
  * Brief Desc: Give snake coordiantes in a 2D grid, each snake sighting is represented by 2 points
@@ -203,14 +203,14 @@ class SameSnake {
         out.println(s1.same(s2)==false);
     }
         
-    static Scanner sc = new Scanner(System.in);
+    static ScannerEx sc = new ScannerEx();
     public static void main(String[] args)
     {      
         //test();
-        int T=sc.nextInt();     // 1 ≤ T ≤ 10^5
+        int T=sc.ni();     // 1 ≤ T ≤ 10^5
         StringBuilder sb=new StringBuilder();
         for (int i=0; i<T; i++) {
-            int xy[]=codechef.ContestHelper.ria(8, sc); // -10^9 ≤ Xij,Yij ≤ 10^9
+            int xy[]=sc.ria(8); // -10^9 ≤ Xij,Yij ≤ 10^9
             Snake s1=new Snake(xy[0], xy[1], xy[2], xy[3]);
             Snake s2=new Snake(xy[4], xy[5], xy[6], xy[7]);
             sb.append(s1.same(s2)?"yes\n":"no\n");

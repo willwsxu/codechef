@@ -1,6 +1,7 @@
 package smackdown.qualifier2017;
 
 
+import codechef.ScannerEx;
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -35,13 +36,13 @@ class TempleLand {
         return h[0]==1;
     }
     
-    static Scanner sc = new Scanner(System.in);
+    static ScannerEx sc = new ScannerEx();
     public static void main(String[] args)
     {      
-        int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        int T=sc.ni(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) {
-            int N=sc.nextInt();
-            int h[]=codechef.ContestHelper.ria(N, sc);
+            int N=sc.ni();
+            int h[]=sc.ria(N);
             System.out.println(check(h)?"yes":"no");
         }
     }

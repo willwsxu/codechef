@@ -5,9 +5,13 @@
  */
 package codechef;
 
+import static codechef.ContestHelper.sc;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import static java.lang.System.out;
 import java.util.StringTokenizer;
 
 
@@ -16,6 +20,15 @@ public class ScannerEx {
     BufferedReader br;
     StringTokenizer st;
 
+    ScannerEx(String f)
+    {
+        try {
+            br = new BufferedReader(new FileReader(new File(f)));
+        } catch (IOException e)
+        {
+            out.println("MyReader bad file "+f);
+        }
+    }
     public ScannerEx() {
         br = new BufferedReader(new InputStreamReader(System.in));
     }
@@ -51,5 +64,16 @@ public class ScannerEx {
            e.printStackTrace();
         }
         return str;
+    }
+    
+    public int ni()
+    {
+        return nextInt();
+    }    
+    public int[] ria(int N) { // read int array
+        int L[]=new int[N];
+        for (int i=0; i<N; i++)
+            L[i]=nextInt();
+        return L;
     }
 }
