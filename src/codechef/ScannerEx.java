@@ -5,7 +5,6 @@
  */
 package codechef;
 
-import static codechef.ContestHelper.sc;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

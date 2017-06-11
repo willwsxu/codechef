@@ -31,6 +31,10 @@ public class ContestHelper {
     {
         return sc.nextInt();
     }
+    public static long nl(Scanner sc)
+    {
+        return sc.nextLong();
+    }
     
     public static int[] ria(int N, Scanner sc) { // read int array
         int L[]=new int[N];
