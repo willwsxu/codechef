@@ -84,7 +84,7 @@ class SnakeBase
     }
 }
 
-// borrow idea from a contentant
+// borrow idea from a contentant https://www.codechef.com/viewsolution/13648938
 class SnakeEating3 extends SnakeBase
 {
     SnakeEating3(Integer a[], int q)

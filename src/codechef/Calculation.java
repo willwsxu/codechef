@@ -3,6 +3,7 @@
  */
 package codechef;
 
+import static java.lang.System.out;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 
@@ -33,4 +34,33 @@ public class Calculation {
                 .sorted(Comparator.reverseOrder())
                 .mapToInt(i->i).toArray();        
     }
+    
+    static long aChooseb(int a, int b)
+    {
+        if (a<b)
+            return 0; // error
+        if (a-b<b)  // 5C3 = 5C2
+            b=a-b;
+        long p=1;
+        int bb=b;
+        for (int i=0; i<b; i++) {
+            p *=(a-i);
+            while (bb>1 && p%bb==0) {
+                p /= bb--;
+            }
+        }
+        while (bb>1 && p%bb==0) {
+            p /= bb--;
+        }
+        return p;
+    }
+    static void testChoose()
+    {
+        out.println(aChooseb(5,1));
+        out.println(aChooseb(5,2));
+        out.println(aChooseb(5,3));
+        out.println(aChooseb(5,4));
+        out.println(aChooseb(5,5));
+        out.println(aChooseb(30,15));
+    }    
 }
