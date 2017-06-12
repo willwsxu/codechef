@@ -1,12 +1,17 @@
-
+/* Description
+   Given 10 integers a0 to a9. An integer x is said to be bad if any of its digits
+   show up exactly ai times.
+*/
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Scanner;
 
-// DGTCNT medium
+// DGTCNT medium, https://discuss.codechef.com/questions/95667/dgtcnt-editorial
+// inclusion-exclusion principle, dp - bitmask and digit dp
 class Apr17DigitCount {
     
     int A[];
+    long L, R;
     // count digits
     boolean digitsCheck(long num)
     {
@@ -42,9 +47,18 @@ class Apr17DigitCount {
         long cnt=dp(0, R, 0);
         return cnt;
     }
-    Apr17DigitCount(long L, long R, int A[])
+    Apr17DigitCount()
     {
-        this.A=A;
+        this(nl(), nl(), ria(10));
+    }
+    Apr17DigitCount(long L, long R, int A[])
+    {   // 1 ≤ L ≤ R ≤ 10^18
+        this.A=A; // digit count, 0 to 18
+        this.L=L;
+        this.R=R;
+    }
+    void solve()
+    {
         int sum = 0;
         for (int s:A)
             sum += s;
@@ -54,20 +68,31 @@ class Apr17DigitCount {
             good = subtask2(L, R);
         else
             good = bruteforce(L, R);
-        out.println(good);
+        out.println(good);        
     }
-    static Scanner sc = new Scanner(System.in);
+    
+    static Scanner sc = new Scanner(System.in);    
+        
+    public static int ni()
+    {
+        return sc.nextInt();
+    }
+    public static long nl()
+    {
+        return sc.nextLong();
+    }
+    
+    public static int[] ria(int N) { // read int array
+        int L[]=new int[N];
+        for (int i=0; i<N; i++)
+            L[i]=sc.nextInt();
+        return L;
+    }
     public static void main(String[] args)
     {        
         //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
-        int TC = sc.nextInt();  // between 1 and 20
-        for (int i=0; i<TC; i++) {
-            long L = sc.nextLong();   // 1 ≤ L ≤ R ≤ 10^18
-            long R = sc.nextLong();
-            int A[] = new int[10];    // digit count, 0 to 18
-            for (int j=0; j<10; j++)
-                A[j] = sc.nextInt(); 
-            new Apr17DigitCount(L, R, A);
-        }
+        int TC = ni();  // between 1 and 20
+        while (TC-- > 0)
+            new Apr17DigitCount().solve();
     }
 }
