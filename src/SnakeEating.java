@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 /*
 
  */
-
+// SNAKEEAT EASY
 class SnakeBase
 {
     Integer L[];
@@ -441,26 +441,30 @@ class SnakeEating {
         return L;
     }
     
-    static Scanner sc = new Scanner(System.in);
-    public static void main(String[] args)
-    {      
-        //for (int i=0; i<100; i++)
-            test2();
-        /*int T=sc.nextInt(); // 1 ≤ T ≤ 5
-        for (int i=0; i<T; i++) {
+    public static void solve()
+    {
+        int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        while (T-->0) {
             int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
             int Q=sc.nextInt();
             Integer L[]=ria(N);     // 1 ≤ Li ≤ 10^9
             StringBuilder sb = new StringBuilder();
-            SnakeEating3 sn=new SnakeEating3(L, Q);
+            SnakeEating3 sn=new SnakeEating3(L, Q);     // pass test
             //SnakeEating sn=new SnakeEating(L, Q);  //WA
             for (int j=0; j<Q; j++) {
                 int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
                 sb.append(sn.query(k));
                 sb.append("\n");
             }
-            out.print(sb.toString());
-        }*/
+            out.print(sb.toString());   
+        }
+    }
+    static Scanner sc = new Scanner(System.in);
+    public static void main(String[] args)
+    {      
+        //for (int i=0; i<100; i++)
+            test2();
+        //solve();
     }
 }
 /*
