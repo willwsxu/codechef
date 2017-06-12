@@ -34,4 +34,8 @@ public class PrimeSieve
         ps = new PrimeSieve(1000000);
         out.println("1000000 primes #"+ps.primes.size());
     }
+    public static void main(String[] args)
+    {
+        test();
+    }
 }
