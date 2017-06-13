@@ -7,7 +7,8 @@ import java.util.Scanner;
 import java.util.stream.IntStream;
 
 /*
-
+ * Snake a can eat b if len(a)>=len(b), len(a) increase by 1 after eating
+ * Given initial array of snake length, find out how many snakes can have len>=k
  */
 // SNAKEEAT EASY
 class SnakeBase
@@ -54,29 +55,30 @@ class SnakeBase
         }
         return r;
     }        
+    // not efficient when there are many elements of same value, TLE for this project
     static int findCurr2(Integer[] L, int k) {
         int p3=Arrays.binarySearch(L, k);
         if (p3<0) {
             p3 = -(p3+1);
         }
+        while (p3>0) {
+            if (L[p3-1]==k)
+                p3--;
+            else
+                break;
+        }
         return p3;
-    }
-    static long sum(long[] p, int s, int e) {
-        long ans = p[e];
-        if (s > 0)
-            ans -= p[s - 1];
-        return ans;
-    }	
+    }    
+    
     static int findAfter(long[] p, Integer[] a, int end, long k) {
         if( k-a[end]>end ) return 0;
         int l=0,r=end;
         while( r-l>1 ){
             int mid=(l+r)>>1;  // mid to end inclusive at both ends
-            long req = (end-mid+1)*k-(p[end+1]-p[mid]); //sum(p, mid,end)
+            long req = (end-mid+1)*k-(p[end+1]-p[mid]);
             if( req<=mid ){
                 r=mid;
-            }
-            else{
+            } else {
                 l=mid;
             }
         }
@@ -111,17 +113,24 @@ class SnakeEating3 extends SnakeBase
         int c2=SnakeBase.findCurr2(a, k);
         out.println("find k="+k+":"+c1+"=="+c2);        
     }
+    static void test4()
+    {
+        Integer[] a=new Integer[]{21, 5, 8,8,8, 10};   
+        Arrays.sort(a);
+        out.println(Arrays.toString(a));     
+        testFindCurr(a, 22);
+        testFindCurr(a, 21);
+        testFindCurr(a, 20);
+        testFindCurr(a, 8);
+        testFindCurr(a, 6);
+        testFindCurr(a, 5);
+        testFindCurr(a, 1);
+    }
     static void test3()// test static functions
     {
         Integer[] a=new Integer[]{21, 9, 5, 8, 10};
         Arrays.sort(a);
         out.println(Arrays.toString(a));
-        testFindCurr(a, 22);
-        testFindCurr(a, 21);
-        testFindCurr(a, 20);
-        testFindCurr(a, 6);
-        testFindCurr(a, 5);
-        testFindCurr(a, 1);
         SnakeEating3 sn=new SnakeEating3(a, 2);
         out.println(sn.query(10)==3);
         out.println(sn.query(11)==2);
@@ -374,13 +383,7 @@ class SnakeEating {
         out.println("total eat "+total);
         return res+p3-p1;
     }
-    void queryAsc()
-    {
-        for (int i=0; i<Q; i++) {
-            int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
-            out.println(query(k));
-        }
-    }
+    
     static void autotest()
     {
         Random rnd=new Random();
@@ -462,9 +465,10 @@ class SnakeEating {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
+        //SnakeEating3.test4();
         //for (int i=0; i<100; i++)
-            test2();
-        //solve();
+        //    test2();
+        solve();
     }
 }
 /*

@@ -6,8 +6,24 @@ package codechef;
 import static java.lang.System.out;
 import java.util.Comparator;
 import java.util.stream.IntStream;
+import java.util.Arrays;
 
 public class Calculation {
+    
+    // either x exist in a or not, return position i where ai>x
+    static int upperBound(int a[], int from, int to, int x)
+    {
+        int i=Arrays.binarySearch(a, from, to, x);
+        if (i<0)
+            return -(i+1);
+        while (i<to) {
+            if ( a[i]==x)  // 
+                i++;
+            else
+                break;
+        }
+        return i;
+    }
     
     // swap(a, 2, N+1) swap second half of array as even
     // swap(a, 1, N+1) swap second half of array as odd
