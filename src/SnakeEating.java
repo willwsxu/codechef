@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
  * Given initial array of snake length, find out how many snakes can have len>=k
  */
 // SNAKEEAT EASY
+// Binary search method with duplicating values
 class SnakeBase
 {
     Integer L[];
