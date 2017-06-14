@@ -68,11 +68,21 @@ public class MyScanner {
     public int ni()
     {
         return nextInt();
-    }    
+    }     
+    public long nl()
+    {
+        return nextLong();
+    }   
     public int[] ria(int N) { // read int array
         int L[]=new int[N];
         for (int i=0; i<N; i++)
             L[i]=nextInt();
+        return L;
+    }
+    public long[] rla(int N) { // read long array
+        long L[]=new long[N];
+        for (int i=0; i<N; i++)
+            L[i]=nextLong();
         return L;
     }
 }

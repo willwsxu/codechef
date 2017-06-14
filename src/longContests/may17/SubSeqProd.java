@@ -1,13 +1,13 @@
 package longContests.may17;
 
 //***good practice for generating subset using recursion
+import codechef.MyScanner;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -25,12 +25,10 @@ class SubSeqProd {
     
     SubSeqProd()
     {
-        n=sc.nextInt();  // 1 ≤ N ≤ 30
+        n=sc.ni();  // 1 ≤ N ≤ 30
         // NZEC Runtime exception if nextInt is used for long var lim!!!
-        lim=sc.nextLong();  // 1 ≤ K, Ai ≤ 10^18
-        val = new long[n];
-        for (int j=0; j<n; j++)
-            val[j] = sc.nextLong();
+        lim=sc.nl();  // 1 ≤ K, Ai ≤ 10^18
+        val = sc.rla(n);
         init();
     }
     SubSeqProd(long a[], long k)
@@ -309,7 +307,7 @@ class SubSeqProd {
         out.println("meet middle "+new SubSeqProd(A, 2000000000000000000L).meetMiddle()); //1051641446
        
     }
-    static Scanner sc = new Scanner(System.in);
+    static MyScanner sc = new MyScanner();
     public static void main(String[] args)
     {      
         // both methods work, pass test
@@ -323,3 +321,4 @@ class SubSeqProd {
 6 5 4 3 2
 result 31
 */
+
