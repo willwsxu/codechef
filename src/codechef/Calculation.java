@@ -7,8 +7,39 @@ import static java.lang.System.out;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 import java.util.Arrays;
+import java.util.stream.LongStream;
 
 public class Calculation {
+    
+    public static int lowerBound(int[] a, long k) {
+        int n = a.length;
+        if (a[n-1] < k)
+            return n;
+        int l = -1, r = n - 1;
+        while (r - l > 1) {
+            int mid = (l + r) >> 1;
+            if (a[mid] >= k) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        return r;
+    }        
+    // not efficient when there are many elements of same value, TLE for this project
+    static int lowerBound2(int[] L, int k) {
+        int p3=Arrays.binarySearch(L, k);
+        if (p3<0) {
+            p3 = -(p3+1);
+        }
+        while (p3>0) {
+            if (L[p3-1]==k)
+                p3--;
+            else
+                break;
+        }
+        return p3;
+    }    
     
     // either x exist in a or not, return position i where ai>x
     static int upperBound(int a[], int from, int to, int x)
@@ -44,11 +75,16 @@ public class Calculation {
         return s;
     }
     
-    static int[] sortIaR(int a[])  // sort int array reverse
+    public static int[] reverse(int a[])  // sort int array reverse
     {
         return IntStream.of(a).boxed()
                 .sorted(Comparator.reverseOrder())
                 .mapToInt(i->i).toArray();        
+    }
+    public static long[] reverse(long v[]){
+        return LongStream.of(v).boxed()
+                .sorted(Comparator.reverseOrder())
+                .mapToLong(i->i).toArray();
     }
     
     static long aChooseb(int a, int b)
@@ -79,4 +115,23 @@ public class Calculation {
         out.println(aChooseb(5,5));
         out.println(aChooseb(30,15));
     }    
+    static void testFindCurr(int[] a, int k)
+    {
+        int c1=lowerBound(a, k);
+        int c2=lowerBound2(a, k);
+        out.println("find k="+k+":"+c1+"=="+c2);        
+    }
+    static void test4()
+    {
+        int[] a=new int[]{21, 5, 8,8,8, 10};   
+        Arrays.sort(a);
+        out.println(Arrays.toString(a));     
+        testFindCurr(a, 22);
+        testFindCurr(a, 21);
+        testFindCurr(a, 20);
+        testFindCurr(a, 8);
+        testFindCurr(a, 6);
+        testFindCurr(a, 5);
+        testFindCurr(a, 1);
+    }
 }
