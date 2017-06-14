@@ -1,7 +1,7 @@
 package longContests.ChallengeApr17;
 
 
-import codechef.ContestHelper;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,8 +22,6 @@ import java.util.StringTokenizer;
 // single-source shortest paths, Dijkstra's algorithm
 // easy
 class Apr17CliqueDist {
-    //static MyReader scan = new MyReader("cliqueDist10000EWD.txt");//test
-    //static MyReader scan = new MyReader();
     static MyScannerX scan = new MyScannerX();
     static void testAddEdge()
     {

@@ -25,7 +25,7 @@ public class MyScanner {
             br = new BufferedReader(new FileReader(new File(f)));
         } catch (IOException e)
         {
-            out.println("MyReader bad file "+f);
+            out.println("MyScanner bad file "+f);
         }
     }
     public MyScanner() {
