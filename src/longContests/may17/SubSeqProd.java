@@ -1,15 +1,15 @@
 package longContests.may17;
 
-//***good practice for generating subset using recursion
+//***good practice for generating subset using recursion, custome upperbound
+import static codechef.Calculation.reverse;
+import static codechef.Calculation.safe_multi;
 import codechef.MyScanner;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 // Technique meet in the middle, http://www.infoarena.ro/blog/meet-in-the-middle
@@ -60,11 +60,6 @@ class SubSeqProd {
         }
         recurseProd(s, v, k+1, prod);
         recurseProd(s, v, k+1, safe_multi(prod, v[k]));        
-    }
-    static long[] reverse(long v[]){
-        return LongStream.of(v).boxed()
-                .sorted(Comparator.reverseOrder())
-                .mapToLong(i->i).toArray();
     }
     
     static long completeSearch3(long[] v, int k, long prod, long lim)
@@ -183,14 +178,6 @@ class SubSeqProd {
         return ans;
     }
     
-    static long safe_multi(long p, long m)
-    {
-        if (m==0)
-            return 0;
-        if (Long.MAX_VALUE/m<p)
-            return Long.MAX_VALUE;
-        return p*m;
-    }
     long bruteforce()
     {
         //out.println("bruteforce");

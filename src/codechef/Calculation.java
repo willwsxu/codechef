@@ -87,6 +87,14 @@ public class Calculation {
                 .mapToLong(i->i).toArray();
     }
     
+    public static long safe_multi(long p, long m)
+    {
+        if (m==0)
+            return 0;
+        if (Long.MAX_VALUE/m<p)
+            return Long.MAX_VALUE;
+        return p*m;
+    }
     static long aChooseb(int a, int b)
     {
         if (a<b)
