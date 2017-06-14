@@ -45,6 +45,8 @@ class SubSeqProd {
         while (n>0 && val[n-1]>lim) {
             n--;
         }
+        if ( n<val.length)  // fix for complete search2 (reverse order)
+            val = Arrays.copyOfRange(val, 0, n);
     }
         
     void recurseProd(List<Long> s, long[] v, int k, long prod)
@@ -154,7 +156,7 @@ class SubSeqProd {
         val = reverse(val);
         prefix=new long[n];
         if (n>0) {
-            prefix[n-1]=val[n-1];
+            prefix[n-1]=val[n-1]; // prefix prod from back
             for (int i=n-2; i>=0; i--)
                 prefix[i] = safe_multi(prefix[i+1], val[i]);
             //out.println(Arrays.toString(prefix));
@@ -167,25 +169,17 @@ class SubSeqProd {
     {
         if (prod>lim)
             return 0;
-        else if (prod==lim) {
-            //out.println(" prod==lim k="+k+" ans="+(n-k+1));
-            return n-k+1;
-        } 
         else if ( k==n ) {
-            //out.println("count "+count+" prod="+prod);
             if ( prod<=lim)
                 return 1;
             return 0;// reachable ?
-        } 
+        } else if (safe_multi(prod, prefix[k])<=lim) {
+            //out.println(" combo k="+k+" ans="+(1<<(n-k))+" prod="+prod);
+            return 1<<(n-k);
+        }
         long ans=0;
-        if (k+1<n && safe_multi(prod, prefix[k+1])<=lim) {
-            ans += 1<<(n-k-1);
-            //out.println(" combo k="+k+" ans="+ans);
-        } else
-            ans += completeSearch2(k+1, prod);
-        long newprod = safe_multi(prod, val[k]);
-        ans += completeSearch2(k+1, newprod);
-        //out.println(" end k="+k+" ans="+ans);
+        ans += completeSearch2(k+1, prod);
+        ans += completeSearch2(k+1, safe_multi(prod, val[k]));
         return ans;
     }
     
@@ -240,6 +234,15 @@ class SubSeqProd {
         out.println(upperbound(s, 2, 11, 0, s.size())==5);
         out.println(upperbound(s, 2, 14, 0, s.size()));
     }
+    static void test3()
+    {
+        long A[] = new long[]{1, 2, 3,4,5};
+        out.println("complete search2 "+new SubSeqProd(A, 120).completeSearch2()); // 31 
+        out.println("complete search2 "+new SubSeqProd(A, 20).completeSearch2());  // 21
+        out.println("complete search2 "+new SubSeqProd(A, 24).completeSearch2());  // 23 
+        out.println("complete search2 "+new SubSeqProd(A, 5).completeSearch2());   // 9    
+        out.println("complete search2 "+new SubSeqProd(A, 1).completeSearch2());   // 1 
+    }
     static void test()
     {
         long A[] = new long[]{1, 2, 3};
@@ -286,8 +289,8 @@ class SubSeqProd {
         //out.println("completeSearch3 "+(completeSearch3(A, 0, 1, 100000000000000000L)-1));  // 642797745
         
         out.println("meet middle "+new SubSeqProd(A, 1000000000000000000L).meetMiddle());    // 767476931
-        out.println("completeSearch3 "+(completeSearch3(reverse(A), 0, 1, 1000000000000000000L)-1));  // 767476931
-        //out.println("complete search2 "+new SubSeqProd(A, 1000000000000000000L).completeSearch2());    
+        //out.println("completeSearch3 "+(completeSearch3(reverse(A), 0, 1, 1000000000000000000L)-1));  // 767476931
+        out.println("complete search2 "+new SubSeqProd(A, 1000000000000000000L).completeSearch2());    
         
         A = new long[]{10,9,8,7,6,5,4,3,2,31, 11, 12, 13,14,15,16,17,18,19,20,30,29,28,27,26,25,24,23,22,21};
         //out.println("complete search "+new SubSeqProd(A, 1000000000000000000L).completeSearch2());     // 672295666
@@ -307,9 +310,9 @@ class SubSeqProd {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
-        out.println(new SubSeqProd().meetMiddle());
-        //out.println(new SubSeqProd().completeSearch(true));
+        // both methods work, pass test
+        //out.println(new SubSeqProd().meetMiddle());
+        out.println(new SubSeqProd().completeSearch2());
     }
 }
 
