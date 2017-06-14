@@ -1,12 +1,14 @@
 package smackdown.qualifier2017;
 
 
+import static codechef.Calculation.prefixSum;
+import static codechef.Calculation.reverse;
+import static codechef.ContestHelper.ria;
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.stream.IntStream;
 
 /*
  * Snake a can eat b if len(a)>=len(b), len(a) increase by 1 after eating
@@ -18,20 +20,11 @@ import java.util.stream.IntStream;
 // Java binarysearch does not support lower/upper bound
 abstract class SnakeBase
 {
-    Integer L[];
+    int L[];
     long prefix[];  // start from 1
     int Q;
     final int maxK=1000000000;    
     
-    // copied from preCalc class
-    public static long[] prefixSumI(Integer a[])  // set first elem to 0
-    {
-        long s[]=new long[a.length+1];
-        s[0]=0;
-        for (int i=1; i<=a.length; i++)
-            s[i] = s[i-1]+a[i-1];
-        return s;
-    }
     void trace(int p1, int p3, int k)
     {
         long total=0;
@@ -45,7 +38,7 @@ abstract class SnakeBase
         out.println("total eat "+total);
     }
     
-    static int lowerBound(Integer[] a, long k) {
+    static int lowerBound(int[] a, long k) {
         int n = a.length;
         if (a[n-1] < k)
             return n;
@@ -61,7 +54,7 @@ abstract class SnakeBase
         return r;
     }        
     // not efficient when there are many elements of same value, TLE for this project
-    static int lowerBound2(Integer[] L, int k) {
+    static int lowerBound2(int[] L, int k) {
         int p3=Arrays.binarySearch(L, k);
         if (p3<0) {
             p3 = -(p3+1);
@@ -75,7 +68,7 @@ abstract class SnakeBase
         return p3;
     }    
     
-    static int findAfter(long[] p, Integer[] a, int end, long k) {
+    static int findAfter(long[] p, int[] a, int end, long k) {
         if( k-a[end]>end ) return 0;
         int l=0,r=end;
         while( r-l>1 ){
@@ -93,13 +86,11 @@ abstract class SnakeBase
     {
         int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
         Q=sc.nextInt();
-        L=ria(N);     // 1 ≤ Li ≤ 10^9
+        L=ria(N, sc);     // 1 ≤ Li ≤ 10^9
     }
-    static Integer[] ria(int N) { // read int array
-        Integer L[]=new Integer[N];
-        for (int i=0; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
+    SnakeBase(int a[], int q)
+    {
+        L=a;        Q=q;
     }
     static Scanner sc = new Scanner(System.in);
     public static void solve(int version)
@@ -126,17 +117,17 @@ abstract class SnakeBase
 // borrow idea from a contentant https://www.codechef.com/viewsolution/13648938
 class SnakeEating3 extends SnakeBase
 {
-    SnakeEating3(Integer a[], int q)
+    SnakeEating3(int a[], int q)
     {
-        L=a;    Q=q;
+        super(a, q);
         Arrays.sort(L);
-        prefix=prefixSumI(L);
+        prefix=prefixSum(L);
     }
     SnakeEating3()
     {
         super();
         Arrays.sort(L);
-        prefix=prefixSumI(L);
+        prefix=prefixSum(L);
     }
     int query(int k)  // sorted ascending
     {
@@ -150,7 +141,7 @@ class SnakeEating3 extends SnakeBase
         return res+p1;
     }
     
-    static void testFindCurr(Integer[] a, int k)
+    static void testFindCurr(int[] a, int k)
     {
         int c1=SnakeBase.lowerBound(a, k);
         int c2=SnakeBase.lowerBound2(a, k);
@@ -158,7 +149,7 @@ class SnakeEating3 extends SnakeBase
     }
     static void test4()
     {
-        Integer[] a=new Integer[]{21, 5, 8,8,8, 10};   
+        int[] a=new int[]{21, 5, 8,8,8, 10};   
         Arrays.sort(a);
         out.println(Arrays.toString(a));     
         testFindCurr(a, 22);
@@ -171,7 +162,7 @@ class SnakeEating3 extends SnakeBase
     }
     static void test3()// test static functions
     {
-        Integer[] a=new Integer[]{21, 9, 5, 8, 10};
+        int[] a=new int[]{21, 9, 5, 8, 10};
         Arrays.sort(a);
         out.println(Arrays.toString(a));
         SnakeEating3 sn=new SnakeEating3(a, 2);
@@ -191,11 +182,12 @@ class SnakeEating3 extends SnakeBase
 // This class is not 100% working
 class SnakeEating1 extends SnakeBase
 {
-    SnakeEating1(Integer a[], int q)
+    SnakeEating1(int a[], int q)
     {
-        L=a;    Q=q;
-        Arrays.sort(L, Comparator.reverseOrder());    
-        prefix=prefixSumI(L);
+        super(a,q);
+        Arrays.sort(L);  
+        L=reverse(L);
+        prefix=prefixSum(L);
         //out.println(Arrays.toString(L));
         //out.println(Arrays.toString(prefix));
     }
@@ -243,7 +235,7 @@ class SnakeEating1 extends SnakeBase
     int query(int k)
     {
         int count=0;
-        int x=Arrays.binarySearch(L, k, Comparator.reverseOrder());
+        int x=Arrays.binarySearch(L, k); // need custom binary search
         //out.println("bs "+x);
         if (x<0) {
             x = -(x+1);
@@ -290,7 +282,7 @@ class SnakeEating1 extends SnakeBase
     }
     static void test()
     {
-        SnakeEating1 sn = new SnakeEating1(new Integer[]{21, 9, 5, 8, 10}, 2);
+        SnakeEating1 sn = new SnakeEating1(new int[]{21, 9, 5, 8, 10}, 2);
         out.println(sn.query(10)==3);
         out.println(sn.query(11)==2);
         out.println(sn.query(13)==2);
@@ -302,7 +294,7 @@ class SnakeEating1 extends SnakeBase
         out.println(sn.query(6)==4);
         out.println(sn.query(9)==4);
         out.println();
-        sn = new SnakeEating1(new Integer[]{1, 2, 3, 4, 5}, 2);
+        sn = new SnakeEating1(new int[]{1, 2, 3, 4, 5}, 2);
         out.println(sn.query(100)==0);
         out.println(sn.query(8)==1);
         out.println(sn.query(6)==2);
@@ -310,22 +302,22 @@ class SnakeEating1 extends SnakeBase
         out.println(sn.query(3)==4);
         out.println(sn.query(2)==4);
         out.println(sn.query(1)==5);
-        sn = new SnakeEating1(new Integer[]{1,4,7,10,13,16,19,22,25}, 2);
+        sn = new SnakeEating1(new int[]{1,4,7,10,13,16,19,22,25}, 2);
         out.println(sn.query(26)==2);
-        sn = new SnakeEating1(new Integer[]{1,2,3,4,5,7,10,13,16,19,22,25}, 2);
+        sn = new SnakeEating1(new int[]{1,2,3,4,5,7,10,13,16,19,22,25}, 2);
         out.println(sn.query(25)==3);
-        sn = new SnakeEating1(new Integer[]{1,2,3,4,5,7,9,11,13,15,17,19,21}, 2);
+        sn = new SnakeEating1(new int[]{1,2,3,4,5,7,9,11,13,15,17,19,21}, 2);
         out.println(sn.query(22)==3);
-        sn = new SnakeEating1(new Integer[]{1,2,3,4,5,7,9,11,13,15,17,19,20,20,20,21}, 2);
+        sn = new SnakeEating1(new int[]{1,2,3,4,5,7,9,11,13,15,17,19,20,20,20,21}, 2);
         out.println(sn.query(20)==7);
         out.println(sn.query(7)==12);
         out.println(sn.query(6)==13);
         
-        sn = new SnakeEating1(new Integer[]{15}, 3);
+        sn = new SnakeEating1(new int[]{15}, 3);
         out.println(sn.query(15)==1);
         out.println(sn.query(16)==0);
         out.println(sn.query(1)==1);       
-        sn = new SnakeEating1(new Integer[]{1000000000, 1500000000}, 3);
+        sn = new SnakeEating1(new int[]{1000000000, 1500000000}, 3);
         out.println(sn.query(1000000000)==2);  // 2
         out.println(sn.query(1500000000)==1);  // 1
         out.println(sn.query(1500000001)==1);  // 1
@@ -333,7 +325,7 @@ class SnakeEating1 extends SnakeBase
         out.println(sn.query(1)==2);
         out.println(sn.query(2000000000)==0);
         
-        Integer[] large=new Integer[100000];
+        int[] large=new int[100000];
         int v=1000000000;
         for (int i=0; i<large.length; i++) {
             large[i]=v;
@@ -363,10 +355,9 @@ class SnakeEating1 extends SnakeBase
 
 class SnakeEating extends SnakeBase{
     // Editorial idea
-    SnakeEating(Integer a[], int q)
+    SnakeEating(int a[], int q)
     {
-        L=a;
-        Q=q;
+        super(a, q);
         init();
     }
     SnakeEating()
@@ -433,7 +424,7 @@ class SnakeEating extends SnakeBase{
         Random rnd=new Random();
         int N=100000;
         int n=rnd.nextInt(N)+1;
-        Integer[] large=new Integer[n];
+        int[] large=new int[n];
         int v=1000000000;
         for (int i=0; i<large.length; i++) {
             large[i]=rnd.nextInt(v)+1;
@@ -450,12 +441,13 @@ class SnakeEating extends SnakeBase{
                 out.println(Arrays.toString(large));
                 break;
             }
-        }       
+        }    
+        out.println("autotest done "+n*2);   
     }
     
     static void test2()
     {
-        Integer[] a=new Integer[]{1, 2, 3, 4, 5};
+        int[] a=new int[]{1, 2, 3, 4, 5};
         SnakeEating sn = new SnakeEating(a, 2);
         out.println(Arrays.toString(sn.L));
         out.println(Arrays.toString(sn.prefix));
@@ -487,8 +479,8 @@ class SnakeEating extends SnakeBase{
     
     public static void main(String[] args)
     {      
-        //SnakeEating3.test4();
         //autotest();
+        //test2();
         solve(2);
     }
 }

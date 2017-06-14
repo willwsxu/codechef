@@ -7,6 +7,7 @@ import static java.lang.System.out;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 import java.util.Arrays;
+import java.util.stream.LongStream;
 
 public class Calculation {
     
@@ -44,11 +45,16 @@ public class Calculation {
         return s;
     }
     
-    static int[] sortIaR(int a[])  // sort int array reverse
+    public static int[] reverse(int a[])  // sort int array reverse
     {
         return IntStream.of(a).boxed()
                 .sorted(Comparator.reverseOrder())
                 .mapToInt(i->i).toArray();        
+    }
+    public static long[] reverse(long v[]){
+        return LongStream.of(v).boxed()
+                .sorted(Comparator.reverseOrder())
+                .mapToLong(i->i).toArray();
     }
     
     static long aChooseb(int a, int b)
