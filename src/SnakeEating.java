@@ -41,7 +41,7 @@ class SnakeBase
         out.println("total eat "+total);
     }
     
-    static int findCurr(Integer[] a, long k) {
+    static int lowerBound(Integer[] a, long k) {
         int n = a.length;
         if (a[n-1] < k)
             return n;
@@ -57,7 +57,7 @@ class SnakeBase
         return r;
     }        
     // not efficient when there are many elements of same value, TLE for this project
-    static int findCurr2(Integer[] L, int k) {
+    static int lowerBound2(Integer[] L, int k) {
         int p3=Arrays.binarySearch(L, k);
         if (p3<0) {
             p3 = -(p3+1);
@@ -98,7 +98,7 @@ class SnakeEating3 extends SnakeBase
     }
     int query(int k)  // sorted ascending
     {
-        int p3=findCurr(L, k);
+        int p3=lowerBound(L, k);
         int res=L.length-p3;
         if (p3<=1)
             return res;
@@ -110,8 +110,8 @@ class SnakeEating3 extends SnakeBase
     
     static void testFindCurr(Integer[] a, int k)
     {
-        int c1=SnakeBase.findCurr(a, k);
-        int c2=SnakeBase.findCurr2(a, k);
+        int c1=SnakeBase.lowerBound(a, k);
+        int c2=SnakeBase.lowerBound2(a, k);
         out.println("find k="+k+":"+c1+"=="+c2);        
     }
     static void test4()
@@ -317,11 +317,7 @@ class SnakeEating1 extends SnakeBase
     }
 }
 
-class SnakeEating {
-    Integer L[];
-    long prefix[];  // start from 1
-    int Q;
-    int maxK=1000000000;
+class SnakeEating extends SnakeBase{
     // Editorial idea
     SnakeEating(Integer a[], int q)
     {
