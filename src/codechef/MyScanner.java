@@ -15,11 +15,11 @@ import java.util.StringTokenizer;
 
 
 // credit to http://codeforces.com/blog/entry/7018
-public class ScannerEx {
+public class MyScanner {
     BufferedReader br;
     StringTokenizer st;
 
-    ScannerEx(String f)
+    MyScanner(String f)
     {
         try {
             br = new BufferedReader(new FileReader(new File(f)));
@@ -28,7 +28,7 @@ public class ScannerEx {
             out.println("MyReader bad file "+f);
         }
     }
-    public ScannerEx() {
+    public MyScanner() {
         br = new BufferedReader(new InputStreamReader(System.in));
     }
 

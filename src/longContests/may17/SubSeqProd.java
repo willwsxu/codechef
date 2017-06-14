@@ -1,6 +1,6 @@
 package longContests.may17;
 
-
+//***good practice for generating subset using recursion
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Arrays;

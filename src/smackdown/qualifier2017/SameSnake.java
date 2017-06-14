@@ -2,7 +2,7 @@ package smackdown.qualifier2017;
 
 
 import codechef.PointGraph;
-import codechef.ScannerEx;
+import codechef.MyScanner;
 import static java.lang.System.out;
 
 /*
@@ -203,7 +203,7 @@ class SameSnake {
         out.println(s1.same(s2)==false);
     }
         
-    static ScannerEx sc = new ScannerEx();
+    static MyScanner sc = new MyScanner();
     public static void main(String[] args)
     {      
         //test();
