@@ -1,12 +1,12 @@
 package smackdown.qualifier2017;
 
 
+import static codechef.Calculation.lowerBound;
 import static codechef.Calculation.prefixSum;
 import static codechef.Calculation.reverse;
 import static codechef.ContestHelper.ria;
 import static java.lang.System.out;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -37,36 +37,6 @@ abstract class SnakeBase
         total=(long)k*(p3-p1)-total;
         out.println("total eat "+total);
     }
-    
-    static int lowerBound(int[] a, long k) {
-        int n = a.length;
-        if (a[n-1] < k)
-            return n;
-        int l = -1, r = n - 1;
-        while (r - l > 1) {
-            int mid = (l + r) >> 1;
-            if (a[mid] >= k) {
-                r = mid;
-            } else {
-                l = mid;
-            }
-        }
-        return r;
-    }        
-    // not efficient when there are many elements of same value, TLE for this project
-    static int lowerBound2(int[] L, int k) {
-        int p3=Arrays.binarySearch(L, k);
-        if (p3<0) {
-            p3 = -(p3+1);
-        }
-        while (p3>0) {
-            if (L[p3-1]==k)
-                p3--;
-            else
-                break;
-        }
-        return p3;
-    }    
     
     static int findAfter(long[] p, int[] a, int end, long k) {
         if( k-a[end]>end ) return 0;
@@ -141,25 +111,6 @@ class SnakeEating3 extends SnakeBase
         return res+p1;
     }
     
-    static void testFindCurr(int[] a, int k)
-    {
-        int c1=SnakeBase.lowerBound(a, k);
-        int c2=SnakeBase.lowerBound2(a, k);
-        out.println("find k="+k+":"+c1+"=="+c2);        
-    }
-    static void test4()
-    {
-        int[] a=new int[]{21, 5, 8,8,8, 10};   
-        Arrays.sort(a);
-        out.println(Arrays.toString(a));     
-        testFindCurr(a, 22);
-        testFindCurr(a, 21);
-        testFindCurr(a, 20);
-        testFindCurr(a, 8);
-        testFindCurr(a, 6);
-        testFindCurr(a, 5);
-        testFindCurr(a, 1);
-    }
     static void test3()// test static functions
     {
         int[] a=new int[]{21, 9, 5, 8, 10};
