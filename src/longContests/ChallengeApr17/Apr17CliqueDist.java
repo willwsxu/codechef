@@ -17,71 +17,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.StringTokenizer;
 
-class MyReader
-{
-    BufferedReader br;
-    String line;
-    List<String> items=new ArrayList<>();
-    MyReader(String f)
-    {
-        try {
-            br = new BufferedReader(new FileReader(new File(f)));
-        } catch (IOException e)
-        {
-            out.println("MyReader bad file "+f);
-        }
-        readline();
-    }
-    MyReader()
-    {
-        br = new BufferedReader(new InputStreamReader(System.in));
-        readline();            
-    }
-    void readline()
-    {
-        try {
-            line = br.readLine();
-            while (line.isEmpty())
-                line = br.readLine();
-            //out.println(line);
-        }catch (IOException e)
-        {
-            out.println("MyReader read exception "+e);
-        }
-        String [] w = line.split("\\s+");
-        for(String s:w) {
-            if (!s.isEmpty())
-                items.add(s);
-        }
-        //out.println(items);
-    }
-    int nextInt()
-    {
-        if (items.isEmpty())
-            readline();
-        try {
-        int i=Integer.parseInt(items.get(0));
-        items.remove(0);
-        return i;
-        } catch (NumberFormatException e) {
-            out.println(items.toString()+e);
-            return 0;
-        }
-    }
-    long nextLong()
-    {    
-        if (items.isEmpty())
-            readline();
-        long i=Long.parseLong(items.get(0));
-        items.remove(0);
-        return i;
-    }
-}
-// single-source shortest paths
+// single-source shortest paths, Dijkstra's algorithm
+// easy
 class Apr17CliqueDist {
-    static MyReader scan = new MyReader("cliqueDist10000EWD.txt");//test
+    //static MyReader scan = new MyReader("cliqueDist10000EWD.txt");//test
     //static MyReader scan = new MyReader();
+    static MyScannerX scan = new MyScannerX();
     static void testAddEdge()
     {
         Instant start = Instant.now();
@@ -109,7 +52,7 @@ class Apr17CliqueDist {
     public static void main(String[] args)
     {        
         //Instant start = Instant.now();
-        codechef.ContestHelper.redirect("out.txt");
+        //codechef.ContestHelper.redirect("out.txt");
         
         int TC = scan.nextInt();  // between 1 and 3
         for (int i=0; i<TC; i++) { 
@@ -119,14 +62,14 @@ class Apr17CliqueDist {
             int M = scan.nextInt();     // 1 to 10^5 new roads
             int s = scan.nextInt();
             // test
-            N += K-testClique;
+            //N += K-testClique;
             SSSPclique sp = new SSSPclique(N, K, X, s-1);
             for (int j=0; j<M; j++) {
                 int v = scan.nextInt();  // index from 1
                 int w = scan.nextInt();
                 long wt = scan.nextLong();
-                addTest(sp, v, w, wt, K);
-                //sp.addEdge(v-1, w-1, wt);
+                //addTest(sp, v, w, wt, K);
+                sp.addEdge(v-1, w-1, wt);
             }
             //out.println("discard edges "+discard); //test
             sp.run();
@@ -365,5 +308,68 @@ class SSSPclique
             if ( distTo[v] ==Long.MAX_VALUE)
                 distTo[v] = minClique +Kw;
         }
+    }
+}
+
+// credit to http://codeforces.com/blog/entry/7018
+class MyScannerX {
+    BufferedReader br;
+    StringTokenizer st;
+
+    MyScannerX(String f)
+    {
+        try {
+            br = new BufferedReader(new FileReader(new File(f)));
+        } catch (IOException e)
+        {
+            out.println("MyReader bad file "+f);
+        }
+    }
+    public MyScannerX() {
+        br = new BufferedReader(new InputStreamReader(System.in));
+    }
+
+    String next() {
+        while (st == null || !st.hasMoreElements()) {
+            try {
+                st = new StringTokenizer(br.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return st.nextToken();
+    }
+
+    int nextInt() {
+        return Integer.parseInt(next());
+    }
+
+    long nextLong() {
+        return Long.parseLong(next());
+    }
+
+    double nextDouble() {
+        return Double.parseDouble(next());
+    }
+
+    String nextLine(){
+        String str = "";
+        try {
+           str = br.readLine();
+        } catch (IOException e) {
+           e.printStackTrace();
+        }
+        return str;
+    }
+    
+    public int ni()
+    {
+        return nextInt();
+    }    
+    public int[] ria(int N) { // read int array
+        int L[]=new int[N];
+        for (int i=0; i<N; i++)
+            L[i]=nextInt();
+        return L;
     }
 }
