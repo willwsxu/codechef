@@ -1,6 +1,9 @@
 package longContests.may17;
 
-//***good practice for generating subset using recursion, custome upperbound
+/*
+ * Brief Desc: count none empty sub set of n integers, product<K
+ * n <=30, max 2^30
+*/
 import static codechef.Calculation.reverse;
 import static codechef.Calculation.safe_multi;
 import codechef.MyScanner;
@@ -12,9 +15,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+//***good practice for generating subset using recursion, custome upperbound
 // Technique meet in the middle, http://www.infoarena.ro/blog/meet-in-the-middle
-
-// any sub sequence, product < K
+// brute force use bit
+// complete search, pruning as 20! is about 10^18, reverse soritng, prefix prod
 // use bit for subset, int is enough for N=30
 // CHEFCODE medium, https://discuss.codechef.com/questions/98092/chefcode-editorial
 class SubSeqProd {
@@ -146,7 +150,6 @@ class SubSeqProd {
         return count-1;
     }
     
-    // partially working
     long completeSearch2() {
         val = reverse(val);
         prefix=new long[n];
