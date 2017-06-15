@@ -17,69 +17,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.StringTokenizer;
 import java.util.concurrent.LinkedBlockingQueue;
 
-// Buffered Read class did not help Stable Market TLE issue (
-class MyReader
-{
-    BufferedReader br;
-    String line;
-    List<String> items=new ArrayList<>();
-    MyReader(String f)
-    {
-        try {
-            br = new BufferedReader(new FileReader(new File(f)));
-        } catch (IOException e)
-        {
-            out.println("MyReader bad file "+f);
-        }
-        //readline();
-    }
-    MyReader()
-    {
-        br = new BufferedReader(new InputStreamReader(System.in));
-        //readline();            
-    }
-    void readline()
-    {
-        try {
-            line = br.readLine();
-            while (line.isEmpty())
-                line = br.readLine();
-            //out.println(line);
-        }catch (IOException e)
-        {
-            out.println("MyReader read exception "+e);
-        }
-        String [] w = line.split("\\s+");
-        for(String s:w) {
-            if (!s.isEmpty())
-                items.add(s);
-        }
-        //out.println(items);
-    }
-    int nextInt()
-    {
-        if (items.isEmpty())
-            readline();
-        try {
-        int i=Integer.parseInt(items.get(0));
-        items.remove(0);
-        return i;
-        } catch (NumberFormatException e) {
-            out.println(items.toString()+e);
-            return 0;
-        }
-    }
-    long nextLong()
-    {    
-        if (items.isEmpty())
-            readline();
-        long i=Long.parseLong(items.get(0));
-        items.remove(0);
-        return i;
-    }
-}
 
 class GothamPD {
     int N, Q, R;
@@ -230,13 +170,12 @@ class GothamPD {
         gpd.bf.pathTo(n-1).forEach(gpd.g::printKey);
     }
     
-    static MyReader sc = new MyReader();  // for large input
-    //static Scanner sc = new Scanner(System.in);
+    static MyScanner sc = new MyScanner();  // for large input
     public static void main(String[] args)
     {     
         //test();
-        largeTest();
-        //new GothamPD();
+        //largeTest();
+        new GothamPD();
     }
 }
 
@@ -373,3 +312,75 @@ class BreadthFirstPaths
     }
 }
 
+// credit to http://codeforces.com/blog/entry/7018
+class MyScanner {
+    BufferedReader br;
+    StringTokenizer st;
+
+    MyScanner(String f)
+    {
+        try {
+            br = new BufferedReader(new FileReader(new File(f)));
+        } catch (IOException e)
+        {
+            out.println("MyScanner bad file "+f);
+        }
+    }
+    public MyScanner() {
+        br = new BufferedReader(new InputStreamReader(System.in));
+    }
+
+    String next() {
+        while (st == null || !st.hasMoreElements()) {
+            try {
+                st = new StringTokenizer(br.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return st.nextToken();
+    }
+
+    int nextInt() {
+        return Integer.parseInt(next());
+    }
+
+    long nextLong() {
+        return Long.parseLong(next());
+    }
+
+    double nextDouble() {
+        return Double.parseDouble(next());
+    }
+
+    String nextLine(){
+        String str = "";
+        try {
+           str = br.readLine();
+        } catch (IOException e) {
+           e.printStackTrace();
+        }
+        return str;
+    }
+    
+    public int ni()
+    {
+        return nextInt();
+    }     
+    public long nl()
+    {
+        return nextLong();
+    }   
+    public int[] ria(int N) { // read int array
+        int L[]=new int[N];
+        for (int i=0; i<N; i++)
+            L[i]=nextInt();
+        return L;
+    }
+    public long[] rla(int N) { // read long array
+        long L[]=new long[N];
+        for (int i=0; i<N; i++)
+            L[i]=nextLong();
+        return L;
+    }
+}
