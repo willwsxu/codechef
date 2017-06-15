@@ -15,7 +15,7 @@ import java.util.Scanner;
  * Given initial array of snake length, find out how many snakes can have len>=k
  */
 // SNAKEEAT EASY
-// Binary search method with duplicating values, Good exercise
+// Binary search method with duplicating values, Good exercise***
 // custom binary search to correctly find lowerbound. 
 // Java binarysearch does not support lower/upper bound
 abstract class SnakeBase
@@ -70,9 +70,9 @@ abstract class SnakeBase
             StringBuilder sb = new StringBuilder();
             SnakeBase sn;
             if (version==1)
-                sn=new SnakeEating();  //WA
+                sn=new SnakeEating();
             else
-                sn=new SnakeEating3();     // pass test
+                sn=new SnakeEating3();
             for (int j=0; j<sn.Q; j++) {
                 int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
                 sb.append(sn.query(k));
