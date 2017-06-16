@@ -1,5 +1,5 @@
 /* Description
-   Given 10 integers a0 to a9. An integer x is said to be bad if any of its digits
+   Given 10 integers a0 to a9. An integer x is said to be bad if any of its digit i
    show up exactly ai times.
 */
 import static java.lang.System.out;
@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 // DGTCNT medium, https://discuss.codechef.com/questions/95667/dgtcnt-editorial
 // inclusion-exclusion principle, dp - bitmask and digit dp
-class Apr17DigitCount {
+class Apr17DigitCount extends io {
     
     int A[];
     long L, R;
@@ -71,6 +71,17 @@ class Apr17DigitCount {
         out.println(good);        
     }
     
+    public static void main(String[] args)
+    {        
+        //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
+        int TC = ni();  // between 1 and 20
+        while (TC-- > 0)
+            new Apr17DigitCount().solve();
+    }
+}
+
+class io
+{    
     static Scanner sc = new Scanner(System.in);    
         
     public static int ni()
@@ -87,12 +98,5 @@ class Apr17DigitCount {
         for (int i=0; i<N; i++)
             L[i]=sc.nextInt();
         return L;
-    }
-    public static void main(String[] args)
-    {        
-        //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
-        int TC = ni();  // between 1 and 20
-        while (TC-- > 0)
-            new Apr17DigitCount().solve();
     }
 }
