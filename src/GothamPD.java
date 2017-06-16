@@ -20,7 +20,16 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.concurrent.LinkedBlockingQueue;
 
-
+/*
+ * Brief Desc: N police stations, each has a security key. Node R is headquater
+ * all stattions are connected and can be reached from R
+ * two types of query, Each query will be encoded using the xor between its real 
+    values and the value of the last answer.
+   0 v u k: A new station with id u and encryption key k is added and connected by a telephone line to v
+   1 v k: security test from station v to R. find key that minimize or maximize key^k from all nodes on the path
+*/
+// https://discuss.codechef.com/questions/98122/how-to-solve-gothampd-from-may17
+// http://opendatastructures.org/ods-java/13_1_BinaryTrie_digital_sea.html
 class GothamPD {
     int N, Q, R;
     Graph g;
@@ -39,9 +48,8 @@ class GothamPD {
     private void readNodes()
     {        
         g=new Graph();
-        R=sc.nextInt();  // 1 ≤ R ≤ N
-        int key=sc.nextInt();// 1 ≤ R, ui, vi, key, ki ≤ 2^31− 1
-        g.addNode(R-1, key);
+        R=sc.ni();  // 1 ≤ R ≤ N
+        g.addNode(R-1, sc.ni());// 1 ≤ R, ui, vi, key, ki ≤ 2^31− 1
         for (int i=0; i<N-1; i++) {
             int u=sc.nextInt();
             int v=sc.nextInt();
@@ -173,9 +181,10 @@ class GothamPD {
     static MyScanner sc = new MyScanner();  // for large input
     public static void main(String[] args)
     {     
+        BinaryTrie.test();
         //test();
         //largeTest();
-        new GothamPD();
+        //new GothamPD();
     }
 }
 
@@ -382,5 +391,95 @@ class MyScanner {
         for (int i=0; i<N; i++)
             L[i]=nextLong();
         return L;
+    }
+}
+
+
+class BinaryTrie  // for int
+{
+    private static int  R=2;
+    private static int  w=31; // depth for int, 31 bits
+    
+    private Node root=new Node();
+    private static class Node
+    {
+        String  name;
+        int     val=0;
+        private Node[] child = new Node[R];
+    }
+    boolean add(int ix)
+    {
+        Node u = root;
+        boolean a=false;
+        for (int i = 0; i < w; i++) {
+            int c = (ix >>> w-i-1) & 1;
+            if (u.child[c]==null) {
+                u.child[c]=new Node();
+                a=true;
+            }
+            u=u.child[c];
+        }
+        u.val=ix;
+        return a;
+    }
+    boolean find(int ix)
+    {        
+        Node u = root;
+        int i=0;
+        for (i = 0; i < w; i++) {
+            int c = (ix >>> w-i-1) & 1;
+            if (u.child[c] == null) break;
+            u = u.child[c];
+        }
+        return i==w;
+    }
+    int xorMin(int ix)
+    {
+        Node u = root;
+        int i=0;
+        for (i = 0; i < w; i++) {
+            int c = (ix >>> w-i-1) & 1;
+            if (u.child[c] == null) 
+                c=1-c;
+            u = u.child[c];
+            if (u==null)
+                return 0;
+        }
+        return u.val;        
+    }
+    int xorMax(int ix)
+    {
+        Node u = root;
+        int i=0;
+        for (i = 0; i < w; i++) {
+            int c = (ix >>> w-i-1) & 1;
+            if (u.child[1-c] != null) 
+                c=1-c;
+            u = u.child[c];
+            if (u==null)
+                return 0;
+        }
+        return u.val;        
+    }
+    static void test()
+    {
+        BinaryTrie bt=new BinaryTrie();
+        out.println(bt.find(1)==false);
+        out.println(bt.add(1)==true);
+        out.println(bt.find(1)==true);
+        out.println(bt.add(5)==true);
+        out.println(bt.add(5)==false);
+        out.println(bt.find(5)==true);
+        out.println(bt.add(6)==true);
+        out.println(bt.add(11)==true);
+        out.println(bt.add(20)==true);
+        out.println(bt.add(22)==true);
+        out.println(bt.add(26)==true);
+        out.println(bt.xorMin(13)==11);
+        out.println(bt.xorMax(13)==22);
+        out.println(bt.add(14)==true);
+        out.println(bt.add(18)==true);
+        out.println(bt.xorMin(13)==14);
+        out.println(bt.xorMax(13)==18);
     }
 }
