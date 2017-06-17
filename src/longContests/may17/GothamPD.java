@@ -1,25 +1,19 @@
 package longContests.may17;
 
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import codechef.BinaryTrie;
+import codechef.GraphMap;
+import codechef.MyScanner;
 import static java.lang.Integer.max;
 import static java.lang.Integer.min;
 import static java.lang.System.out;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
-import java.util.StringTokenizer;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /*
@@ -34,11 +28,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 // http://opendatastructures.org/ods-java/13_1_BinaryTrie_digital_sea.html
 class GothamPD {
     int N, Q, R;
-    Graph g;
+    GraphMap g;
     GothamPD(int n, int q)  // for unit testing
     {
         N=n; Q=q; R=1; // 1 ≤ N ≤ 100,000, PD
-        g=new Graph();
+        g=new GraphMap();
     }
     GothamPD()
     {
@@ -55,9 +49,9 @@ class GothamPD {
         R=sc.ni();  // 1 ≤ R ≤ N
         addHQ(sc.ni());
         for (int i=0; i<N-1; i++) {
-            int u=sc.nextInt();
-            int v=sc.nextInt();
-            int k=sc.nextInt();
+            int u=sc.ni();
+            int v=sc.ni();
+            int k=sc.ni();
             g.add(u-1, v-1, k);
         }
     }
@@ -66,7 +60,7 @@ class GothamPD {
     int calcXOR(int v, int k,StringBuilder sb)
     {
         Iterable<Integer> p = bf.pathTo(v);  // 1 4 2
-        int minmax[]=g.findMinMax(p, k);
+        int minmax[]=bf.findMinMax(p, k);
         sb.append(minmax[0]);
         sb.append(" ");
         sb.append(minmax[1]);
@@ -101,16 +95,16 @@ class GothamPD {
         StringBuilder sb = new StringBuilder();
         int last_answer = 0;
         for (int i=0; i<Q; i++) {
-            int t = sc.nextInt();
+            int t = sc.ni();
             t ^= last_answer;
             if (t==0) {  // add
-                int v=sc.nextInt();
-                int u=sc.nextInt();
-                int k=sc.nextInt();
+                int v=sc.ni();
+                int u=sc.ni();
+                int k=sc.ni();
                 add(u, v, k, last_answer);    
             } else {  // query
-                int v=sc.nextInt();
-                int k=sc.nextInt();    
+                int v=sc.ni();
+                int k=sc.ni();    
                 last_answer = query(v, k, last_answer, sb);
             }
         } 
@@ -186,75 +180,15 @@ class GothamPD {
     static MyScanner sc = new MyScanner();  // for large input
 }
 
-class Graph { // unweighted, bidirectional
-    private   int   E; // number of edges
-
-    class Node
-    {
-        int key;
-        List<Integer> adj;
-        Node(int k) {
-            key=k;
-            adj=new ArrayList<>(10);
-        }
-    }
-    Map<Integer, Node> nodes;
-    Graph()
-    {
-        nodes=new HashMap<>();
-        E=0;
-    }
-    public void addNode(int u, int k)
-    {
-        //out.println("node "+u);
-        nodes.put(u, new Node(k));
-    }
-    public int V() { return nodes.size(); }
-    public int E() { return E; }
-    
-    public void addEdge(int u, int v)
-    {
-        //out.println("edge "+u+" to "+v);
-        nodes.get(u).adj.add(v);
-        nodes.get(v).adj.add(u);
-        E++;
-    }
-    public void add (int u, int v, int k) 
-    {        
-        addNode(u,k);
-        addEdge(u, v);
-    }
-    public List<Integer> adj(int u)
-    {
-        return nodes.get(u).adj;
-    }
-    int[] findMinMax(Iterable<Integer> p, int k)
-    {
-        //p.forEach (out::println) ;
-        int minX=Integer.MAX_VALUE;
-        int maxX=0;
-        for (int w: p) {
-            int k2=nodes.get(w).key^k;
-            minX=min(minX, k2);
-            maxX=max(maxX, k2);
-        }
-        return new int[]{minX, maxX};
-    }
-    void printKey(int i)
-    {
-        out.println((i+1)+" "+nodes.get(i).key);
-    }
-}
-
 class DFS
 {
     Map<Integer, BinaryTrie> tries=new HashMap<>();
-    private Graph G;
-    DFS(Graph g, int s)
+    private GraphMap G;
+    DFS(GraphMap g, int s)
     {
         G=g;
         BinaryTrie bt=new BinaryTrie();
-        bt.add(G.nodes.get(s).key);
+        bt.add(G.getKey(s));
         tries.put(s, bt);
         dfs(s);
     }
@@ -263,7 +197,7 @@ class DFS
         for (int v: G.adj(u)) {
             if (tries.get(v)==null) {
                 //out.println("trie add "+G.nodes.get(v).key+" to node "+v+" from "+u);
-                BinaryTrie bt=btu.persistAdd(G.nodes.get(v).key);
+                BinaryTrie bt=btu.persistAdd(G.getKey(v));
                 tries.put(v, bt);
                 dfs(v);
             }
@@ -276,19 +210,17 @@ class BreadthFirstPaths
     {
         boolean marked;
         int     edgeTo;
-        BinaryTrie  bt;
-        State(int e, BinaryTrie b)
+        State(int e)
         {
             marked=true;
             edgeTo=e;
-            bt=b;
         }
     }
     Map<Integer, State> states=new HashMap<>();
     private final int s; // source
-    private Graph G;
+    private GraphMap G;
     LinkedBlockingQueue<Integer> queue;
-    public BreadthFirstPaths(Graph G, int s)
+    public BreadthFirstPaths(GraphMap G, int s)
     {
         this.s = s;
         this.G =G;
@@ -299,21 +231,18 @@ class BreadthFirstPaths
     private void bfs(int s)
     {
         if (!states.containsKey(s)) {
-            BinaryTrie bt=new BinaryTrie();
-            bt.add(G.nodes.get(s).key);
-            states.put(s, new State(0, bt));
+            states.put(s, new State(0));
         }
         queue.add(s); // and put it on the queue.
         while (!queue.isEmpty())
         {
             int v = queue.poll(); // Remove next vertex from the queue.
             State st=states.get(v);
-            int k=G.nodes.get(v).key;
+            int k=G.getKey(v);
             for (int w : G.adj(v)) {
                 if ( states.get(w)==null )
                 {
                     //out.println("path "+w +" to "+v);
-                    states.put(w, new State(v, st.bt.persistAdd(k)));
                     queue.add(w); // and add it to the queue.
                 }
             }
@@ -340,236 +269,17 @@ class BreadthFirstPaths
         path.push(s);
         return path;
     }
-}
-
-// credit to http://codeforces.com/blog/entry/7018
-class MyScanner {
-    BufferedReader br;
-    StringTokenizer st;
-
-    MyScanner(String f)
+    int[] findMinMax(Iterable<Integer> p, int k)
     {
-        try {
-            br = new BufferedReader(new FileReader(new File(f)));
-        } catch (IOException e)
-        {
-            out.println("MyScanner bad file "+f);
+        //p.forEach (out::println) ;
+        int minX=Integer.MAX_VALUE;
+        int maxX=0;
+        for (int w: p) {
+            int k2=G.getKey(w)^k;
+            minX=min(minX, k2);
+            maxX=max(maxX, k2);
         }
-    }
-    public MyScanner() {
-        br = new BufferedReader(new InputStreamReader(System.in));
-    }
-
-    String next() {
-        while (st == null || !st.hasMoreElements()) {
-            try {
-                st = new StringTokenizer(br.readLine());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return st.nextToken();
-    }
-
-    int nextInt() {
-        return Integer.parseInt(next());
-    }
-
-    long nextLong() {
-        return Long.parseLong(next());
-    }
-
-    double nextDouble() {
-        return Double.parseDouble(next());
-    }
-
-    String nextLine(){
-        String str = "";
-        try {
-           str = br.readLine();
-        } catch (IOException e) {
-           e.printStackTrace();
-        }
-        return str;
-    }
-    
-    public int ni()
-    {
-        return nextInt();
-    }     
-    public long nl()
-    {
-        return nextLong();
-    }   
-    public int[] ria(int N) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=nextInt();
-        return L;
-    }
-    public long[] rla(int N) { // read long array
-        long L[]=new long[N];
-        for (int i=0; i<N; i++)
-            L[i]=nextLong();
-        return L;
-    }
-}
-
-
-class BinaryTrie  // for int
-{
-    private static int  R=2;
-    private static int  w=31; // depth for int, 31 bits
-    
-    private Node root=new Node();
-    private static class Node
-    {
-        String  name;
-        int     val=0;
-        private Node[] child = new Node[R];
-    }
-    boolean add(int ix)
-    {
-        //out.println("trie add "+ix);
-        Node u = root;
-        boolean a=false;
-        for (int i = 0; i < w; i++) {
-            int c = (ix >>> w-i-1) & 1;
-            if (u.child[c]==null) {
-                u.child[c]=new Node();
-                a=true;
-            }
-            u=u.child[c];
-        }
-        u.val=ix;
-        return a;
-    }
-    
-    BinaryTrie persistAdd(int ix)
-    {
-        //out.println("trie persistAdd "+ix);
-        BinaryTrie bt=new BinaryTrie();
-        bt.root.child[0]=root.child[0];
-        bt.root.child[1]=root.child[1];
-        
-        Node u = bt.root;
-        for (int i = 0; i < w; i++) {
-            int c = (ix >>> w-i-1) & 1;
-            Node n=new Node();
-            if (u.child[c]==null) {
-                u.child[c]=n;
-            } else {
-                n.child[0]=u.child[c].child[0];
-                n.child[1]=u.child[c].child[1];
-                u.child[c]=n;                
-            }
-            u=u.child[c];
-        }
-        u.val=ix;
-        return bt;
-    }
-    boolean find(int ix)
-    {        
-        Node u = root;
-        int i=0;
-        for (i = 0; i < w; i++) {
-            int c = (ix >>> w-i-1) & 1;
-            if (u.child[c] == null) break;
-            u = u.child[c];
-        }
-        return i==w;
-    }
-    int xorMin(int ix)
-    {
-        Node u = root;
-        int i=0;
-        for (i = 0; i < w; i++) {
-            int c = (ix >>> w-i-1) & 1;
-            if (u.child[c] == null) 
-                c=1-c;
-            u = u.child[c];
-            if (u==null)
-                return 0;
-        }
-        return u.val;        
-    }
-    int xorMax(int ix)
-    {
-        Node u = root;
-        int i=0;
-        for (i = 0; i < w; i++) {
-            int c = (ix >>> w-i-1) & 1;
-            if (u.child[1-c] != null) 
-                c=1-c;
-            u = u.child[c];
-            if (u==null)
-                return 0;
-        }
-        return u.val;        
-    }
-    static void test()
-    {
-        BinaryTrie bt=new BinaryTrie();
-        out.println(bt.find(1)==false);
-        out.println(bt.add(1)==true);
-        out.println(bt.find(1)==true);
-        out.println(bt.add(5)==true);
-        out.println(bt.add(5)==false);
-        out.println(bt.find(5)==true);
-        out.println(bt.add(6)==true);
-        out.println(bt.add(11)==true);
-        out.println(bt.add(20)==true);
-        out.println(bt.add(22)==true);
-        out.println(bt.add(26)==true);
-        out.println(bt.xorMin(13)==11);
-        out.println(bt.xorMax(13)==22);
-        out.println(bt.add(14)==true);
-        out.println(bt.add(18)==true);
-        out.println(bt.xorMin(13)==14);
-        out.println(bt.xorMax(13)==18);
-    }
-    static void test2()
-    {
-        out.println("persistent trie");
-        BinaryTrie bt=new BinaryTrie();
-        out.println(bt.add(1)==true);
-        BinaryTrie bt2=bt.persistAdd(5);
-        BinaryTrie bt3=bt2.persistAdd(6);
-        BinaryTrie bt4=bt3.persistAdd(11);
-        BinaryTrie bt5=bt4.persistAdd(20);
-        BinaryTrie bt6=bt5.persistAdd(22);
-        BinaryTrie bt7=bt6.persistAdd(26);
-        out.println(bt.find(5)==false);
-        out.println(bt2.find(6)==false);
-        out.println(bt3.find(11)==false);
-        out.println(bt4.find(20)==false);
-        out.println(bt5.find(22)==false);
-        out.println(bt6.find(26)==false);
-        out.println(bt6.find(22)==true);
-        out.println(bt6.find(20)==true);
-        
-        out.println(bt7.find(1)==true);
-        out.println(bt7.find(5)==true);
-        out.println(bt7.find(6)==true);
-        out.println(bt7.find(11)==true);
-        out.println(bt7.find(20)==true);
-        out.println(bt7.find(22)==true);
-        out.println(bt7.find(26)==true);
-        out.println(bt7.xorMin(13)==11);
-        out.println(bt7.xorMax(13)==22);
-    }
-    static void test3()
-    {
-        out.println("persistent trie");
-        BinaryTrie bt=new BinaryTrie();
-        out.println(bt.add(2)==true);
-        BinaryTrie bt5=bt.persistAdd(3);
-        BinaryTrie bt2=bt.persistAdd(4);
-        BinaryTrie bt3=bt2.persistAdd(5);
-        BinaryTrie bt4=bt2.persistAdd(1);
-        BinaryTrie bt6=bt3.persistAdd(3);     
-        out.println(bt4.xorMin(2));  
-        out.println(bt4.xorMax(2));
+        return new int[]{minX, maxX};
     }
 }
 
