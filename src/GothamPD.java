@@ -33,52 +33,59 @@ import java.util.concurrent.LinkedBlockingQueue;
 class GothamPD {
     int N, Q, R;
     Graph g;
-    boolean dirty=true;
+    //boolean dirty=true;
     GothamPD(int n, int q)  // for unit testing
     {
-        N=n; Q=q; R=1;
+        N=n; Q=q; R=1; // 1 ≤ N ≤ 100,000, PD
+        g=new Graph();
     }
     GothamPD()
     {
-        N=sc.nextInt();  // 1 ≤ N ≤ 100,000, PD
-        Q=sc.nextInt();  // 1 ≤ Q ≤ 200,000
+        this(sc.ni(), sc.ni());
         readNodes();
-        readQuery(Q);
+        readQuery(Q); // 1 ≤ Q ≤ 200,000
+    }
+    void addHQ(int k)
+    {
+        g.addNode(R-1, k);// 1 ≤ R, ui, vi, key, ki ≤ 2^31− 1  
     }
     private void readNodes()
     {        
-        g=new Graph();
         R=sc.ni();  // 1 ≤ R ≤ N
-        g.addNode(R-1, sc.ni());// 1 ≤ R, ui, vi, key, ki ≤ 2^31− 1
+        addHQ(sc.ni());
         for (int i=0; i<N-1; i++) {
             int u=sc.nextInt();
             int v=sc.nextInt();
             int k=sc.nextInt();
             g.add(u-1, v-1, k);
         }
-        dirty=true;
+        //dirty=true;
     }
     
     BreadthFirstPaths bf;
-    int query(int v, int k, int last_answer, StringBuilder sb)
+    int calcXOR(int v, int k,StringBuilder sb)
     {
-        if ( bf==null ) { // first time
-            bf = new BreadthFirstPaths(g, R-1);    
-            dirty=false;
-        }
-        v = (v^last_answer)-1;
-        k ^=last_answer;
-        //out.println(" v "+v+" k "+k);
-        //assert(v>0);
         Iterable<Integer> p = bf.pathTo(v);  // 1 4 2
         int minmax[]=g.findMinMax(p, k);
         sb.append(minmax[0]);
         sb.append(" ");
         sb.append(minmax[1]);
         sb.append("\n");
-        //out.println(minmax[0]+" "+minmax[1]);
+        out.println(minmax[0]+" "+minmax[1]);
         
-        return minmax[0]^minmax[1];
+        return minmax[0]^minmax[1];        
+    }
+    int query(int v, int k, int last_answer, StringBuilder sb)
+    {
+        if ( bf==null ) { // first time
+            bf = new BreadthFirstPaths(g, R-1);    
+            //dirty=false;
+        }
+        v = (v^last_answer)-1;
+        k ^=last_answer;
+        //out.println(" v "+v+" k "+k);
+        //assert(v>0);
+        return calcXOR(v, k, sb);
     }
     void add(int u, int v, int k, int last_answer)
     {
@@ -87,7 +94,7 @@ class GothamPD {
         k ^=last_answer;
         //out.println(" add u "+u+" v "+v+" k "+k);
         g.add(u-1, v-1, k);  // must call this first to expand graph node
-        dirty=true;
+        //dirty=true;
         if ( bf !=null) // did initial bsf
             bf.bfsMore(v-1);
     }
@@ -114,9 +121,8 @@ class GothamPD {
     public static void test()
     {
         GothamPD gpd = new GothamPD(6, 4);
-        gpd.g=new Graph();
         StringBuilder sb = new StringBuilder();
-        gpd.g.addNode(0, 2);  // 1 2, index from 0
+        gpd.addHQ(2);  // 1 2, index from 0
         gpd.add(5, 1, 3, 0);    // 5 1 3
         gpd.add(2, 1, 4, 0);    // 2 1 4
         gpd.add(3, 2, 5, 0);    // 3 2 5
@@ -124,6 +130,7 @@ class GothamPD {
         gpd.add(6, 3, 3, 0);    // 6 3 3
         out.println("Edges "+gpd.g.E());
         int last_answer = gpd.query(4, 2, 0, sb);      // 1 4 2
+        out.println("q1 "+last_answer+" "+(last_answer==6));
         // 6 0 12 0
         int t=6^last_answer;
         assert(t==0);
@@ -132,12 +139,14 @@ class GothamPD {
         t = 7^last_answer;
         assert(t==1);
         last_answer = gpd.query(12, 7, last_answer, sb); // 1 10 1
+        out.println("q2 "+last_answer+" "+(last_answer==5));
         gpd.bf.pathTo(9).forEach(gpd.g::printKey);
         out.println();
         // 4 0 7
         t = 4^last_answer;
         assert(t==1);
         last_answer = gpd.query(0, 7, last_answer, sb); // 1 5 2
+        out.println("q3 "+last_answer+" "+(last_answer==1));
         out.print(sb.toString());
         gpd.g.add(Integer.MAX_VALUE-1, 9, Integer.MAX_VALUE-2);
         gpd.bf.bfsMore(9);
@@ -149,10 +158,9 @@ class GothamPD {
         int n=100000;
         int q=200000;
         GothamPD gpd = new GothamPD(n, q);
-        gpd.g=new Graph();
         StringBuilder sb = new StringBuilder();
         Random rnd=new Random();
-        gpd.g.addNode(0, rnd.nextInt(100));
+        gpd.addHQ(rnd.nextInt(100));
         for (int i=1; i<n; i++){
             int prev=i-1;//rnd.nextInt(i);// ensure connect to previous connected node
             gpd.add(i+1, prev+1, rnd.nextInt(100), 0);
@@ -177,16 +185,7 @@ class GothamPD {
         //out.print(sb.toString()); 
         gpd.bf.pathTo(n-1).forEach(gpd.g::printKey);
     }
-    
     static MyScanner sc = new MyScanner();  // for large input
-    public static void main(String[] args)
-    {     
-        BinaryTrie.test();
-        BinaryTrie.test2();
-        //test();
-        //largeTest();
-        //new GothamPD();
-    }
 }
 
 class Graph { // unweighted, bidirectional
@@ -249,28 +248,50 @@ class Graph { // unweighted, bidirectional
     }
 }
 
+class DFS
+{
+    Map<Integer, BinaryTrie> tries=new HashMap<>();
+    private Graph G;
+    DFS(Graph g, int s)
+    {
+        G=g;
+        BinaryTrie bt=new BinaryTrie();
+        bt.add(G.nodes.get(s).key);
+        tries.put(s, bt);
+        dfs(s);
+    }
+    void dfs(int u) {
+        BinaryTrie btu=tries.get(u);
+        for (int v: G.adj(u)) {
+            if (tries.get(v)==null) {
+                //out.println("trie add "+G.nodes.get(v).key+" to node "+v+" from "+u);
+                BinaryTrie bt=btu.persistAdd(G.nodes.get(v).key);
+                tries.put(v, bt);
+                dfs(v);
+            }
+        }
+    }
+}
 class BreadthFirstPaths
 {
     class State
     {
         boolean marked;
         int     edgeTo;
-        State(int e)
+        BinaryTrie  bt;
+        State(int e, BinaryTrie b)
         {
             marked=true;
             edgeTo=e;
+            bt=b;
         }
     }
     Map<Integer, State> states=new HashMap<>();
-    //private boolean[] marked; // Is a shortest path to this vertex known?
-    //private int[] edgeTo; // last vertex on known path to this vertex
     private final int s; // source
     private Graph G;
     LinkedBlockingQueue<Integer> queue;
     public BreadthFirstPaths(Graph G, int s)
     {
-        //marked = new boolean[G.capacity()];
-        //edgeTo = new int[G.capacity()];
         this.s = s;
         this.G =G;
         
@@ -279,21 +300,22 @@ class BreadthFirstPaths
     }
     private void bfs(int s)
     {
-        //marked[s] = true; // Mark the source
-        if (!states.containsKey(s))
-            states.put(s, new State(0));
+        if (!states.containsKey(s)) {
+            BinaryTrie bt=new BinaryTrie();
+            bt.add(G.nodes.get(s).key);
+            states.put(s, new State(0, bt));
+        }
         queue.add(s); // and put it on the queue.
         while (!queue.isEmpty())
         {
             int v = queue.poll(); // Remove next vertex from the queue.
+            State st=states.get(v);
+            int k=G.nodes.get(v).key;
             for (int w : G.adj(v)) {
-                //if (!marked[w]) // For every unmarked adjacent vertex,
                 if ( states.get(w)==null )
                 {
                     //out.println("path "+w +" to "+v);
-                    states.put(w, new State(v));
-                    //edgeTo[w] = v; // save last edge on a shortest path,
-                    //marked[w] = true; // mark it because path is known,
+                    states.put(w, new State(v, st.bt.persistAdd(k)));
                     queue.add(w); // and add it to the queue.
                 }
             }
@@ -410,6 +432,7 @@ class BinaryTrie  // for int
     }
     boolean add(int ix)
     {
+        //out.println("trie add "+ix);
         Node u = root;
         boolean a=false;
         for (int i = 0; i < w; i++) {
@@ -426,6 +449,7 @@ class BinaryTrie  // for int
     
     BinaryTrie persistAdd(int ix)
     {
+        //out.println("trie persistAdd "+ix);
         BinaryTrie bt=new BinaryTrie();
         bt.root.child[0]=root.child[0];
         bt.root.child[1]=root.child[1];
@@ -535,5 +559,108 @@ class BinaryTrie  // for int
         out.println(bt7.find(26)==true);
         out.println(bt7.xorMin(13)==11);
         out.println(bt7.xorMax(13)==22);
+    }
+    static void test3()
+    {
+        out.println("persistent trie");
+        BinaryTrie bt=new BinaryTrie();
+        out.println(bt.add(2)==true);
+        BinaryTrie bt5=bt.persistAdd(3);
+        BinaryTrie bt2=bt.persistAdd(4);
+        BinaryTrie bt3=bt2.persistAdd(5);
+        BinaryTrie bt4=bt2.persistAdd(1);
+        BinaryTrie bt6=bt3.persistAdd(3);     
+        out.println(bt4.xorMin(2));  
+        out.println(bt4.xorMax(2));
+    }
+}
+
+class GPD_TRIE extends GothamPD
+{
+    DFS dfs;
+    GPD_TRIE()
+    {
+        super();
+    }
+    GPD_TRIE(int n, int q)
+    {
+        super(n, q);
+    }
+    
+    @Override
+    int query(int v, int k, int last_answer, StringBuilder sb)
+    {
+        if ( dfs==null ) { // first time
+            dfs = new DFS(g, R-1);   
+        }
+        v = (v^last_answer)-1;
+        k ^=last_answer;
+        //out.println(" v "+v+" k "+k);
+        //assert(v>0);
+        return calcXOR2(v, k, sb);
+    }
+    int calcXOR2(int v, int k, StringBuilder sb)
+    {
+        BinaryTrie bt = dfs.tries.get(v);
+        int mn=bt.xorMin(k)^k;
+        int mx=bt.xorMax(k)^k;
+        sb.append(mn);
+        sb.append(" ");
+        sb.append(mx);
+        sb.append("\n");
+        //out.println("xor node "+v+" key "+k+" min="+mn+" max="+mx);
+        return mn^mx;
+    }
+    @Override
+    void add(int u, int v, int k, int last_answer)
+    {
+        super.add(u,v,k,last_answer);
+        if ( dfs !=null) {
+            u ^=last_answer;
+            v ^=last_answer;
+            k ^=last_answer;
+            BinaryTrie btv=dfs.tries.get(v-1);
+            if (btv==null)
+                out.println("error no trie"+v);
+            dfs.tries.put(u-1, btv.persistAdd(k));
+        }
+    }
+    static void test2()
+    {
+        GothamPD gpd = new GPD_TRIE(6, 4);
+        StringBuilder sb = new StringBuilder();
+        gpd.addHQ(2);  // 1 2, index from 0
+        gpd.add(5, 1, 3, 0);    // 5 1 3
+        gpd.add(2, 1, 4, 0);    // 2 1 4
+        gpd.add(3, 2, 5, 0);    // 3 2 5
+        gpd.add(4, 2, 1, 0);    // 4 2 1
+        gpd.add(6, 3, 3, 0);    // 6 3 3
+        out.println("GPD_TRIE Edges "+gpd.g.E());
+        int last_answer = gpd.query(4, 2, 0, sb);      // 1 4 2
+        out.println("trie q1 "+last_answer+" "+(last_answer==6));
+        
+        // 6 0 12 0
+        int t=6^last_answer;
+        out.println(t==0);
+        gpd.add(12, 0, 0, last_answer); // 0 6 10 6, v u k
+        // 7 12 7
+        t = 7^last_answer;
+        out.println(t==1);
+        last_answer = gpd.query(12, 7, last_answer, sb); // 1 10 1
+        out.println("trie q2 "+last_answer+" "+(last_answer==5));
+        // 4 0 7
+        t = 4^last_answer;
+        out.println(t==1);
+        last_answer = gpd.query(0, 7, last_answer, sb); // 1 5 2
+        out.println("trie q3 "+last_answer+" "+(last_answer==1));
+        out.print(sb.toString());
+        gpd.g.add(Integer.MAX_VALUE-1, 9, Integer.MAX_VALUE-2);
+    }
+    public static void main(String[] args)
+    {     
+        //BinaryTrie.test3();
+        //GPD_TRIE.test2();
+        //largeTest();
+        new GPD_TRIE();
     }
 }
