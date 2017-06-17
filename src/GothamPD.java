@@ -26,14 +26,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  * two types of query, Each query will be encoded using the xor between its real 
     values and the value of the last answer.
    0 v u k: A new station with id u and encryption key k is added and connected by a telephone line to v
-   1 v k: security test from station v to R. find key that minimize or maximize key^k from all nodes on the path
+   1 v k: security test from station v to R. find minimal or maximal key^k from all nodes on the path
 */
 // https://discuss.codechef.com/questions/98122/how-to-solve-gothampd-from-may17
 // http://opendatastructures.org/ods-java/13_1_BinaryTrie_digital_sea.html
 class GothamPD {
     int N, Q, R;
     Graph g;
-    //boolean dirty=true;
     GothamPD(int n, int q)  // for unit testing
     {
         N=n; Q=q; R=1; // 1 ≤ N ≤ 100,000, PD
@@ -59,7 +58,6 @@ class GothamPD {
             int k=sc.nextInt();
             g.add(u-1, v-1, k);
         }
-        //dirty=true;
     }
     
     BreadthFirstPaths bf;
@@ -79,7 +77,6 @@ class GothamPD {
     {
         if ( bf==null ) { // first time
             bf = new BreadthFirstPaths(g, R-1);    
-            //dirty=false;
         }
         v = (v^last_answer)-1;
         k ^=last_answer;
@@ -94,7 +91,6 @@ class GothamPD {
         k ^=last_answer;
         //out.println(" add u "+u+" v "+v+" k "+k);
         g.add(u-1, v-1, k);  // must call this first to expand graph node
-        //dirty=true;
         if ( bf !=null) // did initial bsf
             bf.bfsMore(v-1);
     }
