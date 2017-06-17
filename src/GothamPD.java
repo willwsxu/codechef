@@ -21,8 +21,8 @@ import java.util.StringTokenizer;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /*
- * Brief Desc: N police stations, each has a security key. Node R is headquater
- * all stattions are connected and can be reached from R
+ * Brief Desc: N police stations, each has a security key. Node R is headquarter
+ * all stations are connected and can be reached from R
  * two types of query, Each query will be encoded using the xor between its real 
     values and the value of the last answer.
    0 v u k: A new station with id u and encryption key k is added and connected by a telephone line to v
@@ -182,6 +182,7 @@ class GothamPD {
     public static void main(String[] args)
     {     
         BinaryTrie.test();
+        BinaryTrie.test2();
         //test();
         //largeTest();
         //new GothamPD();
@@ -422,6 +423,29 @@ class BinaryTrie  // for int
         u.val=ix;
         return a;
     }
+    
+    BinaryTrie persistAdd(int ix)
+    {
+        BinaryTrie bt=new BinaryTrie();
+        bt.root.child[0]=root.child[0];
+        bt.root.child[1]=root.child[1];
+        
+        Node u = bt.root;
+        for (int i = 0; i < w; i++) {
+            int c = (ix >>> w-i-1) & 1;
+            Node n=new Node();
+            if (u.child[c]==null) {
+                u.child[c]=n;
+            } else {
+                n.child[0]=u.child[c].child[0];
+                n.child[1]=u.child[c].child[1];
+                u.child[c]=n;                
+            }
+            u=u.child[c];
+        }
+        u.val=ix;
+        return bt;
+    }
     boolean find(int ix)
     {        
         Node u = root;
@@ -481,5 +505,35 @@ class BinaryTrie  // for int
         out.println(bt.add(18)==true);
         out.println(bt.xorMin(13)==14);
         out.println(bt.xorMax(13)==18);
+    }
+    static void test2()
+    {
+        out.println("persistent trie");
+        BinaryTrie bt=new BinaryTrie();
+        out.println(bt.add(1)==true);
+        BinaryTrie bt2=bt.persistAdd(5);
+        BinaryTrie bt3=bt2.persistAdd(6);
+        BinaryTrie bt4=bt3.persistAdd(11);
+        BinaryTrie bt5=bt4.persistAdd(20);
+        BinaryTrie bt6=bt5.persistAdd(22);
+        BinaryTrie bt7=bt6.persistAdd(26);
+        out.println(bt.find(5)==false);
+        out.println(bt2.find(6)==false);
+        out.println(bt3.find(11)==false);
+        out.println(bt4.find(20)==false);
+        out.println(bt5.find(22)==false);
+        out.println(bt6.find(26)==false);
+        out.println(bt6.find(22)==true);
+        out.println(bt6.find(20)==true);
+        
+        out.println(bt7.find(1)==true);
+        out.println(bt7.find(5)==true);
+        out.println(bt7.find(6)==true);
+        out.println(bt7.find(11)==true);
+        out.println(bt7.find(20)==true);
+        out.println(bt7.find(22)==true);
+        out.println(bt7.find(26)==true);
+        out.println(bt7.xorMin(13)==11);
+        out.println(bt7.xorMax(13)==22);
     }
 }
