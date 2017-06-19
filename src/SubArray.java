@@ -1,4 +1,8 @@
-
+/*
+ * Brief Desc: N integers of 0 and 1, find the max sum given a window size K
+ * two requests can be made, either shift number array to right by 1 (circular)
+ *   or find out max 1 of any window frame
+*/
 import static java.lang.System.out;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -12,7 +16,7 @@ import java.util.Scanner;
 
 // https://discuss.codechef.com/questions/98090/chefsuba-editorial
 // Easy medium
-class SubArray {    
+class SubArray extends iox {    
     int start=0;
     int N;  // Array size
     int P;  // number of requests
@@ -30,6 +34,16 @@ class SubArray {
             K=N;
         this.K=K;
         //out.println("N "+N+" K "+K);
+    }
+    SubArray()
+    {
+        N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
+        K=sc.nextInt();
+        P=sc.nextInt();  // request len
+        A=ria(N);      // 0 or 1
+        request=sc.next();  
+        if (K>N) // important case
+            K=N;      
     }
     int count1(int s)
     {
@@ -78,17 +92,10 @@ class SubArray {
                 sb.append(pq.peek());
                 sb.append("\n");
             }
-            else if (N>K && K>1){
+            else if (N>K && K>1){ // when 
                 pq.shiftL();
             }
         }
-    }
-    void solve()
-    {
-        StringBuilder sb=new StringBuilder();
-        //bruteforce(sb);
-        cacheSum(sb);
-        out.print(sb.toString());
     }
     
     static void test1cache(int A[], StringBuilder sb, int k, String q)
@@ -133,17 +140,31 @@ class SubArray {
         CircularListMax.test(A, 7);
     }
     
-    static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        int N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
-        int K=sc.nextInt();
-        int P=sc.nextInt();  // P=p.length
-        int []A=new int[N];
-        for (int j=0; j<N; j++)
-            A[j]=sc.nextInt();  // 0 or 1
-        String p=sc.next();
-        new SubArray(A, K, p).solve();
+        StringBuilder sb=new StringBuilder();
+        new SubArray().cacheSum(sb);
+        out.print(sb.toString());
+    }
+}
+class iox
+{    
+    static Scanner sc = new Scanner(System.in);    
+        
+    public static int ni()
+    {
+        return sc.nextInt();
+    }
+    public static long nl()
+    {
+        return sc.nextLong();
+    }
+    
+    public static int[] ria(int N) { // read int array
+        int L[]=new int[N];
+        for (int i=0; i<N; i++)
+            L[i]=sc.nextInt();
+        return L;
     }
 }
 
@@ -180,6 +201,7 @@ class Pi  // pair of int
 
 // Avoid priority Queue remove method call as it is slow
 // super fast, 5x better than SortedList class
+// Priority Queue stores K elements of array, when item becomes invalid, mark b[] false
 class ListBackedPQ
 {    
     int A[];
@@ -244,6 +266,7 @@ class ListBackedPQ
     }
 }
 
+// find max item in k elements of array size n
 class CircularListMax extends ListBackedPQ
 {
     int head, tail, size;
@@ -252,7 +275,8 @@ class CircularListMax extends ListBackedPQ
         size=a.length;
         head=0; tail=k-1;
     }
-    void shiftL()
+    // head and tail pointer moves to left when
+    void shiftL() // element moves to right, a[size-1] becomes new head
     {
         remove(tail);      
         //out.println("remove "+A[tail]+" at "+tail);  
