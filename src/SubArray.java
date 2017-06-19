@@ -15,7 +15,9 @@ import java.util.PriorityQueue;
 import java.util.Scanner;
 
 // https://discuss.codechef.com/questions/98090/chefsuba-editorial
-// Easy medium
+// CHEFSUBA, Easy medium, Segment trees, Deque, 
+
+// my alternative solution is circular list combining with priority queue
 class SubArray extends iox {    
     int start=0;
     int N;  // Array size
@@ -302,4 +304,10 @@ class CircularListMax extends ListBackedPQ
         out.println(pq.peek()+" "+pq.pq.toString());
         out.println();
     }
+}
+
+// calculate sum of k element of array size n
+class CircularSum
+{
+    
 }
