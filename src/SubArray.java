@@ -16,6 +16,7 @@ import java.util.Scanner;
 
 // https://discuss.codechef.com/questions/98090/chefsuba-editorial
 // CHEFSUBA, Easy medium, Segment trees, Deque, 
+// Rotation trick, double array size
 
 // my alternative solution is circular list combining with priority queue
 class SubArray extends iox {    
