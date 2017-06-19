@@ -7,7 +7,7 @@ package smackdown.roundb;
  */
 
 import codechef.DSU;
-import codechef.SimpleGraph;
+import codechef.GraphSimple;
 import static java.lang.System.out;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
@@ -20,12 +20,12 @@ import java.util.Stack;
 // SNGraph, Medium, DSU (Disjoint Set Union)
 // https://discuss.codechef.com/questions/99946/sngraph-editorial
 class SnakeGraph {
-    SimpleGraph g;
+    GraphSimple g;
     SnakeGraph()
     {
         int n=sc.nextInt(); // 1 ≤ n ≤ 10^5
         int m=sc.nextInt();//0 ≤ m ≤ min(n * (n - 1) / 2, 2 * 10^5)
-        g=new SimpleGraph(n);
+        g=new GraphSimple(n);
         for (int j=0; j<m; j++) {
             int u=sc.nextInt();
             int v=sc.nextInt();

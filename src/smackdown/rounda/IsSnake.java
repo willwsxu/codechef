@@ -6,7 +6,7 @@ package smackdown.rounda;
  * find out if a plate has complete snake body, celld are connected if they share a side
 */
 import codechef.CC;
-import codechef.SimpleGraph;
+import codechef.GraphSimple;
 import static java.lang.System.out;
 import java.util.Scanner;
 
@@ -30,14 +30,14 @@ if both ends has p1 or p2, 4 basic patterns to consider
 */
 // ISSNAKE easy
 class IsSnake {
-    SimpleGraph g;
+    GraphSimple g;
     String[] sp;
     int blackcells=0;
     IsSnake(String[] s)
     {
         sp=s;
         int N=s[0].length();
-        g=new SimpleGraph(2*N);
+        g=new GraphSimple(2*N);
         for (int i=0; i<2; i++) {
             for (int j=0; j<N; j++) {
                 if (s[i].charAt(j)=='.')

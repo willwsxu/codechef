@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 // vertex from 0
-public class SimpleGraph implements IGraph { // unweighted, bidirectional
+public class GraphSimple implements IGraph { // unweighted, bidirectional
     protected int   V; // number of vertices
     private   int   E; // number of edges
 
     private List<List<Integer>> adj;
-    public SimpleGraph(int V)
+    public GraphSimple(int V)
     {
         adj=new ArrayList<>(V);
         this.V = V;
