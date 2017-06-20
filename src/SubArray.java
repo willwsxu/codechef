@@ -103,13 +103,33 @@ class SubArray extends iox {
     
     void segTree(StringBuilder sb)
     {
-        
+        CircularSum sum=new CircularSum(A, K);
+        out.println(Arrays.toString(sum.A2x));
+        SegTreeRMQ rmq = new SegTreeRMQ(sum.A2x);
+        for (int i=0; i<request.length(); i++) {
+            if (request.charAt(i)=='?') {
+                int ans=rmq.rmq(sum.getHead(), sum.getTail());
+                out.println("L="+sum.getHead()+" R="+sum.getTail()+" rmq="+ans);
+                sb.append(ans);
+                sb.append("\n");
+            }
+            else if (N>K && K>1){ //
+                sum.shiftR();
+            }
+        }
     }
     
     static void test1cache(int A[], StringBuilder sb, int k, String q)
     {
         SubArray sa=new SubArray(A, k, q);
         sa.cacheSum(sb);
+        sb.append(Arrays.toString(sa.Asum));   
+        sb.append("\n");        
+    }
+    static void test1RMQ(int A[], StringBuilder sb, int k, String q)
+    {
+        SubArray sa=new SubArray(A, k, q);
+        sa.segTree(sb);
         sb.append(Arrays.toString(sa.Asum));   
         sb.append("\n");        
     }
@@ -139,6 +159,10 @@ class SubArray extends iox {
         test1cache(A, sb, 7, "?!!?!!!?!?!?!?");
         test1cache(A, sb, 8, "?!!?!!!?!?!?!?");
         out.println(sb.toString());
+        out.println("RMQ test");
+        sb = new StringBuilder();
+        test1RMQ(A, sb, 4, "?!!?!!!?!?!?!?");
+        out.println(sb.toString());
     }
     static void testPQList()
     {
@@ -150,8 +174,7 @@ class SubArray extends iox {
     
     public static void main(String[] args)
     {      
-        //CircularSum.test();
-        SegTreeRMQ.test();
+        test();
         /*StringBuilder sb=new StringBuilder();
         new SubArray().cacheSum(sb);
         out.print(sb.toString());*/
@@ -320,10 +343,11 @@ class CircularListMax extends ListBackedPQ
 class CircularSum
 {
     int []A2x;
-    int pos, n;
+    int pos, n, k;
     CircularSum(int A[], int k)
     {
         n=A.length;
+        this.k=k;
         int n2=2*n;
         if (k>n)
             k=n;
@@ -353,6 +377,12 @@ class CircularSum
         pos--;
         if (pos<0)
             pos=n;
+    }
+    int getHead() {
+        return pos;
+    }
+    int getTail() {
+        return pos+n-k+1;
     }
 }
 
