@@ -145,9 +145,10 @@ class SubArray extends iox {
     
     public static void main(String[] args)
     {      
-        StringBuilder sb=new StringBuilder();
+        CircularSum.test();
+        /*StringBuilder sb=new StringBuilder();
         new SubArray().cacheSum(sb);
-        out.print(sb.toString());
+        out.print(sb.toString());*/
     }
 }
 class iox
@@ -273,11 +274,13 @@ class ListBackedPQ
 class CircularListMax extends ListBackedPQ
 {
     int head, tail, size;
+    
     CircularListMax(int a[], int k){
         super(a, k, true);
         size=a.length;
         head=0; tail=k-1;
     }
+    
     // head and tail pointer moves to left when
     void shiftL() // element moves to right, a[size-1] becomes new head
     {
@@ -307,8 +310,92 @@ class CircularListMax extends ListBackedPQ
     }
 }
 
-// calculate sum of k element of array size n
+// calculate sum of k elements of array size n
 class CircularSum
 {
+    int []A2x;
+    int pos, n;
+    CircularSum(int A[], int k)
+    {
+        n=A.length;
+        int n2=2*n;
+        if (k>n)
+            k=n;
+        A2x=new int[n2];
+        for (int i=0; i<n; i++) {
+            A2x[i]=A[i];
+            A2x[i+n]=A[i];
+        }
+        for (int i=n2-2; i>=0; i--) {
+            A2x[i]+=A2x[i+1];
+            if (i+k<n2)
+                A2x[i] -= A[(i+k)%n];
+        }
+        pos=n; // start at n
+    }
     
+    public static void test()
+    {
+        CircularSum cir=new CircularSum(new int[]{1,0,1,0,1}, 1);
+        out.println(Arrays.toString(cir.A2x));
+        CircularSum cir2=new CircularSum(new int[]{1,0,1,0,1}, 3);
+        out.println(Arrays.toString(cir2.A2x));
+    }
+    
+    void shiftR() // 2n-1 dropped off, n-1 is added
+    {
+        pos--;
+        if (pos<0)
+            pos=n;
+    }
+}
+
+class SegTreeRMQ  // Range min/max query
+{
+    int st[], a[];
+    int n;
+    public SegTreeRMQ(int a[]) 
+    {
+        n=a.length;
+        st=new int[4*n+1];
+        build(1, 0, n-1);
+    }
+    private int left(int p)
+    {
+        return p<<1;
+    }
+    private int right(int p)
+    {
+        return (p<<1)+1;
+    }
+    private void build(int node, int first, int last)
+    {
+        if (first==last)
+            st[node]=first;
+        else {
+            build(left(node), first, (first+last)/2);
+            build(right(node), (first+last)/2, last);
+            int p1=st[left(node)];
+            int p2=st[right(node)];
+            st[node]=a[p1]>a[p2]?p1:p2; // pick max of p1 and p2
+        }
+    }
+    int rmq(int p, int L, int R, int i, int j)
+    {
+        if (i>R || j<L)
+            return -1; // segment outside of query range
+        if (L>=i && R<=j)
+            return st[p]; // i L R j, inside range
+        int p1=rmq(left(p), L, (L+R)/2, i, j);
+        int p2=rmq(right(p), (L+R)/2+1, j, i, j);
+        if (p1<0)
+            return p2;
+        if (p2<0)
+            return p1;
+        return a[p1]>a[p2]?p1:p2;
+    }
+    
+    public int rmq(int i, int j) {
+        return rmq(1, 0, n-1, i, j);
+    }
 }
