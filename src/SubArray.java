@@ -101,6 +101,11 @@ class SubArray extends iox {
         }
     }
     
+    void segTree(StringBuilder sb)
+    {
+        
+    }
+    
     static void test1cache(int A[], StringBuilder sb, int k, String q)
     {
         SubArray sa=new SubArray(A, k, q);
@@ -145,7 +150,8 @@ class SubArray extends iox {
     
     public static void main(String[] args)
     {      
-        CircularSum.test();
+        //CircularSum.test();
+        SegTreeRMQ.test();
         /*StringBuilder sb=new StringBuilder();
         new SubArray().cacheSum(sb);
         out.print(sb.toString());*/
@@ -356,6 +362,7 @@ class SegTreeRMQ  // Range min/max query
     int n;
     public SegTreeRMQ(int a[]) 
     {
+        this.a=a;
         n=a.length;
         st=new int[4*n+1];
         build(1, 0, n-1);
@@ -370,14 +377,19 @@ class SegTreeRMQ  // Range min/max query
     }
     private void build(int node, int first, int last)
     {
+        //out.println("build node "+node+" L="+first+" R="+last);
         if (first==last)
             st[node]=first;
         else {
             build(left(node), first, (first+last)/2);
-            build(right(node), (first+last)/2, last);
+            //out.println("build left "+left(node));
+            build(right(node), (first+last)/2+1, last);
+            //out.println("build right "+right(node));
             int p1=st[left(node)];
             int p2=st[right(node)];
+            //out.println("done build node "+node+" p1="+p1+" p2="+p2);
             st[node]=a[p1]>a[p2]?p1:p2; // pick max of p1 and p2
+            //out.println("done build node "+node+" val="+st[node]+" p1="+p1+" p2="+p2);
         }
     }
     int rmq(int p, int L, int R, int i, int j)
@@ -397,5 +409,13 @@ class SegTreeRMQ  // Range min/max query
     
     public int rmq(int i, int j) {
         return rmq(1, 0, n-1, i, j);
+    }
+    public static void test()
+    {
+        SegTreeRMQ st=new SegTreeRMQ(new int[]{2, 23, 14, 56, 78,10});
+        out.println(st.rmq(1, 4)==4);
+        out.println(st.rmq(1, 1)==1);
+        out.println(st.rmq(0, 5)==4);
+        out.println(st.rmq(0, 9)==4);
     }
 }
