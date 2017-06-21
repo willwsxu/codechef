@@ -1,3 +1,5 @@
+package longContests.may17;
+
 /*
  * Brief Desc: N integers of 0 and 1, find the max sum given a window size K
  * two requests can be made, either shift number array to right by 1 (circular)

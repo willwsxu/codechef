@@ -6,6 +6,7 @@ package longContests.may17;
  * Use Trie and match prefix of unblocked sites
  * if a blocked name has a complete match, filter scheme won't work as it will block the unblocked
 */
+// WSITES01, easy
 import codechef.Trie26;
 import static java.lang.System.out;
 import java.util.ArrayList;

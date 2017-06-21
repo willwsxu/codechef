@@ -5,7 +5,7 @@ import java.util.Scanner;
 /*
 
  */
-
+// SANDWICH, medium
 class LongSandwich {
     
     static long recurse(long N, long count, long K)
