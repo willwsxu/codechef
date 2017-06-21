@@ -104,12 +104,12 @@ class SubArray extends iox {
     void segTree(StringBuilder sb)
     {
         CircularSum sum=new CircularSum(A, K);
-        out.println(Arrays.toString(sum.A2x));
+        //out.println(Arrays.toString(sum.A2x));
         SegTreeRMQ rmq = new SegTreeRMQ(sum.A2x);
         for (int i=0; i<request.length(); i++) {
             if (request.charAt(i)=='?') {
-                int ans=rmq.rmq(sum.getHead(), sum.getTail());
-                out.println("L="+sum.getHead()+" R="+sum.getTail()+" rmq="+ans);
+                int ans=rmq.rmqVal(sum.getHead(), sum.getTail());
+                //out.println("L="+sum.getHead()+" R="+sum.getTail()+" rmq="+ans);
                 sb.append(ans);
                 sb.append("\n");
             }
@@ -130,7 +130,6 @@ class SubArray extends iox {
     {
         SubArray sa=new SubArray(A, k, q);
         sa.segTree(sb);
-        sb.append(Arrays.toString(sa.Asum));   
         sb.append("\n");        
     }
     static void test()
@@ -174,10 +173,9 @@ class SubArray extends iox {
     
     public static void main(String[] args)
     {      
-        test();
-        /*StringBuilder sb=new StringBuilder();
-        new SubArray().cacheSum(sb);
-        out.print(sb.toString());*/
+        StringBuilder sb=new StringBuilder();
+        new SubArray().segTree(sb);
+        out.print(sb.toString());
     }
 }
 class iox
@@ -382,7 +380,7 @@ class CircularSum
         return pos;
     }
     int getTail() {
-        return pos+n-k+1;
+        return pos+n-k;
     }
 }
 
@@ -429,7 +427,7 @@ class SegTreeRMQ  // Range min/max query
         if (L>=i && R<=j)
             return st[p]; // i L R j, inside range
         int p1=rmq(left(p), L, (L+R)/2, i, j);
-        int p2=rmq(right(p), (L+R)/2+1, j, i, j);
+        int p2=rmq(right(p), (L+R)/2+1, R, i, j);
         if (p1<0)
             return p2;
         if (p2<0)
@@ -440,12 +438,20 @@ class SegTreeRMQ  // Range min/max query
     public int rmq(int i, int j) {
         return rmq(1, 0, n-1, i, j);
     }
+    public int rmqVal(int i, int j) {
+        int ind=rmq(1, 0, n-1, i, j);
+        if (ind<0)
+            return Integer.MIN_VALUE;
+        //out.println("rmq i="+i+" j="+j+" ind="+ind);
+        return a[ind];
+    }
+    
     public static void test()
     {
-        SegTreeRMQ st=new SegTreeRMQ(new int[]{2, 23, 14, 56, 78,10});
+        SegTreeRMQ st=new SegTreeRMQ(new int[]{3, 2, 2, 3, 3, 4, 3, 3, 2, 2, 3, 2, 2, 1});
         out.println(st.rmq(1, 4)==4);
         out.println(st.rmq(1, 1)==1);
-        out.println(st.rmq(0, 5)==4);
-        out.println(st.rmq(0, 9)==4);
+        out.println(st.rmq(0, 5)==5);
+        out.println(st.rmq(0, 9)==5);
     }
 }
