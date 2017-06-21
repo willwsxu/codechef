@@ -80,7 +80,7 @@ class SubArray extends iox {
         }
     }
     
-    void cacheSum(StringBuilder sb)
+    void pqList(StringBuilder sb)
     { 
         Asum = new int[N];
         for (int i=0; i<K; i++) {
@@ -122,7 +122,7 @@ class SubArray extends iox {
     static void test1cache(int A[], StringBuilder sb, int k, String q)
     {
         SubArray sa=new SubArray(A, k, q);
-        sa.cacheSum(sb);
+        sa.pqList(sb);
         sb.append(Arrays.toString(sa.Asum));   
         sb.append("\n");        
     }
@@ -161,6 +161,13 @@ class SubArray extends iox {
         out.println("RMQ test");
         sb = new StringBuilder();
         test1RMQ(A, sb, 4, "?!!?!!!?!?!?!?");
+        test1RMQ(A, sb, 1, "?!!?!!!?!?!?!?");
+        test1RMQ(A, sb, 2, "?!!?!!!?!?!?!?");
+        test1RMQ(A, sb, 3, "?!!?!!!?!?!?!?");
+        test1RMQ(A, sb, 5, "?!!?!!!?!?!?!?");
+        test1RMQ(A, sb, 6, "?!!?!!!?!?!?!?");
+        test1RMQ(A, sb, 7, "?!!?!!!?!?!?!?");
+        test1RMQ(A, sb, 8, "?!!?!!!?!?!?!?");
         out.println(sb.toString());
     }
     static void testPQList()
@@ -374,7 +381,7 @@ class CircularSum
     {
         pos--;
         if (pos<0)
-            pos=n;
+            pos=n-1;
     }
     int getHead() {
         return pos;
@@ -426,8 +433,8 @@ class SegTreeRMQ  // Range min/max query
             return -1; // segment outside of query range
         if (L>=i && R<=j)
             return st[p]; // i L R j, inside range
-        int p1=rmq(left(p), L, (L+R)/2, i, j);
-        int p2=rmq(right(p), (L+R)/2+1, R, i, j);
+        int p1=rmq(left(p),  L,        (L+R)/2, i, j);
+        int p2=rmq(right(p), (L+R)/2+1, R,      i, j);
         if (p1<0)
             return p2;
         if (p2<0)
@@ -453,5 +460,6 @@ class SegTreeRMQ  // Range min/max query
         out.println(st.rmq(1, 1)==1);
         out.println(st.rmq(0, 5)==5);
         out.println(st.rmq(0, 9)==5);
+        SegTreeRMQ st2=new SegTreeRMQ(new int[]{3, 2, 2, 3, 3, 4, 3, 3, 2, 2, 3, 2, 2, 1});
     }
 }
