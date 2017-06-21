@@ -12,10 +12,11 @@ import codechef.SegTreeRMQ;
 import static java.lang.System.out;
 import java.util.Arrays;
 
+// classical problem, 3 implementations
 // https://discuss.codechef.com/questions/98090/chefsuba-editorial
-// CHEFSUBA, Easy medium, Segment trees, Deque, 
+// CHEFSUBA, Easy medium, Segment trees, , 
 // Rotation trick, double array size
-
+// Deque http://www.geeksforgeeks.org/sliding-window-maximum-maximum-of-all-subarrays-of-size-k/
 // my alternative solution is circular list combining with priority queue
 class SubArray  {    
     int start=0;
