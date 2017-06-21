@@ -10,6 +10,7 @@ import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
 
+// obsolete, replaced with MyScanner
 // Buffered Read class did not help Stable Market TLE issue (
 class MyReader
 {

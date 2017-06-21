@@ -5,23 +5,23 @@ package longContests.may17;
  * two requests can be made, either shift number array to right by 1 (circular)
  *   or find out max 1 of any window frame
 */
+import codechef.CircularSum;
+import codechef.IOR;
+import codechef.IntPair;
+import codechef.SegTreeRMQ;
 import static java.lang.System.out;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Scanner;
 
 // https://discuss.codechef.com/questions/98090/chefsuba-editorial
 // CHEFSUBA, Easy medium, Segment trees, Deque, 
 // Rotation trick, double array size
 
 // my alternative solution is circular list combining with priority queue
-class SubArray extends iox {    
+class SubArray  {    
     int start=0;
     int N;  // Array size
     int P;  // number of requests
@@ -42,11 +42,11 @@ class SubArray extends iox {
     }
     SubArray()
     {
-        N=sc.nextInt();  // 1 ≤ N, K, P ≤ 10^5
-        K=sc.nextInt();
-        P=sc.nextInt();  // request len
-        A=ria(N);      // 0 or 1
-        request=sc.next();  
+        N=IOR.ni();  // 1 ≤ N, K, P ≤ 10^5
+        K=IOR.ni();
+        P=IOR.ni();  // request len
+        A=IOR.ria(N);      // 0 or 1
+        request=IOR.ns();  
         if (K>N) // important case
             K=N;      
     }
@@ -107,7 +107,7 @@ class SubArray extends iox {
     {
         CircularSum sum=new CircularSum(A, K);
         //out.println(Arrays.toString(sum.A2x));
-        SegTreeRMQ rmq = new SegTreeRMQ(sum.A2x);
+        SegTreeRMQ rmq = new SegTreeRMQ(sum.getA2x());
         for (int i=0; i<request.length(); i++) {
             if (request.charAt(i)=='?') {
                 int ans=rmq.rmqVal(sum.getHead(), sum.getTail());
@@ -187,57 +187,6 @@ class SubArray extends iox {
         out.print(sb.toString());
     }
 }
-class iox
-{    
-    static Scanner sc = new Scanner(System.in);    
-        
-    public static int ni()
-    {
-        return sc.nextInt();
-    }
-    public static long nl()
-    {
-        return sc.nextLong();
-    }
-    
-    public static int[] ria(int N) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
-    }
-}
-
-// copied from shared class
-class Pi  // pair of int
-{
-    int first;
-    int second;
-    Pi(int f, int s)
-    {
-        first=f;
-        second=s;
-    }
-    @Override
-    public boolean equals(Object s)
-    {
-        if (s instanceof Pi) {
-            Pi other =(Pi)s;
-            return first==other.first && second==other.second;
-        }
-        return false;
-    }
-    @Override
-    public int hashCode()
-    {
-        return (int)(first*second);
-    }
-    @Override
-    public String toString()
-    {
-        return first+":"+second;
-    }
-}
 
 // Avoid priority Queue remove method call as it is slow
 // super fast, 5x better than SortedList class
@@ -246,20 +195,20 @@ class ListBackedPQ
 {    
     int A[];
     boolean []b;
-    Comparator<Pi> cmp;
-    PriorityQueue<Pi> pq;
+    Comparator<IntPair> cmp;
+    PriorityQueue<IntPair> pq;
     ListBackedPQ(int a[], int k, boolean reverseOrder)
     {
         if (reverseOrder)
-            cmp = (r1,r2)->r2.second-r1.second;
+            cmp = (r1,r2)->r2.int2()-r1.int2();
         else
-            cmp = (r1,r2)->r1.second-r2.second;
+            cmp = (r1,r2)->r1.int2()-r2.int2();
         pq = new PriorityQueue<>(a.length, cmp);
         A=a;
         b=new boolean[a.length];
         // first k are valid
         for (int i=0; i<k; i++) {
-            pq.add(new Pi(i, A[i]));
+            pq.add(new IntPair(i, A[i]));
             b[i]=true;
         }
     }
@@ -270,16 +219,15 @@ class ListBackedPQ
     void add(int ind)
     {
         b[ind]=true;
-        pq.add(new Pi(ind, A[ind]));
+        pq.add(new IntPair(ind, A[ind]));
     }
     public int peek()
     {
-        Pi p=pq.peek();
-        while (!b[p.first]) {
+        IntPair p=pq.peek();
             pq.poll();  // discard items no longer valid
             p=pq.peek();
         }
-        return p.second;
+        return p.int2();
     }
     public static void perfTest(int N)
     {
@@ -343,125 +291,5 @@ class CircularListMax extends ListBackedPQ
         pq.shiftL();
         out.println(pq.peek()+" "+pq.pq.toString());
         out.println();
-    }
-}
-
-// calculate sum of k elements of array size n
-class CircularSum
-{
-    int []A2x;
-    int pos, n, k;
-    CircularSum(int A[], int k)
-    {
-        n=A.length;
-        this.k=k;
-        int n2=2*n;
-        if (k>n)
-            k=n;
-        A2x=new int[n2];
-        for (int i=0; i<n; i++) {
-            A2x[i]=A[i];
-            A2x[i+n]=A[i];
-        }
-        for (int i=n2-2; i>=0; i--) {
-            A2x[i]+=A2x[i+1];
-            if (i+k<n2)
-                A2x[i] -= A[(i+k)%n];
-        }
-        pos=n; // start at n
-    }
-    
-    public static void test()
-    {
-        CircularSum cir=new CircularSum(new int[]{1,0,1,0,1}, 1);
-        out.println(Arrays.toString(cir.A2x));
-        CircularSum cir2=new CircularSum(new int[]{1,0,1,0,1}, 3);
-        out.println(Arrays.toString(cir2.A2x));
-    }
-    
-    void shiftR() // 2n-1 dropped off, n-1 is added
-    {
-        pos--;
-        if (pos<0)
-            pos=n-1;
-    }
-    int getHead() {
-        return pos;
-    }
-    int getTail() {
-        return pos+n-k;
-    }
-}
-
-class SegTreeRMQ  // Range min/max query
-{
-    int st[], a[];
-    int n;
-    public SegTreeRMQ(int a[]) 
-    {
-        this.a=a;
-        n=a.length;
-        st=new int[4*n+1];
-        build(1, 0, n-1);
-    }
-    private int left(int p)
-    {
-        return p<<1;
-    }
-    private int right(int p)
-    {
-        return (p<<1)+1;
-    }
-    private void build(int node, int first, int last)
-    {
-        //out.println("build node "+node+" L="+first+" R="+last);
-        if (first==last)
-            st[node]=first;
-        else {
-            build(left(node), first, (first+last)/2);
-            //out.println("build left "+left(node));
-            build(right(node), (first+last)/2+1, last);
-            //out.println("build right "+right(node));
-            int p1=st[left(node)];
-            int p2=st[right(node)];
-            //out.println("done build node "+node+" p1="+p1+" p2="+p2);
-            st[node]=a[p1]>a[p2]?p1:p2; // pick max of p1 and p2
-            //out.println("done build node "+node+" val="+st[node]+" p1="+p1+" p2="+p2);
-        }
-    }
-    int rmq(int p, int L, int R, int i, int j)
-    {
-        if (i>R || j<L)
-            return -1; // segment outside of query range
-        if (L>=i && R<=j)
-            return st[p]; // i L R j, inside range
-        int p1=rmq(left(p),  L,        (L+R)/2, i, j);
-        int p2=rmq(right(p), (L+R)/2+1, R,      i, j);
-        if (p1<0)
-            return p2;
-        if (p2<0)
-            return p1;
-        return a[p1]>a[p2]?p1:p2;
-    }
-    
-    public int rmq(int i, int j) {
-        return rmq(1, 0, n-1, i, j);
-    }
-    public int rmqVal(int i, int j) {
-        int ind=rmq(1, 0, n-1, i, j);
-        if (ind<0)
-            return Integer.MIN_VALUE;
-        //out.println("rmq i="+i+" j="+j+" ind="+ind);
-        return a[ind];
-    }
-    
-    public static void test()
-    {
-        SegTreeRMQ st=new SegTreeRMQ(new int[]{3, 2, 2, 3, 3, 4, 3, 3, 2, 2, 3, 2, 2, 1});
-        out.println(st.rmq(1, 4)==4);
-        out.println(st.rmq(1, 1)==1);
-        out.println(st.rmq(0, 5)==5);
-        out.println(st.rmq(0, 9)==5);
-        SegTreeRMQ st2=new SegTreeRMQ(new int[]{3, 2, 2, 3, 3, 4, 3, 3, 2, 2, 3, 2, 2, 1});
     }
 }
