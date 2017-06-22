@@ -1,11 +1,12 @@
 
 //import codechef.IGraph;
+import static java.lang.Integer.min;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// EASY, Graph
+// EASY, DP, bit mask
 class KnightCovering {
     GraphKnight g;
     int n,m;
@@ -16,10 +17,20 @@ class KnightCovering {
             return;
         g=new GraphKnight(n, m);
     }
+    int solve2r(int m)
+    {
+        if ( n!=2)
+            return 0;
+        int sixpack=m/6;
+        m %=6;
+        return sixpack*4 + 2*min(m, 2);   
+    }
     int solve()
     {
         if (n<=1)
             return m;
+        if (n==2)
+            return solve2r(m);
         /*if (n*m<=4)
             return n*m;
         if (n*m==6)
@@ -47,9 +58,9 @@ class KnightCovering {
         out.println(new KnightCovering(2, 6).solve()==4);
         out.println(new KnightCovering(2, 7).solve()==6);
         out.println(new KnightCovering(2, 8).solve()==8);
+        out.println(new KnightCovering(2, 9).solve()==8);
         out.println(new KnightCovering(3, 3).solve()==4);
         out.println();
-        out.println(new KnightCovering(2, 9).solve());
     }
     
     static Scanner sc = new Scanner(System.in);
