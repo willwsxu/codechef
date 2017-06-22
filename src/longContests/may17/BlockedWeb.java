@@ -24,11 +24,11 @@ class BlockedWeb {
         Set<String> ans=new TreeSet<>();  // store unique answers
         for (int i=0; i<blocked.size(); i++) {
             int match = tr.prefixMatch(blocked.get(i));
-            if (match==blocked.get(i).length()) {
+            if (match==blocked.get(i).length()) {// blocked site match fully to approved
                 possible=false;
                 break;
             } else {
-                ans.add(blocked.get(i).substring(0, match+1));
+                ans.add(blocked.get(i).substring(0, match+1)); // filter string
             }
         }
         if (possible) {
