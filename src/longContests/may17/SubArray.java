@@ -17,6 +17,7 @@ import java.util.Arrays;
 // CHEFSUBA, Easy medium, Segment trees, , 
 // Rotation trick, double array size
 // Deque http://www.geeksforgeeks.org/sliding-window-maximum-maximum-of-all-subarrays-of-size-k/
+// Deque solution is implemented in c++
 // my alternative solution is circular list combining with priority queue
 class SubArray  {    
     int start=0;
@@ -103,7 +104,7 @@ class SubArray  {
     void segTree(StringBuilder sb)
     {
         CircularSum sum=new CircularSum(A, K);
-        //out.println(Arrays.toString(sum.A2x));
+        //out.println(Arrays.toString(sum.getA2x()));
         SegTreeRMQ rmq = new SegTreeRMQ(sum.getA2x());
         for (int i=0; i<request.length(); i++) {
             if (request.charAt(i)=='?') {
@@ -178,7 +179,7 @@ class SubArray  {
     }
     
     public static void main(String[] args)
-    {      
+    {   
         StringBuilder sb=new StringBuilder();
         new SubArray().segTree(sb);
         out.print(sb.toString());
