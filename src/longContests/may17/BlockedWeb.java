@@ -6,7 +6,7 @@ package longContests.may17;
  * Use Trie and match prefix of unblocked sites
  * if a blocked name has a complete match, filter scheme won't work as it will block the unblocked
 */
-// WSITES01, easy
+// WSITES01, easy medium
 import codechef.Trie26;
 import static java.lang.System.out;
 import java.util.ArrayList;
@@ -20,24 +20,19 @@ class BlockedWeb {
     
     static void solve(Trie26 tr, List<String> blocked)
     {
-        boolean possible=true;
         Set<String> ans=new TreeSet<>();  // store unique answers
-        for (int i=0; i<blocked.size(); i++) {
-            int match = tr.prefixMatch(blocked.get(i));
-            if (match==blocked.get(i).length()) {// blocked site match fully to approved
-                possible=false;
-                break;
+        for (String site: blocked) {
+            int match = tr.prefixMatch(site);
+            if (match==site.length()) {// blocked site match fully to approved
+                out.println(-1);    
+                return;
             } else {
-                ans.add(blocked.get(i).substring(0, match+1)); // filter string
+                ans.add(site.substring(0, match+1)); // filter string
             }
         }
-        if (possible) {
-            out.println(ans.size());
-            for (String s:ans)
-                out.println(s);
-        }
-        else
-            out.println(-1);            
+        out.println(ans.size());
+        for (String s:ans)
+            out.println(s);
     }
     
     static void test()
@@ -60,11 +55,8 @@ class BlockedWeb {
         blocked.add("codechefx");
         solve(tr, blocked);
     }
-    
-    static Scanner sc = new Scanner(System.in);
-    public static void main(String[] args)
-    {      
-        //test();/*
+    static void autotest()
+    {
         int N = sc.nextInt();  // 1 ≤ N ≤ 2 * 10^5
         Trie26 tr=new Trie26();
         List<String> blocked = new ArrayList<>();
@@ -78,6 +70,13 @@ class BlockedWeb {
             else
                 out.println("Error bad input, expect + or -");
         }
-        solve(tr, blocked);
+        solve(tr, blocked);        
+    }
+    static Scanner sc = new Scanner(System.in);
+    public static void main(String[] args)
+    {    
+        //Trie26.test();
+        //test();
+        autotest();
     }
 }
