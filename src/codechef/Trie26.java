@@ -55,7 +55,9 @@ public class Trie26  // for 26 lower case letters
     {
         Trie26 tr = new Trie26();
         tr.put("google");
-        out.println(tr.prefixMatch("goo"));
-        out.println(tr.prefixMatch("pi"));
+        out.println(tr.prefixMatch("goo")==3);
+        out.println(tr.prefixMatch("oog")==0);
+        out.println(tr.prefixMatch("g")==1);
+        out.println(tr.prefixMatch("googler")==6);
     }
 }
