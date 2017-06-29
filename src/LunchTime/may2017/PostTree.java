@@ -17,6 +17,8 @@ import java.util.Scanner;
 // POSTTREE, EASY (more like MEDIUM)
 // Binary Lifting on a tree, lowest common ancestor, DFS
 // https://discuss.codechef.com/questions/99371/posttree-editorial
+// http://codeforces.com/blog/entry/22325
+// http://codeforces.com/topic/22414/en11
 class PostTree {
     
     long cn[];// cost of node
@@ -121,8 +123,17 @@ class PostTree {
 8
 1 1 1 1 5 8 6
 1 2 3 4 5 15 70 10
+ans
+1 3 4 5 6 21 96 26
 */
 
+class Tree
+{
+    int r; // root
+    int p[]; // parent node
+    int pw[];// weight from current node to parent
+    int L[]; // levels, L[r]=0, L[u]=L[p[u]]+1
+}
 interface IGraphX
 {
     int V();
