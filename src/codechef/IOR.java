@@ -28,4 +28,11 @@ public class IOR {
             L[i]=sc.nextInt();
         return L;
     }
+    
+    public static int[] ria1(int N) { // read int array, from 1
+        int L[]=new int[N];
+        for (int i=1; i<N; i++)
+            L[i]=sc.nextInt();
+        return L;
+    }
 }

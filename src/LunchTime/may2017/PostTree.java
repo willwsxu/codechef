@@ -21,97 +21,24 @@ import java.util.Scanner;
 // http://codeforces.com/topic/22414/en11
 class PostTree {
     
-    long cn[];// cost of node
-    long cp[];// cost of path
-    int parent[];
-    int w[];
-    int level[]=new int[10000];
     PostTree(int parent[], int w[])
     {
-        this.parent=parent;
-        this.w=w;
-        //cost(w.length-1);
-        //init();
-        g = new TreePath(parent, w);
-        print(g.cp);
-    }
-    PostTree()
-    {
-        int N=sc.nextInt(); // 1 ≤ N ≤ 100,000
-        parent=new int[N];
+        //-1,000,000,000 ≤ Av ≤ 1,000,000,000
         parent[0]=-1;
-        for (int i=1; i<N; i++) { 
-            parent[i]=sc.nextInt()-1;
-        }
-        w=ria(N, sc); //-1,000,000,000 ≤ Av ≤ 1,000,000,000
-        //init();
-        //out.println(Arrays.toString(parent));
-        g = new TreePath(parent, w);
+        TreePath g = new TreePath(parent, w);
         print(g.cp);
     }
-    TreePath g;
-    /*
-    private void init()
+    PostTree(int N)
     {
-        int N=w.length;
-        cn=new long[N];
-        for (int i=0; i<N; i++)
-            cn[i]=w[i];    
-        g = new SimpleGraphX(N);
-        for (int i=1; i<N; i++) { 
-            g.addEdge(i, parent[i]);
-        }
-        cp=new long[N];
-        cp[0]=cn[0];
-        vis=new boolean[N];
-        dfs(0, 0);
-        print(cp);
+        this(IOR.ria1(N), IOR.ria(N));
     }
-    */
+
     void print(long x[])
     {
         for (int i=0; i<x.length;i++)
             out.print(x[i]+" ");
         out.println();        
     }
-    /*
-    boolean vis[];
-    void dfs(int v, int lvl) {
-        vis[v]=true;
-        level[v]=lvl;
-        if ( v>0) {
-            int p=parent[v];
-            while (p>=0 && w[p]>w[v] )
-                p=parent[p];
-            if (p<0)
-                cp[v]=0;
-            else
-                cp[v]=cp[p];
-            cp[v] += (level[v]-level[p])*w[v] ;
-            //out.println((v+1)+"="+cp[v]+" p="+p);
-        }
-        for (int w: g.adj(v))
-            if (!vis[w])
-                dfs(w, lvl+1);
-    }
-    void update(int p)
-    {
-        while (p>1) {
-            int g=parent[p];
-            if (cn[g]>cn[p])
-                cn[g]=cn[p];
-            else
-                break;
-        }
-    }
-    void cost(int n)
-    {
-        update(n);
-        if (n>1)
-            cost(n-1);
-        //out.println("n="+n+" c "+c[n]);
-    }
-     */ 
     public static int[] ria(int N, Scanner sc) { // read int array
         int L[]=new int[N];
         for (int i=0; i<N; i++)
@@ -119,10 +46,9 @@ class PostTree {
         return L;
     }
     
-    static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        new PostTree();
+        new PostTree(IOR.ni()); // 1 ≤ N ≤ 100,000
     }
 }
 /*
@@ -132,6 +58,38 @@ class PostTree {
 ans
 1 3 4 5 6 21 96 26
 */
+
+class IOR {
+    
+    private static Scanner sc = new Scanner(System.in);    
+        
+    public static int ni()
+    {
+        return sc.nextInt();
+    }
+    public static long nl()
+    {
+        return sc.nextLong();
+    }
+    public static String ns()
+    {
+        return sc.next();
+    }
+    
+    public static int[] ria(int N) { // read int array
+        int L[]=new int[N];
+        for (int i=0; i<N; i++)
+            L[i]=sc.nextInt();
+        return L;
+    }
+    
+    public static int[] ria1(int N) { // read int array, from 1
+        int L[]=new int[N];
+        for (int i=1; i<N; i++)
+            L[i]=sc.nextInt();
+        return L;
+    }
+}
 
 interface IGraphX
 {
@@ -173,29 +131,35 @@ class TreePath extends SimpleGraphX
 {
     int r; // root
     int parent[]; // parent node, first is root
-    int pw[];// weight from current node to parent
+    //int pw[];// weight from current node to parent
     int wt[];// weight of node
     int L[]; // levels, L[r]=0, L[u]=L[p[u]]+1
     long cp[];// cost of path
+    
+    int getParent(int p)
+    {
+        return parent[p]-1;
+    }
     TreePath(int[]p, int []w)
     {
         super(p.length);
         parent=p;
+        r=0;
         L=new int[V()];
         for (int i=1; i<V(); i++) { 
-            addEdge(i, p[i]);
+            addEdge(i, getParent(i));
         }
         wt=w;
         cp=new long[V()];
         cp[0]=w[0];
-        dfs(0,0);
+        dfs(r,0);
     }
     void dfs(int v, int lvl) {
         L[v]=lvl;
         if ( v>0) {
-            int p=parent[v];
+            int p=getParent(v);
             while (p>=0 && wt[p]>wt[v] )
-                p=parent[p];
+                p=getParent(p);
             if (p<0)
                 cp[v]=0;
             else
@@ -204,7 +168,7 @@ class TreePath extends SimpleGraphX
             //out.println((v+1)+"="+cp[v]+" p="+p);
         }
         for (int w: adj(v))
-            if (w!=parent[v])
+            if (w!=getParent(v))
                 dfs(w, lvl+1);
     }
 }
