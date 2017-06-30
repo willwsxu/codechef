@@ -35,8 +35,17 @@ class Apr17DigitCount extends io {
                 good++;
         return good;        
     }
-    long dp(int d, long tight, int mask)
+    long pow10(int exp) {
+        long p=1;
+        while (exp-->0)
+            p *=10;
+        return p;
+    }
+    long dp(int d, long tight, long n, int mask)
     {
+        for (int i=0; i<10; i++) {
+            
+        }
         return 0;
     }
     // all digits must appreat at least once
@@ -44,7 +53,7 @@ class Apr17DigitCount extends io {
     {
         if (R<1023456789) // 1023456798 1023456879 1023456897 1023456978 1023456987 1023457689
             return 0;//9 81 18 81 9 702
-        long cnt=dp(0, R, 0);
+        long cnt=dp(0, 0, R, 0);
         return cnt;
     }
     Apr17DigitCount()
