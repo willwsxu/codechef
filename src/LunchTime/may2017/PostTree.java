@@ -154,18 +154,27 @@ class TreePath extends SimpleGraphX
         cp[0]=w[0];
         dfs(r,0);
     }
+    
+    void pathCost(int v)
+    {
+        int p=getParent(v);
+        while (p>=0 && wt[p]>wt[v] )
+            p=getParent(p);
+        long lvl=L[v];
+        if (p<0) {
+            cp[v]=0;
+            lvl++;
+        } else {
+            cp[v]=cp[p];
+            lvl -= L[p];
+        }
+        cp[v] += lvl*wt[v] ;
+        //out.println((v+1)+"="+cp[v]+" p="+p);        
+    }
     void dfs(int v, int lvl) {
         L[v]=lvl;
         if ( v>0) {
-            int p=getParent(v);
-            while (p>=0 && wt[p]>wt[v] )
-                p=getParent(p);
-            if (p<0)
-                cp[v]=0;
-            else
-                cp[v]=cp[p];
-            cp[v] += (long)(L[v]-L[p])*wt[v] ;
-            //out.println((v+1)+"="+cp[v]+" p="+p);
+            pathCost(v);
         }
         for (int w: adj(v))
             if (w!=getParent(v))
