@@ -30,8 +30,10 @@ class PostTree {
     {
         this.parent=parent;
         this.w=w;
-        cost(w.length-1);
-        init();
+        //cost(w.length-1);
+        //init();
+        g = new TreePath(parent, w);
+        print(g.cp);
     }
     PostTree()
     {
@@ -42,9 +44,13 @@ class PostTree {
             parent[i]=sc.nextInt()-1;
         }
         w=ria(N, sc); //-1,000,000,000 ≤ Av ≤ 1,000,000,000
-        init();
+        //init();
+        //out.println(Arrays.toString(parent));
+        g = new TreePath(parent, w);
+        print(g.cp);
     }
-    SimpleGraphX g;
+    TreePath g;
+    /*
     private void init()
     {
         int N=w.length;
@@ -59,16 +65,16 @@ class PostTree {
         cp[0]=cn[0];
         vis=new boolean[N];
         dfs(0, 0);
-        //Arrays.fill(vis, false);
-        //dfs2(0);
         print(cp);
     }
+    */
     void print(long x[])
     {
         for (int i=0; i<x.length;i++)
             out.print(x[i]+" ");
         out.println();        
     }
+    /*
     boolean vis[];
     void dfs(int v, int lvl) {
         vis[v]=true;
@@ -105,7 +111,7 @@ class PostTree {
             cost(n-1);
         //out.println("n="+n+" c "+c[n]);
     }
-      
+     */ 
     public static int[] ria(int N, Scanner sc) { // read int array
         int L[]=new int[N];
         for (int i=0; i<N; i++)
@@ -127,13 +133,6 @@ ans
 1 3 4 5 6 21 96 26
 */
 
-class Tree
-{
-    int r; // root
-    int p[]; // parent node
-    int pw[];// weight from current node to parent
-    int L[]; // levels, L[r]=0, L[u]=L[p[u]]+1
-}
 interface IGraphX
 {
     int V();
@@ -167,5 +166,45 @@ class SimpleGraphX implements IGraphX { // unweighted, bidirectional
     public List<Integer> adj(int u)
     {
         return adj.get(u);
+    }
+}
+
+class TreePath extends SimpleGraphX
+{
+    int r; // root
+    int parent[]; // parent node, first is root
+    int pw[];// weight from current node to parent
+    int wt[];// weight of node
+    int L[]; // levels, L[r]=0, L[u]=L[p[u]]+1
+    long cp[];// cost of path
+    TreePath(int[]p, int []w)
+    {
+        super(p.length);
+        parent=p;
+        L=new int[V()];
+        for (int i=1; i<V(); i++) { 
+            addEdge(i, p[i]);
+        }
+        wt=w;
+        cp=new long[V()];
+        cp[0]=w[0];
+        dfs(0,0);
+    }
+    void dfs(int v, int lvl) {
+        L[v]=lvl;
+        if ( v>0) {
+            int p=parent[v];
+            while (p>=0 && wt[p]>wt[v] )
+                p=parent[p];
+            if (p<0)
+                cp[v]=0;
+            else
+                cp[v]=cp[p];
+            cp[v] += (long)(L[v]-L[p])*wt[v] ;
+            //out.println((v+1)+"="+cp[v]+" p="+p);
+        }
+        for (int w: adj(v))
+            if (w!=parent[v])
+                dfs(w, lvl+1);
     }
 }
