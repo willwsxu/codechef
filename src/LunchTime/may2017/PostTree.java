@@ -155,6 +155,9 @@ class TreePath extends SimpleGraphX
         dfs(r,0);
     }
     
+    // bruteforce computing cost of path
+    // find the nearest parent whose weight is larger than current.
+    // cp[v]=cp[p]+distance of v to p * w[v]
     void pathCost(int v)
     {
         int p=getParent(v);
