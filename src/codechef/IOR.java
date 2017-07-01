@@ -35,4 +35,19 @@ public class IOR {
             L[i]=sc.nextInt();
         return L;
     }
+    
+    public static int[][] fillMatrix(int n, int m)
+    {
+        int a[][]=new int[n][m];
+        for (int i=0; i<a.length; i++)
+            for (int j=0; j<a[i].length; j++) {
+                a[i][j]=sc.nextInt();
+            }
+        return a;
+    }
+    
+    public static void fileScanner(String f)
+    {
+        sc = ContestHelper.getFileScanner(f);
+    }
 }
