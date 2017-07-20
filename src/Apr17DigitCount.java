@@ -35,6 +35,7 @@ class Apr17DigitCount extends io {
                 good++;
         return good;        
     }
+    
     long pow10(int exp) {
         long p=1;
         while (exp-->0)
@@ -48,6 +49,7 @@ class Apr17DigitCount extends io {
         }
         return 0;
     }
+    
     // all digits must appreat at least once
     long subtask2(long L, long R)
     {

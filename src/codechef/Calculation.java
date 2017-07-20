@@ -11,6 +11,7 @@ import java.util.stream.LongStream;
 
 public class Calculation {
     
+    // return first position whose value>=k
     public static int lowerBound(int[] a, long k) {
         int n = a.length;
         if (a[n-1] < k)
@@ -25,7 +26,25 @@ public class Calculation {
             }
         }
         return r;
-    }        
+    }   
+    
+    // return position who value>k
+    public static int upperBound(int[] a, int start, long k) {
+        int n = a.length;
+        if (a[n-1] <= k)
+            return n;
+        int l = start, r = n - 1;
+        while (r - l > 1) {
+            int mid = (l + r) >> 1;
+            if (a[mid] > k) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        return r;
+    }  
+    
     // not efficient when there are many elements of same value, TLE for this project
     static int lowerBound2(int[] L, int k) {
         int p3=Arrays.binarySearch(L, k);
