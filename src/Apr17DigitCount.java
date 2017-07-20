@@ -42,6 +42,7 @@ class Apr17DigitCount extends io {
             p *=10;
         return p;
     }
+    
     long dp(int d, long tight, long n, int mask)
     {
         for (int i=0; i<10; i++) {
