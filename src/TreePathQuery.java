@@ -13,28 +13,45 @@ import java.util.StringTokenizer;
 
 
 class TreePathQuery {
-    TreeBase tree;
             
     TreePathQuery()
     {
         int N=sc.nextInt(); // 1 ≤ N, M ≤ 10^5
-        tree = new TreeBase(N);
+        offline(N);
+    }
+    void bruteforce(int N)
+    {
+        TreeBase tree = new TreeBase(N);
         for (int i=0; i<N-1; i++) {
             int u=sc.nextInt();
             int v=sc.nextInt();
             long c=sc.nextLong(); // 1 ≤ C, K ≤ 10^9
             tree.add(u-1, v-1, c);
         }
-        bruteforce(N);
-    }
-    void bruteforce(int N)
-    {
         tree.dfs(0, 0);
         tree.print();
-        query(sc.nextInt());        
+        query(sc.nextInt(), tree);        
+    }
+    void offline(int N)
+    {
+        TreePathXor treeX=new TreePathXor(N);
+        for (int i=0; i<N-1; i++) {
+            int u=sc.nextInt();
+            int v=sc.nextInt();
+            int c=sc.nextInt(); // 1 ≤ C, K ≤ 10^9
+            treeX.add(u, v, c);
+        }
+        int M=sc.nextInt();
+        for (int i=0; i<M; i++) {
+            int u=sc.nextInt();
+            int v=sc.nextInt();
+            int k=sc.nextInt();
+            treeX.addQ(u, v, k);
+        }
+        treeX.solve();
     }
     
-    void query(int M)
+    void query(int M, TreeBase tree)
     {
         StringBuilder sb=new StringBuilder();
         for (int i=0; i<M; i++) {
@@ -296,6 +313,7 @@ class TreePathXor extends SimpleGraphX
         }
     }
     List<Edge> edgeList = new ArrayList<>();
+    List<Edge> qList = new ArrayList<>();
     
     int st[];   // start index of Euler tour
     int en[];   // end index of Euler tour
@@ -305,7 +323,7 @@ class TreePathXor extends SimpleGraphX
         super(n+1);
     }
 
-    public void solve(List<Edge> qList)
+    public void solve()
     {
         dfs(1, -1);
         
@@ -348,5 +366,8 @@ class TreePathXor extends SimpleGraphX
     void add(int u, int v, int w) {
         addEdge(u, v);
         edgeList.add(new Edge(u, v, w));
+    }
+    void addQ(int u, int v, int w) {
+        qList.add(new Edge(u, v, w));
     }
 }
