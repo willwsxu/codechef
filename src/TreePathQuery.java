@@ -1,13 +1,14 @@
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import static java.lang.System.out;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 
@@ -24,9 +25,15 @@ class TreePathQuery {
             long c=sc.nextLong(); // 1 ≤ C, K ≤ 10^9
             tree.add(u-1, v-1, c);
         }
-        tree.dfs(0, 0);
-        query(sc.nextInt());
+        bruteforce(N);
     }
+    void bruteforce(int N)
+    {
+        tree.dfs(0, 0);
+        tree.print();
+        query(sc.nextInt());        
+    }
+    
     void query(int M)
     {
         StringBuilder sb=new StringBuilder();
@@ -83,11 +90,14 @@ class SimpleGraphX { // unweighted, bidirectional
 
 // node is 0 based
 class TreeBase extends SimpleGraphX
-{
+{    
     int r; // root
     int parent[]; // parent node, first is root
     long pw[];// weight of node to parent
     int L[]; // levels, L[r]=0, L[u]=L[p[u]]+1
+    int E[];    // Euler tour
+    int EL[];   // level per index
+    int EH[];   // first occurrence
     
     int getParent(int p)
     {
@@ -103,6 +113,9 @@ class TreeBase extends SimpleGraphX
         parent[0]=-1;
         pw[0]=0;
         L[0]=0;
+        E = new int[2*N];
+        EL = new int[2*N];
+        EH = new int[N];
     }
     
     void add(int p, int c, long w)
@@ -116,12 +129,27 @@ class TreeBase extends SimpleGraphX
         parent[c]=p;
         pw[c]=w;
     }
+    int idx=0;
     void dfs(int v, int lvl) {
-        //out.println("dfs "+v+" level "+lvl);
+        out.println("dfs "+v+" level "+lvl+" idx="+idx);
+        EH[v]=idx;
+        E[idx]=v;
+        EL[idx++]=lvl;
         L[v]=lvl;
-        for (int u: adj(v))
-            if (u !=0 && u!=getParent(v))
+        for (int u: adj(v)) {
+            if (u !=0 && u!=getParent(v)) {
                 dfs(u, lvl+1);
+                E[idx]=v;
+                EL[idx++]=lvl;
+            }
+        }
+    }
+
+    void print()
+    {
+        out.println("Euler first: "+Arrays.toString(EH));
+        out.println("Euler tour: "+Arrays.toString(E));
+        out.println("Euler level: "+Arrays.toString(EL));
     }
     
     long ans=0;
@@ -223,3 +251,102 @@ class MyScannerX {
 1 5 8
 2 2 1
 */
+
+class FenwickTreeXor  // binary index tree
+{
+    int bit[];
+    int n;
+    
+    int LSOne(int x)  // least significant bit
+    {
+        return x & (~x);
+    }
+    public FenwickTreeXor(int n)
+    {
+        bit = new int[n+1];
+        this.n=n;
+    }
+    public void add(int x, int v)
+    {
+        while (x<=n) {
+            bit[x] ^= v;
+            x += LSOne(x);
+        }
+    }
+    public int get(int x)
+    {
+        int ret=0;
+        while (x>0) {
+            ret ^= bit[x];
+            x -= LSOne(x);
+        }
+        return ret;
+    }
+}
+
+class TreePathXor extends SimpleGraphX
+{
+    class Edge
+    {
+        int u,v;
+        int wt;
+        Edge(int u, int v, int wt)
+        {
+            this.u=u; this.v=v; this.wt=wt;
+        }
+    }
+    List<Edge> edgeList = new ArrayList<>();
+    
+    int st[];   // start index of Euler tour
+    int en[];   // end index of Euler tour
+    int Wt[];   // weight of edge
+    int index=0;
+    public TreePathXor(int n) {  // vertex from 1
+        super(n+1);
+    }
+
+    public void solve(List<Edge> qList)
+    {
+        dfs(1, -1);
+        
+        List<Map.Entry<Integer,Integer>> sorted=new ArrayList<>();
+        for (Edge e: edgeList)
+        {
+            if (st[e.u]<st[e.v])
+                sorted.add(new AbstractMap.SimpleEntry<Integer, Integer>(e.wt, -e.v));
+            else
+                sorted.add(new AbstractMap.SimpleEntry<Integer, Integer>(e.wt, -e.u));
+        }
+        int j=0;
+        for (Edge e: edgeList) {
+            sorted.add(new AbstractMap.SimpleEntry<Integer, Integer>(e.wt, ++j));         
+        }
+        Collections.sort(sorted, (c1,c2)->c1.getValue()-c2.getValue());
+        Collections.sort(sorted, (c1,c2)->c1.getKey()-c2.getKey());
+        int ans[]=new int[V()];
+        FenwickTreeXor ft=new FenwickTreeXor(V());
+        for(Map.Entry<Integer,Integer> e: sorted) {
+            if (e.getValue()<0) {
+                int v=-e.getValue();
+                ft.add(st[v], e.getKey());
+                ft.add(en[v]+1, e.getKey());
+            } else {
+                int idx = e.getKey();
+                ans[idx]=ft.get(st[qList.get(idx).u])^ft.get(st[qList.get(idx).v]);
+            }
+        }
+    }
+    void dfs(int v, int p) {
+        st[v] = ++index;
+        for (int nxt : adj(v)) {
+            if (nxt==p)
+                continue;
+            dfs(nxt, v);
+        }
+        en[v]=index;
+    }
+    void add(int u, int v, int w) {
+        addEdge(u, v);
+        edgeList.add(new Edge(u, v, w));
+    }
+}
