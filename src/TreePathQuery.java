@@ -65,13 +65,17 @@ class TreePathQuery {
     }
     
     static MyScannerX sc = new MyScannerX();
-    //static Scanner sc = new Scanner(System.in);
     
-    public static void main(String[] args)
+    private static void run()
     {
         int T=sc.nextInt(); // 1 ≤ T ≤ 5
         while (T-->0)
-            new TreePathQuery();
+            new TreePathQuery();        
+    }
+    
+    public static void main(String[] args)
+    {
+        FenwickTreeXor.test();
     }
 }
 
@@ -276,7 +280,7 @@ class FenwickTreeXor  // binary index tree
     
     int LSOne(int x)  // least significant bit
     {
-        return x & (~x);
+        return x & (-x);
     }
     public FenwickTreeXor(int n)
     {
@@ -287,6 +291,7 @@ class FenwickTreeXor  // binary index tree
     {
         while (x<=n) {
             bit[x] ^= v;
+            out.println("bit "+x+" "+bit[x]);
             x += LSOne(x);
         }
     }
@@ -298,6 +303,19 @@ class FenwickTreeXor  // binary index tree
             x -= LSOne(x);
         }
         return ret;
+    }
+    
+    static void test()
+    {
+        FenwickTreeXor ft = new FenwickTreeXor(10);
+        ft.add(1, 2);
+        ft.add(2, 4);
+        ft.add(3, 8);
+        ft.add(4, 16);
+        ft.add(5, 32);
+        ft.add(6, 64);
+        out.println(ft.get(3)==14);
+        out.println(ft.get(6)==126);
     }
 }
 
@@ -369,5 +387,10 @@ class TreePathXor extends SimpleGraphX
     }
     void addQ(int u, int v, int w) {
         qList.add(new Edge(u, v, w));
+    }
+    
+    static void test()
+    {
+        
     }
 }
