@@ -75,7 +75,7 @@ class TreePathQuery {
     
     public static void main(String[] args)
     {
-        FenwickTreeXor.test();
+        TreePathXor.test();
     }
 }
 
@@ -335,10 +335,11 @@ class TreePathXor extends SimpleGraphX
     
     int st[];   // start index of Euler tour
     int en[];   // end index of Euler tour
-    int Wt[];   // weight of edge
     int index=0;
     public TreePathXor(int n) {  // vertex from 1
         super(n+1);
+        st = new int[n+1];
+        en = new int[n+1];
     }
 
     public void solve()
@@ -354,11 +355,12 @@ class TreePathXor extends SimpleGraphX
                 sorted.add(new AbstractMap.SimpleEntry<Integer, Integer>(e.wt, -e.u));
         }
         int j=0;
-        for (Edge e: edgeList) {
+        for (Edge e: qList) {
             sorted.add(new AbstractMap.SimpleEntry<Integer, Integer>(e.wt, ++j));         
         }
         Collections.sort(sorted, (c1,c2)->c1.getValue()-c2.getValue());
         Collections.sort(sorted, (c1,c2)->c1.getKey()-c2.getKey());
+        out.println(sorted);
         int ans[]=new int[V()];
         FenwickTreeXor ft=new FenwickTreeXor(V());
         for(Map.Entry<Integer,Integer> e: sorted) {
@@ -367,12 +369,15 @@ class TreePathXor extends SimpleGraphX
                 ft.add(st[v], e.getKey());
                 ft.add(en[v]+1, e.getKey());
             } else {
-                int idx = e.getKey();
-                ans[idx]=ft.get(st[qList.get(idx).u])^ft.get(st[qList.get(idx).v]);
+                int idx = e.getValue();
+                out.println("idx "+e);
+                ans[idx]=ft.get(st[qList.get(idx-1).u])^ft.get(st[qList.get(idx-1).v]);
             }
         }
+        out.println(Arrays.toString(ans));
     }
     void dfs(int v, int p) {
+        out.println("dfs v="+v+" p="+p);
         st[v] = ++index;
         for (int nxt : adj(v)) {
             if (nxt==p)
@@ -391,6 +396,12 @@ class TreePathXor extends SimpleGraphX
     
     static void test()
     {
-        
+        TreePathXor treex=new TreePathXor(10);
+        treex.add(1, 2, 2);
+        treex.add(2, 3, 4);
+        treex.add(3, 4, 8);
+        treex.addQ(1, 3, 10);
+        treex.addQ(1, 4, 10);
+        treex.solve();
     }
 }
