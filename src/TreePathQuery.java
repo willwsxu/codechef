@@ -75,7 +75,8 @@ class TreePathQuery {
     
     public static void main(String[] args)
     {
-        TreePathXor.test();
+        //TreePathXor.test();
+        run();
     }
 }
 
@@ -258,6 +259,7 @@ class MyScannerX {
     }   
 }
 /*
+1
 5
 2 1 1
 2 3 2 
@@ -271,6 +273,7 @@ class MyScannerX {
 4 1 10
 1 5 8
 2 2 1
+[7, 13, 0, 1, 4, 3, 0]
 */
 
 class FenwickTreeXor  // binary index tree
@@ -291,7 +294,7 @@ class FenwickTreeXor  // binary index tree
     {
         while (x<=n) {
             bit[x] ^= v;
-            out.println("bit "+x+" "+bit[x]);
+            //out.println("bit "+x+" "+bit[x]);
             x += LSOne(x);
         }
     }
@@ -360,8 +363,8 @@ class TreePathXor extends SimpleGraphX
         }
         Collections.sort(sorted, (c1,c2)->c1.getValue()-c2.getValue());
         Collections.sort(sorted, (c1,c2)->c1.getKey()-c2.getKey());
-        out.println(sorted);
-        int ans[]=new int[V()];
+        //out.println(sorted);
+        int ans[]=new int[qList.size()];
         FenwickTreeXor ft=new FenwickTreeXor(V());
         for(Map.Entry<Integer,Integer> e: sorted) {
             if (e.getValue()<0) {
@@ -370,14 +373,19 @@ class TreePathXor extends SimpleGraphX
                 ft.add(en[v]+1, e.getKey());
             } else {
                 int idx = e.getValue();
-                out.println("idx "+e);
-                ans[idx]=ft.get(st[qList.get(idx-1).u])^ft.get(st[qList.get(idx-1).v]);
+                //out.println("idx "+e);
+                ans[idx-1]=ft.get(st[qList.get(idx-1).u])^ft.get(st[qList.get(idx-1).v]);
             }
         }
-        out.println(Arrays.toString(ans));
+        StringBuilder sb = new StringBuilder();
+        for (int i: ans) {
+            sb.append(i);
+            sb.append('\n');
+        }
+        out.print(sb.toString());
     }
     void dfs(int v, int p) {
-        out.println("dfs v="+v+" p="+p);
+        //out.println("dfs v="+v+" p="+p);
         st[v] = ++index;
         for (int nxt : adj(v)) {
             if (nxt==p)
