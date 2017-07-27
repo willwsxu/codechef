@@ -12,15 +12,11 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 
-class TreePathQuery {
+class TreePathQuery implements Runnable{
             
-    TreePathQuery()
+    void bruteforce()
     {
         int N=sc.nextInt(); // 1 ≤ N, M ≤ 10^5
-        offline(N);
-    }
-    void bruteforce(int N)
-    {
         TreeBase tree = new TreeBase(N);
         for (int i=0; i<N-1; i++) {
             int u=sc.nextInt();
@@ -32,10 +28,11 @@ class TreePathQuery {
         tree.print();
         query(sc.nextInt(), tree);        
     }
-    void offline(int N)
+    void offline()
     {
+        int N=sc.nextInt(); // 1 ≤ N, M ≤ 10^5
         TreePathXor treeX=new TreePathXor(N);
-        for (int i=0; i<N-1; i++) {
+        for (int i=0; i<N-1; i++) {  // N-1 edges
             int u=sc.nextInt();
             int v=sc.nextInt();
             int c=sc.nextInt(); // 1 ≤ C, K ≤ 10^9
@@ -65,18 +62,21 @@ class TreePathQuery {
     }
     
     static MyScannerX sc = new MyScannerX();
-    
-    private static void run()
+        
+    public void run()
     {
+        //TreePathXor.test();
+        
         int T=sc.nextInt(); // 1 ≤ T ≤ 5
         while (T-->0)
-            new TreePathQuery();        
+            new TreePathQuery().offline();     
     }
     
     public static void main(String[] args)
     {
-        //TreePathXor.test();
-        run();
+        Thread t =new Thread(null, new TreePathQuery(), "whatever", 1<<26);
+        t.start();
+        //t.join();
     }
 }
 
@@ -153,7 +153,7 @@ class TreeBase extends SimpleGraphX
     }
     int idx=0;
     void dfs(int v, int lvl) {
-        out.println("dfs "+v+" level "+lvl+" idx="+idx);
+        //out.println("dfs "+v+" level "+lvl+" idx="+idx);
         EH[v]=idx;
         E[idx]=v;
         EL[idx++]=lvl;
@@ -414,6 +414,11 @@ class TreePathXor extends SimpleGraphX
         treex.add(3, 4, 8);
         treex.addQ(1, 3, 10);
         treex.addQ(1, 4, 10);
+        treex.solve();
+        for (int i=4; i<MAXN-5; i++) {
+            treex.add(i, i+1, i+1000000000);
+        }
+        treex.addQ(1, MAXN-6, 10);
         treex.solve();
     }
 }
