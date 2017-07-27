@@ -260,11 +260,12 @@ class MyScannerX {
 }
 /*
 1
-5
+6
 2 1 1
 2 3 2 
 2 4 5
 3 5 10
+3 50 1000000000
 7
 5 4 5
 5 4 10
@@ -300,6 +301,8 @@ class FenwickTreeXor  // binary index tree
     }
     public int get(int x)
     {
+        if (x>n)
+            return 0;
         int ret=0;
         while (x>0) {
             ret ^= bit[x];
@@ -310,7 +313,7 @@ class FenwickTreeXor  // binary index tree
     
     static void test()
     {
-        FenwickTreeXor ft = new FenwickTreeXor(10);
+        FenwickTreeXor ft = new FenwickTreeXor(6);
         ft.add(1, 2);
         ft.add(2, 4);
         ft.add(3, 8);
@@ -324,6 +327,7 @@ class FenwickTreeXor  // binary index tree
 
 class TreePathXor extends SimpleGraphX
 {
+    static final int MAXN=100005;
     class Edge
     {
         int u,v;
@@ -340,9 +344,9 @@ class TreePathXor extends SimpleGraphX
     int en[];   // end index of Euler tour
     int index=0;
     public TreePathXor(int n) {  // vertex from 1
-        super(n+1);
-        st = new int[n+1];
-        en = new int[n+1];
+        super(MAXN);
+        st = new int[MAXN];
+        en = new int[MAXN];
     }
 
     public void solve()
@@ -365,7 +369,7 @@ class TreePathXor extends SimpleGraphX
         Collections.sort(sorted, (c1,c2)->c1.getKey()-c2.getKey());
         //out.println(sorted);
         int ans[]=new int[qList.size()];
-        FenwickTreeXor ft=new FenwickTreeXor(V());
+        FenwickTreeXor ft=new FenwickTreeXor(edgeList.size()+1);
         for(Map.Entry<Integer,Integer> e: sorted) {
             if (e.getValue()<0) {
                 int v=-e.getValue();
