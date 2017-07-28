@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-
+// medium
+// Fenwick Binary Index Tree for XOR, Euler Tour/LCA
+// Use Thread class to provide a large call stck for dfs
 class TreePathQuery implements Runnable{
             
     void bruteforce()
