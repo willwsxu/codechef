@@ -11,56 +11,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+// Given a weighted tree of N vertices, query XOR of weight<=k from u to v
 // medium
-// Fenwick Binary Index Tree for XOR, Euler Tour/LCA
+// Fenwick Binary Index Tree for XOR, Euler Tour/LCA, offline sorting
 // Use Thread class to provide a large call stck for dfs
 class TreePathQuery implements Runnable{
             
+    int u,v,k;
+    void read3()
+    {
+        u=sc.nextInt(); // u,v<=N
+        v=sc.nextInt();
+        k=sc.nextInt(); // 1 ≤ C, K ≤ 10^9        
+    }
     void bruteforce()
     {
         int N=sc.nextInt(); // 1 ≤ N, M ≤ 10^5
-        TreeBase tree = new TreeBase(N);
+        TreeXorBF tree = new TreeXorBF(N);
         for (int i=0; i<N-1; i++) {
-            int u=sc.nextInt();
-            int v=sc.nextInt();
-            long c=sc.nextLong(); // 1 ≤ C, K ≤ 10^9
-            tree.add(u-1, v-1, c);
+            read3();
+            tree.add(u-1, v-1, k);
         }
         tree.dfs(0, 0);
-        tree.print();
-        query(sc.nextInt(), tree);        
+        int M=sc.nextInt();    
+        StringBuilder sb=new StringBuilder();
+        for (int i=0; i<M; i++) {
+            read3();
+            sb.append(tree.queryXor(u-1, v-1, k));
+            sb.append("\n");
+        }
+        out.println(sb.toString());    
     }
     void offline()
     {
         int N=sc.nextInt(); // 1 ≤ N, M ≤ 10^5
         TreePathXor treeX=new TreePathXor(N);
         for (int i=0; i<N-1; i++) {  // N-1 edges
-            int u=sc.nextInt();
-            int v=sc.nextInt();
-            int c=sc.nextInt(); // 1 ≤ C, K ≤ 10^9
-            treeX.add(u, v, c);
+            read3();
+            treeX.add(u, v, k);
         }
         int M=sc.nextInt();
         for (int i=0; i<M; i++) {
-            int u=sc.nextInt();
-            int v=sc.nextInt();
-            int k=sc.nextInt();
+            read3();
             treeX.addQ(u, v, k);
         }
         treeX.solve();
-    }
-    
-    void query(int M, TreeBase tree)
-    {
-        StringBuilder sb=new StringBuilder();
-        for (int i=0; i<M; i++) {
-            int u=sc.nextInt();
-            int v=sc.nextInt();
-            long k=sc.nextInt();
-            sb.append(tree.queryXor(u-1, v-1, k));
-            sb.append("\n");
-        }
-        out.println(sb.toString());
     }
     
     static MyScannerX sc = new MyScannerX();
@@ -71,14 +66,13 @@ class TreePathQuery implements Runnable{
         
         int T=sc.nextInt(); // 1 ≤ T ≤ 5
         while (T-->0)
-            new TreePathQuery().offline();     
+            new TreePathQuery().offline();
     }
     
     public static void main(String[] args)
     {
         Thread t =new Thread(null, new TreePathQuery(), "whatever", 1<<26);
         t.start();
-        //t.join();
     }
 }
 
@@ -175,7 +169,14 @@ class TreeBase extends SimpleGraphX
         out.println("Euler tour: "+Arrays.toString(E));
         out.println("Euler level: "+Arrays.toString(EL));
     }
-    
+}    
+
+class TreeXorBF extends TreeBase  // brute force XOR
+{
+    public TreeXorBF(int N)
+    {
+        super(N);
+    }
     long ans=0;
     long xor(long ans, long val, long k) {
         //out.println("xor ans="+ans+" val="+val+" k="+k);
@@ -267,7 +268,7 @@ class MyScannerX {
 2 3 2 
 2 4 5
 3 5 10
-3 50 1000000000
+3 6 1000000000
 7
 5 4 5
 5 4 10
