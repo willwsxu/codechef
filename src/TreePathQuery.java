@@ -62,7 +62,7 @@ class TreePathQuery implements Runnable{
         
     public void run()
     {
-        //TreePathXor.test();
+        TreePathXor.test();
         
         int T=sc.nextInt(); // 1 ≤ T ≤ 5
         while (T-->0)
@@ -313,6 +313,10 @@ class FenwickTreeXor  // binary index tree
         }
         return ret;
     }
+    void print()
+    {
+        out.println(Arrays.toString(bit));
+    }
     
     static void test()
     {
@@ -330,7 +334,6 @@ class FenwickTreeXor  // binary index tree
 
 class TreePathXor extends SimpleGraphX
 {
-    static final int MAXN=100005;
     class Edge
     {
         int u,v;
@@ -347,9 +350,9 @@ class TreePathXor extends SimpleGraphX
     int en[];   // end index of Euler tour
     int index=0;
     public TreePathXor(int n) {  // vertex from 1
-        super(MAXN);
-        st = new int[MAXN];
-        en = new int[MAXN];
+        super(n+1);
+        st = new int[n+1];
+        en = new int[n+1];
     }
 
     public void solve()
@@ -390,6 +393,7 @@ class TreePathXor extends SimpleGraphX
             sb.append('\n');
         }
         out.print(sb.toString());
+        ft.print();
     }
     void dfs(int v, int p) {
         //out.println("dfs v="+v+" p="+p);
@@ -408,20 +412,26 @@ class TreePathXor extends SimpleGraphX
     void addQ(int u, int v, int w) {
         qList.add(new Edge(u, v, w));
     }
+    void print()
+    {
+        out.println(Arrays.toString(st));
+        out.println(Arrays.toString(en));
+    }
     
     static void test()
     {
-        TreePathXor treex=new TreePathXor(10);
+        final int MAXN=100005;
+        TreePathXor treex=new TreePathXor(MAXN);
         treex.add(1, 2, 2);
         treex.add(2, 3, 4);
         treex.add(3, 4, 8);
         treex.addQ(1, 3, 10);
         treex.addQ(1, 4, 10);
-        treex.solve();
+        //treex.solve();
         for (int i=4; i<MAXN-5; i++) {
             treex.add(i, i+1, i+1000000000);
         }
-        treex.addQ(1, MAXN-6, 10);
+        treex.addQ(1, MAXN-6, 2000000000);
         treex.solve();
     }
 }
