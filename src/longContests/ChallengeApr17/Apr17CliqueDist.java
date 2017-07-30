@@ -2,31 +2,25 @@ package longContests.ChallengeApr17;
 
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import codechef.Edge;
+import codechef.GraphWeighted;
+import codechef.MyScanner;
 import static java.lang.System.out;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 // single-source shortest paths, Dijkstra's algorithm
 // easy
 class Apr17CliqueDist {
-    static MyScannerX scan = new MyScannerX();
+    static MyScanner scan = new MyScanner();
     static void testAddEdge()
     {
         Instant start = Instant.now();
-        WeightedGraph g = new WeightedGraph(1000000);
+        GraphWeighted g = new GraphWeighted(1000000);
         for (int i=0; i<g.V()-30; i++)
         {
             for (int j=i+1; j<=i+30; j++)
@@ -52,20 +46,20 @@ class Apr17CliqueDist {
         //Instant start = Instant.now();
         //codechef.ContestHelper.redirect("out.txt");
         
-        int TC = scan.nextInt();  // between 1 and 3
+        int TC = scan.ni();  // between 1 and 3
         for (int i=0; i<TC; i++) { 
-            int N = scan.nextInt();   // 2 ≤ K ≤ N ≤ 10^5
-            int K = scan.nextInt();
-            long X = scan.nextLong(); // 1 to 10^9
-            int M = scan.nextInt();     // 1 to 10^5 new roads
-            int s = scan.nextInt();
+            int N = scan.ni();   // 2 ≤ K ≤ N ≤ 10^5
+            int K = scan.ni();
+            long X = scan.nl(); // 1 to 10^9
+            int M = scan.ni();     // 1 to 10^5 new roads
+            int s = scan.ni();
             // test
             //N += K-testClique;
             SSSPclique sp = new SSSPclique(N, K, X, s-1);
             for (int j=0; j<M; j++) {
-                int v = scan.nextInt();  // index from 1
-                int w = scan.nextInt();
-                long wt = scan.nextLong();
+                int v = scan.ni();  // index from 1
+                int w = scan.ni();
+                long wt = scan.nl();
                 //addTest(sp, v, w, wt, K);
                 sp.addEdge(v-1, w-1, wt);
             }
@@ -81,74 +75,6 @@ class Apr17CliqueDist {
             //out.println("usec "+ChronoUnit.MICROS.between(start, end));  
             //out.println("case #"+(i+1));
         }
-    }
-}
-
-class Edge
-{
-    private final int v; // one vertex
-    private final int w; // the other vertex
-    private final long weight; // edge weight
-    public Edge(int v, int w, long weight)
-    {
-        this.v = v;
-        this.w = w;
-        this.weight = weight;
-    }
-    public long weight()
-    { return weight; }
-    public int either()
-    { return v; }
-    public int other(int vertex)
-    {
-        if (vertex == v) return w;
-        else if (vertex == w) return v;
-        else throw new RuntimeException("Inconsistent edge");
-    }
-    // direct edge
-    public int from()
-    { return v; }
-    public int to()
-    { return w; }
-}
-
-class WeightedGraph {
-    //static final int MAX_NODE=1000;
-    private final int   V; // number of vertices
-    private int         E; // number of edges
-    List<Edge>[]        adj;// adjacency lists
-
-    WeightedGraph(int V)
-    {
-        this.V = V;
-        E=0;
-        adj = new List[V];  // -Xlint:unchecked
-        for (int v = 0; v < V; v++) // Initialize all lists
-            adj[v] = new ArrayList<>(10);
-    }
-    public int V() { return V; }
-    public int E() { return E; }
-    public List<Edge> adj(int v) {
-        return adj[v];
-    }
-    public void addEdge(Edge e) // undirected
-    {
-        int v = e.either(), w = e.other(v);
-        adj[v].add(e);
-        adj[w].add(e);
-        E++;
-    }
-    public void addDirectEdge(int v, int w, long wt)
-    {
-        adj[v].add(new Edge(v, w, wt));
-        E++;        
-    }
-    public void addDirectEdge(Edge e)
-    {
-        int v = e.either(), w = e.other(v);
-        adj[v].add(e);
-        E++;
-        //out.println(" edge from "+(v+1)+" to "+(w+1)+" w="+e.weight());
     }
 }
 
@@ -180,7 +106,7 @@ class SSSPclique
     private final int   K; // clique, 2 to vertices
     private final long  Kw; // weight between clique vertices
     private final int   s; // source node
-    private final WeightedGraph g;
+    private final GraphWeighted g;
     private Edge[] edgeTo;
     private long[] distTo;
     private PriorityQueue<PQItem> pq;
@@ -188,7 +114,7 @@ class SSSPclique
     // s, v, w index from 0
     SSSPclique(int N, int k, long wt, int s)
     {
-        g = new WeightedGraph(N);
+        g = new GraphWeighted(N);
         K=k;
         Kw=wt;
         this.s=s;
@@ -306,68 +232,5 @@ class SSSPclique
             if ( distTo[v] ==Long.MAX_VALUE)
                 distTo[v] = minClique +Kw;
         }
-    }
-}
-
-// credit to http://codeforces.com/blog/entry/7018
-class MyScannerX {
-    BufferedReader br;
-    StringTokenizer st;
-
-    MyScannerX(String f)
-    {
-        try {
-            br = new BufferedReader(new FileReader(new File(f)));
-        } catch (IOException e)
-        {
-            out.println("MyReader bad file "+f);
-        }
-    }
-    public MyScannerX() {
-        br = new BufferedReader(new InputStreamReader(System.in));
-    }
-
-    String next() {
-        while (st == null || !st.hasMoreElements()) {
-            try {
-                st = new StringTokenizer(br.readLine());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return st.nextToken();
-    }
-
-    int nextInt() {
-        return Integer.parseInt(next());
-    }
-
-    long nextLong() {
-        return Long.parseLong(next());
-    }
-
-    double nextDouble() {
-        return Double.parseDouble(next());
-    }
-
-    String nextLine(){
-        String str = "";
-        try {
-           str = br.readLine();
-        } catch (IOException e) {
-           e.printStackTrace();
-        }
-        return str;
-    }
-    
-    public int ni()
-    {
-        return nextInt();
-    }    
-    public int[] ria(int N) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=nextInt();
-        return L;
     }
 }
