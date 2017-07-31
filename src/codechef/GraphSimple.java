@@ -30,6 +30,12 @@ public class GraphSimple implements IGraph { // unweighted, bidirectional
         adj.get(v).add(u);
         E++;
     }
+    public void addEdgeDirect(int u, int v)
+    {
+        //out.println("add edge "+u+","+v);
+        adj.get(u).add(v);
+        E++;
+    }
     public List<Integer> adj(int u)
     {
         return adj.get(u);
