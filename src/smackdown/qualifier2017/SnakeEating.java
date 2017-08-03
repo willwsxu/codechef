@@ -4,7 +4,7 @@ package smackdown.qualifier2017;
 import static codechef.Calculation.lowerBound;
 import static codechef.Calculation.prefixSum;
 import static codechef.Calculation.reverse;
-import static codechef.ContestHelper.ria;
+import codechef.IOR;
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Random;
@@ -54,18 +54,18 @@ abstract class SnakeBase
     }
     SnakeBase()
     {
-        int N=sc.nextInt(); // 1 ≤ N, Q ≤ 10^5
-        Q=sc.nextInt();
-        L=ria(N, sc);     // 1 ≤ Li ≤ 10^9
+        int N=IOR.ni(); // 1 ≤ N, Q ≤ 10^5
+        Q=IOR.ni();
+        L=IOR.ria(N);     // 1 ≤ Li ≤ 10^9
     }
     SnakeBase(int a[], int q)
     {
         L=a;        Q=q;
     }
-    static Scanner sc = new Scanner(System.in);
+    
     public static void solve(int version)
     {
-        int T=sc.nextInt(); // 1 ≤ T ≤ 5
+        int T=IOR.ni(); // 1 ≤ T ≤ 5
         while (T-->0) {
             StringBuilder sb = new StringBuilder();
             SnakeBase sn;
@@ -74,7 +74,7 @@ abstract class SnakeBase
             else
                 sn=new SnakeEating3();
             for (int j=0; j<sn.Q; j++) {
-                int k=sc.nextInt(); // 1 ≤ Ki ≤ 10^9
+                int k=IOR.ni(); // 1 ≤ Ki ≤ 10^9
                 sb.append(sn.query(k));
                 sb.append("\n");
             }
