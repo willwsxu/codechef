@@ -26,22 +26,17 @@ public class ContestHelper {
         genTestCase(new int[]{99999,99998,99997}, 1, 10000);
         //genTestCase(new int[]{99,98,97}, 1, 8);
     }
-       
-    public static int ni(Scanner sc)
+    
+    static void fastPrint(int ans[])
     {
-        return sc.nextInt();
-    }
-    public static long nl(Scanner sc)
-    {
-        return sc.nextLong();
+        StringBuilder sb = new StringBuilder();
+        for (int b: ans) {
+            sb.append(b);
+            sb.append(" ");
+        }
+        out.println(sb.toString());        
     }
     
-    public static int[] ria(int N, Scanner sc) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
-    }
     static Scanner scan = new Scanner(System.in);
     static void fillArray(int [] a)
     {
