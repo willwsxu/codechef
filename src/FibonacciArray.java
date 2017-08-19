@@ -14,7 +14,10 @@ class FibonacciArray {
     
     FibonacciArray(int N)
     {
-        this(ria(N));
+        int[] a=ria(N);
+        int s=a.length>1?a[1]:0;
+        int t=a.length>2?a[2]:0;
+        out.println(solve(0, a[0],s,t,a));
     }
     FibonacciArray(List<Integer> arr)
     {
@@ -67,22 +70,22 @@ class FibonacciArray {
         return total;
     }
     static long solve(int index, int first, int second, int third, int arr[]) {
-        if (first==0 && second==0 && third==0)
+        if (first==0 && second==0 && third==0) {
+            //out.println("index "+index);
             return 1;
+        }
         int newThird=0;
         if (index+3<arr.length)
             newThird = arr[index+3];
-        out.println("index="+index+" #1="+first+" #2="+second+" #3="+third);
-        if (first==0 || second==0)
-            return solve(index+1, second, third, newThird, arr);
-        long sum=0;
+        //out.println("index="+index+" #1="+first+" #2="+second+" #3="+third);
+        long sum= solve(index+1, second, third, newThird, arr);
         while (first>0 && second>0) {
             first--;
             second--;
             third++;
-            sum += 1+solve(index+1, second, third, newThird, arr);
+            sum += solve(index+1, second, third, newThird, arr);
         }
-        out.println("index="+index+" sum="+sum);
+        //out.println("index="+index+" sum="+sum);
         return sum;
     }
     static void test()
@@ -98,17 +101,30 @@ class FibonacciArray {
         out.println(new FibonacciArray(arr).solve());
     }
     static void test2() {
-        List<Integer> arr=new ArrayList<Integer>();
-        for (int i=0; i<4; i++)
+        /*List<Integer> arr=new ArrayList<Integer>();
+        for (int i=0; i<3; i++)
             arr.add(4);
         out.println(new FibonacciArray(arr).solve());
-        out.println(solve(0, 4,4,4,new int[]{4,4,4,4}));
+        out.println(solve(0, 1,0,0,new int[]{1}));
+        out.println(solve(0, 1,1,0,new int[]{1,1}));
+        out.println(solve(0, 2,3,0,new int[]{2,3}));
+        out.println(solve(0, 3,4,0,new int[]{3,4}));
+        out.println(solve(0, 4,4,4,new int[]{4,4,4}));*/
+        out.println(solve(0, 2,3,1,new int[]{2,3,1}));
+        out.println(solve(0, 0, 1,2,new int[]{0,1,2,3}));
+        out.println(solve(0, 2,2,0,new int[]{2,2}));
     }
         
-    public static List<Integer> ria(int N) { // read int array
+    public static List<Integer> riL(int N) { // read int array list
         List<Integer> L=new ArrayList<>();
         for (int i=0; i<N; i++)
             L.add(sc.nextInt());
+        return L;
+    }
+    public static int[] ria(int N) { // read int array
+        int L[]=new int[N];
+        for (int i=0; i<N; i++)
+            L[i]=sc.nextInt();
         return L;
     }
     static Scanner sc = new Scanner(System.in);
@@ -117,11 +133,11 @@ class FibonacciArray {
         int T=sc.nextInt(); // 1 ≤ T ≤ 5
         for (int i=0; i<T; i++) { 
             int n=sc.nextInt();// array size
-            out.println(new FibonacciArray(n).solve());            
+            new FibonacciArray(n);            
         }        
     }
     public static void main(String[] args)
     {    
-        test2();
+        judge();
     }
 }
