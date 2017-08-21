@@ -40,8 +40,6 @@ class FibonacciArray {
     }
     int dpSolve(int arr[], int pos, int d, int dNxt)
     {
-        if (pos==101)
-            return 1;
         if (pos>arr.length && d==0 && dNxt==0)
             return 1;
         int num1=pos<arr.length?arr[pos]+d:d;
@@ -93,7 +91,7 @@ class FibonacciArray {
     }
     static void test3()
     {
-        int a[]=new int[MX];
+        int a[]=new int[51];
         Arrays.fill(a,0);
         a[0]=2;
         new FibonacciArray().dp(a);  
