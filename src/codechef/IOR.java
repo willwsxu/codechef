@@ -3,6 +3,8 @@ package codechef;
 
 // simple IO reader
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class IOR {
@@ -20,6 +22,13 @@ public class IOR {
     public static String ns()
     {
         return sc.next();
+    }
+    
+    public static List<Integer> riL(int N) { // read int array list
+        List<Integer> L=new ArrayList<>();
+        for (int i=0; i<N; i++)
+            L.add(sc.nextInt());
+        return L;
     }
     
     public static int[] ria(int N) { // read int array
