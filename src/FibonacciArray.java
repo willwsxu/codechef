@@ -16,14 +16,17 @@ class FibonacciArray {
     
     FibonacciArray(int N)
     {
-        int[] a=ria(N);
-        int s=a.length>1?a[1]:0;
-        int t=a.length>2?a[2]:0;
-        out.println(solve(0, a[0],s,t,a));
+        dp(ria(N));
     }
     FibonacciArray()
     {
         
+    }
+    void bruteforce(int arr[])
+    {
+        int s=arr.length>1?arr[1]:0;
+        int t=arr.length>2?arr[2]:0;
+        out.println(solve(0, arr[0],s,t,arr));        
     }
     static final int MX=221;
     static final int offset=51;
@@ -58,70 +61,7 @@ class FibonacciArray {
         dp[pos][d+offset][dNxt+offset]=ans;
         return ans;
     }
-    /*
-    FibonacciArray(List<Integer> arr)
-    {
-        len=arr.size();
-        fib1.add(arr);
-        if (len>2) {
-            transform(arr, fib1);
-            index++;
-        }
-        total +=fib1.size();
-    }
-    void transform(List<Integer> arr, List<List<Integer>> fib) {
-        int count=0;
-        while (arr.get(index)>count && arr.get(index+1)>count) {
-            count++;
-            List<Integer> d2=new ArrayList<>(len);
-            for (int i=0; i<index; i++)
-                d2.add(arr.get(i));
-            d2.add(arr.get(index)-count);
-            d2.add(arr.get(index+1)-count);
-            if ( index+2<len)
-                d2.add(arr.get(index+2)+count);
-            else
-                d2.add(count);
-            for (int i=index+3; i<len; i++)
-                d2.add(arr.get(i));
-            fib.add(d2);
-            out.println("ind="+index+" len="+len+d2);
-        }        
-    }
-    long solve()
-    {
-        if (len==1)
-            return 1;
-        while (index+1<len) {
-            List<List<Integer>> fib2=new ArrayList<>();
-            for (int i=0; i<fib1.size(); i++) {
-                transform(fib1.get(i), fib2);
-            }
-            if (fib2.isEmpty())
-                break;
-            total += fib2.size();
-            total %= MOD;
-            fib1.clear();
-            fib1=fib2;
-            len=fib1.get(0).size();
-            index++;
-            //out.println("ind="+index+" len="+len+" total="+total);
-        }
-        return total;
-    }
-    static void test()
-    {
-        List<Integer> arr=new ArrayList<Integer>();
-        arr.add(2);
-        out.println(new FibonacciArray(arr).solve());
-        arr.add(3);
-        out.println(new FibonacciArray(arr).solve());
-        arr.clear();
-        for (int i=0; i<8; i++)
-            arr.add(4);
-        out.println(new FibonacciArray(arr).solve());
-    }
-    */
+
     static long solve(int index, int first, int second, int third, int arr[]) {
         if (first==0 && second==0 && third==0) {
             //out.println("index "+index);
@@ -142,10 +82,6 @@ class FibonacciArray {
         return sum;
     }
     static void test2() {
-        /*List<Integer> arr=new ArrayList<Integer>();
-        for (int i=0; i<3; i++)
-            arr.add(4);
-        out.println(new FibonacciArray(arr).solve());*/
         out.println(solve(0, 1,0,0,new int[]{1}));
         out.println(solve(0, 1,1,0,new int[]{1,1}));
         out.println(solve(0, 2,3,0,new int[]{2,3}));
