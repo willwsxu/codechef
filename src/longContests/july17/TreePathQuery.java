@@ -1,3 +1,5 @@
+package longContests.july17;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +14,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 // Given a weighted tree of N vertices, query XOR of weight<=k from u to v
-// medium
+// PSHTTR, medium
 // Fenwick Binary Index Tree for XOR, Euler Tour/LCA, offline sorting
 // Use Thread class to provide a large call stack for dfs
 class TreePathQuery implements Runnable{
