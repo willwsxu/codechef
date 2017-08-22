@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
 // Given a weighted tree of N vertices, query XOR of weight<=k from u to v
 // medium
 // Fenwick Binary Index Tree for XOR, Euler Tour/LCA, offline sorting
-// Use Thread class to provide a large call stck for dfs
+// Use Thread class to provide a large call stack for dfs
 class TreePathQuery implements Runnable{
             
     int u,v,k;
@@ -62,7 +62,7 @@ class TreePathQuery implements Runnable{
         
     public void run()
     {
-        TreePathXor.test();
+        //TreePathXor.test();
         
         int T=sc.nextInt(); // 1 ≤ T ≤ 5
         while (T-->0)
@@ -296,6 +296,7 @@ class FenwickTreeXor  // binary index tree
     }
     public void add(int x, int v)
     {
+        //out.println("add bit "+x+" v="+v);
         while (x<=n) {
             bit[x] ^= v;
             //out.println("bit "+x+" "+bit[x]);
@@ -358,11 +359,13 @@ class TreePathXor extends SimpleGraphX
     public void solve()
     {
         dfs(1, -1);
+        //out.println(Arrays.toString(st));
+        //out.println(Arrays.toString(en));
         
         List<Map.Entry<Integer,Integer>> sorted=new ArrayList<>();
         for (Edge e: edgeList)
         {
-            if (st[e.u]<st[e.v])
+            if (st[e.u]<st[e.v])  // add weight to vertex v given edge is u->v
                 sorted.add(new AbstractMap.SimpleEntry<Integer, Integer>(e.wt, -e.v));
             else
                 sorted.add(new AbstractMap.SimpleEntry<Integer, Integer>(e.wt, -e.u));
@@ -371,6 +374,7 @@ class TreePathXor extends SimpleGraphX
         for (Edge e: qList) {
             sorted.add(new AbstractMap.SimpleEntry<Integer, Integer>(e.wt, ++j));         
         }
+        // sort by weight, then by vertex, so edges are added in order of weight and before query of same weight.
         Collections.sort(sorted, (c1,c2)->c1.getValue()-c2.getValue());
         Collections.sort(sorted, (c1,c2)->c1.getKey()-c2.getKey());
         //out.println(sorted);
@@ -380,7 +384,9 @@ class TreePathXor extends SimpleGraphX
             if (e.getValue()<0) {
                 int v=-e.getValue();
                 ft.add(st[v], e.getKey());
-                ft.add(en[v]+1, e.getKey());
+                //ft.print();
+                ft.add(en[v]+1, e.getKey()); // exclude it from next vertex as it is not in the path
+                //ft.print();
             } else {
                 int idx = e.getValue();
                 //out.println("idx "+e);
@@ -393,7 +399,6 @@ class TreePathXor extends SimpleGraphX
             sb.append('\n');
         }
         out.print(sb.toString());
-        ft.print();
     }
     void dfs(int v, int p) {
         //out.println("dfs v="+v+" p="+p);
@@ -424,10 +429,11 @@ class TreePathXor extends SimpleGraphX
         TreePathXor treex=new TreePathXor(MAXN);
         treex.add(1, 2, 2);
         treex.add(2, 3, 4);
-        treex.add(3, 4, 8);
+        treex.add(2, 4, 8);
         treex.addQ(1, 3, 10);
         treex.addQ(1, 4, 10);
-        //treex.solve();
+        treex.addQ(3, 4, 10);
+        treex.solve();
         for (int i=4; i<MAXN-5; i++) {
             treex.add(i, i+1, i+1000000000);
         }
