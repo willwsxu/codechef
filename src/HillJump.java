@@ -4,17 +4,29 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import static java.lang.Integer.min;
+import static java.lang.Math.ceil;
+import static java.lang.Math.sqrt;
 import static java.lang.System.out;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
 
 class HillJump {
     long A[];
+    int  blocksize=0;
+    int  blocks=0;
+    long adj[];  // adjustment of A, per block
+    int  next[]; // next hill it can jump to
+    int  nextInBlobk[];
+    int  jumpsInBlock[];
     HillJump()
     {
-        int N=sc.nextInt();
+        int N=sc.nextInt(); // 1 ≤ N, Q ≤ 100,000
+        blocksize=(int)ceil(sqrt(N));
+        blocks = (N+blocksize-1)/blocksize;
+        out.println("blocks "+blocks+" size "+blocksize);
+        adj = new long[blocks];
         int Q=sc.nextInt();
         A=sc.rla(N);  // hill height, 1 ≤ Ai ≤ 1,000,000
         for (int i=0; i<Q;i++) {
@@ -24,13 +36,54 @@ class HillJump {
             else {
                 int L=sc.nextInt();
                 int R=sc.nextInt();
-                int X=sc.nextInt();
-                for (int j=L-1; j<R; j++)
-                {
-                    A[j] += X;
-                }
+                int X=sc.nextInt(); // -1,000,000 ≤ X ≤ 1,000,000
+                update(L, R, X);
             }
         }
+    }
+    int ceilingBlocks(int m)
+    {
+        return (m+blocksize-1)/blocksize;
+    }
+    int getBlockEnd(int L)
+    {
+        int m=L/blocksize;
+        return (L%blocksize==0?m:m+1)*blocksize;// L=30, block size=10, end=30
+    }
+    int getBlockStart(int R)
+    {
+        int m=ceilingBlocks(R);
+        return (m-1)*blocksize;// R=30, block size=10, begin=20
+    }
+    void update(int L, int R, int X)
+    {
+        int endBlock=getBlockEnd(L);
+        for (int j=L-1; j<min(R,endBlock); j++)
+        {
+            A[j] += X;
+        }  
+        out.println("endBlock "+endBlock);
+        out.println(Arrays.toString(A));
+        if (R<endBlock)
+            return;
+        int start = getBlockStart(R);
+        out.println("start "+start);
+        if (start<endBlock) {
+            out.println("error getBlockStart");
+            return;
+        }
+        for (int j=start; j<R; j++)
+        {
+            A[j] += X;
+        }  
+        out.println(Arrays.toString(A)); 
+        if (start==endBlock)
+            return;
+        for (int j=endBlock; j<start; j++)
+        {
+            A[j] += X;
+        } 
+        out.println(Arrays.toString(A)); 
     }
     int jump(int i, int k) {
         //out.println(Arrays.toString(A));
