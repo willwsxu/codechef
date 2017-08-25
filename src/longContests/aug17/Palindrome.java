@@ -29,35 +29,40 @@ class Palindrome {
         this(sc.next(),sc.next());
     }
     
+    boolean inFristOnly(int []letters1, int[]letter2)
+    {
+        for (int j=0; j<MAX_LETTERS; j++) {
+            if (letters1[j]==0)
+                continue;
+            if (letter2[j]!=0)
+                continue;
+            //out.println("letter in first not second "+j);
+            return true;
+        }
+        return false;
+    }
     boolean solve()
     {
-        for (int i=0; i<MAX_LETTERS; i++) {
+        /*for (int i=0; i<MAX_LETTERS; i++) {
             if (letterCout1[i]<2)
                 continue;
             if (letterCout2[i]==0)
                 return true;  // A win if A has a pair of letter that does not exist in B
-        }
+        }*/
         // at this moment, A does not have a winning pair
         // next step search for a single letter in A, but not B
+        boolean bInBOnly=inFristOnly(letterCout2, letterCout1);
         for (int i=0; i<MAX_LETTERS; i++) {
-            if (letterCout[i]!=1)
-                continue;
             if (letterCout1[i]==0)
                 continue;
-            // find it
-            // check if B has letter that does not exist in A
-            for (int j=0; j<MAX_LETTERS; j++) {
-                if (j==i)
-                    continue;
-                if (letterCout2[j]==0)
-                    continue;
-                if (letterCout1[j]!=0)
-                    continue;
-                //out.println("letter in B only "+j);
-                return false;
-            }
-            //out.println("no letter in B only "+i);
-            return true;
+            if (letterCout2[i]!=0)
+                continue;
+            // find a letter in A only
+            if ( !bInBOnly ) //out.println("no letter in B only "+i);
+                return true;
+            // B has letter that does not exist in A
+            if (letterCout1[i]>1)
+                return true;  // A has winning pair
         }
         // all letter in A exist in B
         return false;  // A lose
