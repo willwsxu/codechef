@@ -1,8 +1,11 @@
+package longContests.aug17;
+
 
 import static java.lang.System.out;
 import java.util.Scanner;
 
-
+// easy, limited cases
+// 
 class Palindrome {
     static final int MAX_LETTERS=26;
     int letterCout1[]=new int[MAX_LETTERS];
@@ -56,6 +59,7 @@ class Palindrome {
             //out.println("no letter in B only "+i);
             return true;
         }
+        // all letter in A exist in B
         return false;  // A lose
     }
     static void test()
