@@ -5,12 +5,11 @@ import static java.lang.System.out;
 import java.util.Scanner;
 
 // easy, limited cases
-// 
 class Palindrome {
     static final int MAX_LETTERS=26;
     int letterCout1[]=new int[MAX_LETTERS];
     int letterCout2[]=new int[MAX_LETTERS];
-    int letterCout[]=new int[MAX_LETTERS];
+    //int letterCout[]=new int[MAX_LETTERS];
     
     void count(int c[], String s )
     {
@@ -21,8 +20,8 @@ class Palindrome {
     {
         count(letterCout1, s);
         count(letterCout2, t);
-        for (int i=0; i<MAX_LETTERS; i++)
-            letterCout[i] = letterCout1[i]+letterCout2[i];
+        //for (int i=0; i<MAX_LETTERS; i++)
+        //    letterCout[i] = letterCout1[i]+letterCout2[i];
     }
     Palindrome()
     {
@@ -43,14 +42,6 @@ class Palindrome {
     }
     boolean solve()
     {
-        /*for (int i=0; i<MAX_LETTERS; i++) {
-            if (letterCout1[i]<2)
-                continue;
-            if (letterCout2[i]==0)
-                return true;  // A win if A has a pair of letter that does not exist in B
-        }*/
-        // at this moment, A does not have a winning pair
-        // next step search for a single letter in A, but not B
         boolean bInBOnly=inFristOnly(letterCout2, letterCout1);
         for (int i=0; i<MAX_LETTERS; i++) {
             if (letterCout1[i]==0)
@@ -58,11 +49,11 @@ class Palindrome {
             if (letterCout2[i]!=0)
                 continue;
             // find a letter in A only
-            if ( !bInBOnly ) //out.println("no letter in B only "+i);
+            if ( !bInBOnly ) // all letters in B exist in A, B lose
                 return true;
             // B has letter that does not exist in A
             if (letterCout1[i]>1)
-                return true;  // A has winning pair
+                return true;  // A can only if it has winning pair
         }
         // all letter in A exist in B
         return false;  // A lose
