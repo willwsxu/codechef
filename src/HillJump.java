@@ -18,8 +18,8 @@ class HillJump {
     int  blocks=0;
     long adj[];  // adjustment of A, per block
     int  next[]; // next hill it can jump to
-    int  nextInBlobk[];
-    int  jumpsInBlock[];
+    int  nextInBlobk[];  // last hill it can jjump to within the same block
+    int  jumpsInBlock[]; // how many jumps is needed to reach end of block
     HillJump()
     {
         int N=sc.nextInt(); // 1 ≤ N, Q ≤ 100,000
