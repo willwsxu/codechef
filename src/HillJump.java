@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import static java.lang.Integer.max;
 import static java.lang.Integer.min;
 import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
@@ -29,6 +30,7 @@ class HillJump {
         adj = new long[blocks];
         int Q=sc.nextInt();
         A=sc.rla(N);  // hill height, 1 ≤ Ai ≤ 1,000,000
+        calcNext(0, N-1);
         for (int i=0; i<Q;i++) {
             int type =sc.nextInt();
             if (type==1)
@@ -39,6 +41,23 @@ class HillJump {
                 int X=sc.nextInt(); // -1,000,000 ≤ X ≤ 1,000,000
                 update(L, R, X);
             }
+        }
+    }
+    
+    // pre calculate next jump between from and to, inclusive
+    void calcNext(int from, int to)
+    {
+        for (int i=from; i<=to; i++) {
+            next[i]=i;
+            for (int j=i+1; j<A.length; j++) {
+                if (j-i>100) {
+                    break;
+                }
+                if (A[j]>A[i]) {
+                    next[i]=j;
+                    break;
+                }
+            }  
         }
     }
     int ceilingBlocks(int m)
@@ -85,6 +104,16 @@ class HillJump {
         } 
         out.println(Arrays.toString(A)); 
     }
+    void update2(int L, int R, int X)
+    {
+        for (int j=L-1; j<R; j++)
+        {
+            A[j] += X;
+        }  
+        calcNext(max(0, L-101), L-2);  // L-100 ≤ i < L
+        calcNext(max(0, R-100), R-1);  // R-100 < i ≤ R
+    }
+    
     int jump(int i, int k) {
         //out.println(Arrays.toString(A));
         int j=i+1;
@@ -96,6 +125,15 @@ class HillJump {
                 if (--k==0)
                     return j;
             }
+        }
+        return i;
+    }
+    int jump2(int i, int k) {
+        while (i<A.length&&k>0) {
+            if (next[i]==i)
+                return i;
+            i=next[i];
+            k--;
         }
         return i;
     }
