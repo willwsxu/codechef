@@ -8,7 +8,7 @@ import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-
+//SEACO easy (if you know difference array well) process from back
 class SerejaCommands {
     int cmdsFr[];  // 
     int cmdsTo[];
