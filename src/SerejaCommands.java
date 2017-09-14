@@ -79,20 +79,20 @@ class SerejaCommands {
         diffCount = new int[cmdsFr.length];
         diffA = new int[A.length];
         for (int i=cmdsFr.length-1; i>=0; i--) {
-            cmdsCount[i]=(int)((diffCount[i]+cmdsCount[i+1])%MOD);
+            cmdsCount[i]=(diffCount[i]+cmdsCount[i+1])%MOD;
             if (cmdsType[i]==2) {
-                diffCount[cmdsTo[i]-1] += cmdsCount[i];
+                diffCount[cmdsTo[i]-1] = (diffCount[cmdsTo[i]-1]+cmdsCount[i])%MOD;
                 if ( cmdsFr[i]>1 )
-                    diffCount[cmdsFr[i]-2] -= cmdsCount[i];
+                    diffCount[cmdsFr[i]-2] = (diffCount[cmdsFr[i]-2]-cmdsCount[i]+MOD)%MOD;
             } else {
-                diffA[cmdsTo[i]-1] += cmdsCount[i];
+                diffA[cmdsTo[i]-1] = (diffA[cmdsTo[i]-1]+cmdsCount[i])%MOD;
                 if (cmdsFr[i]>1)
-                    diffA[cmdsFr[i]-2] -= cmdsCount[i];
+                    diffA[cmdsFr[i]-2] = (diffA[cmdsFr[i]-2] - cmdsCount[i]+MOD)%MOD;
             }
         }
-        A[A.length-1] = (int)(diffA[A.length-1]%MOD);
+        A[A.length-1] = diffA[A.length-1]%MOD;
         for (int i=A.length-2; i>=0; i--) {
-            A[i] = (int)((diffA[i]+A[i+1])%MOD);
+            A[i] = (diffA[i]+A[i+1])%MOD;
         }
         
         print();    
@@ -135,7 +135,7 @@ class SerejaCommands {
     static MyScannerXX sc=new MyScannerXX();
     public static void main(String[] args)
     {
-        test();
+        judge();
     }
 }
 
