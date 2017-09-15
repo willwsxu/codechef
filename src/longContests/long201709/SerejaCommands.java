@@ -1,3 +1,5 @@
+package longContests.long201709;
+
 
 import java.io.BufferedReader;
 import java.io.File;
