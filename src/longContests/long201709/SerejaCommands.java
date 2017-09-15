@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 //SEACO easy (if you know difference array well) process from back
+//can implement with segment tree or fenwick tree
 class SerejaCommands {
     int cmdsFr[];  // 
     int cmdsTo[];
@@ -56,7 +57,7 @@ class SerejaCommands {
         out.println(sb.toString());
     }
     
-    void bruteforce()
+    void bruteforce()  //O(nm)
     {
         Arrays.fill(cmdsCount,1);
         for (int i=cmdsFr.length-1; i>=0; i--) {
@@ -75,7 +76,7 @@ class SerejaCommands {
         }    
         print();
     }
-    void differenceArray()
+    void differenceArray()  //O(n+m)
     {
         cmdsCount[cmdsFr.length]=1; // so it works when i=m-1
         diffCount = new int[cmdsFr.length];
