@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+// medium
 class PrimeQuery {
     PrimeSieve prm = new PrimeSieve(1000000);
     int a[];
