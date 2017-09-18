@@ -11,8 +11,20 @@ import static java.lang.Math.sqrt;
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.StringTokenizer;
+/*There are N hills located on a straight line. The height of the ith one is denoted by Hi. 
+  A participant standing at the top of the ith hill jumps to the nearest hill to the right 
+  which is strictly higher than the one he is standing on. If the nearest one is further 
+  than 100 hills away, he doesn't move anywhere.
 
+Giving Q queries of 2 types:
 
+The first type is given by (P,K) , a participant standing on the Pth hill is willing to 
+ perform K successive moves, what hill he will be ending at?
+
+The second type is given by (L,R,X), for each hill between the Lth one and the Rth one (inclusive) 
+should be increased by X (it may be negative).
+*/
+// HillJUMP, medium, square root sqrt decomposition
 class HillJump {
     long A[];
     int  blocksize=0;
@@ -26,7 +38,7 @@ class HillJump {
         int N=sc.nextInt(); // 1 ≤ N, Q ≤ 100,000
         blocksize=(int)ceil(sqrt(N));
         blocks = (N+blocksize-1)/blocksize;
-        out.println("blocks "+blocks+" size "+blocksize);
+        //out.println("blocks "+blocks+" size "+blocksize);
         adj = new long[blocks];
         int Q=sc.nextInt();
         A=sc.rla(N);  // hill height, 1 ≤ Ai ≤ 1,000,000
@@ -34,12 +46,12 @@ class HillJump {
         for (int i=0; i<Q;i++) {
             int type =sc.nextInt();
             if (type==1)
-                out.println(jump(sc.nextInt()-1, sc.nextInt())+1);
+                out.println(jump2(sc.nextInt()-1, sc.nextInt())+1);
             else {
                 int L=sc.nextInt();
                 int R=sc.nextInt();
                 int X=sc.nextInt(); // -1,000,000 ≤ X ≤ 1,000,000
-                update(L, R, X);
+                update2(L, R, X);
             }
         }
     }
@@ -47,8 +59,9 @@ class HillJump {
     // pre calculate next jump between from and to, inclusive
     void calcNext(int from, int to)
     {
+        next=new int[A.length];
         for (int i=from; i<=to; i++) {
-            next[i]=i;
+            next[i]=i;  // initial value, no jump
             for (int j=i+1; j<A.length; j++) {
                 if (j-i>100) {
                     break;
