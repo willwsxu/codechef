@@ -25,36 +25,64 @@ The second type is given by (L,R,X), for each hill between the Lth one and the R
 should be increased by X (it may be negative).
 */
 // HillJUMP, medium, square root sqrt decomposition
+// pre-calculation next[] (i jump to next[i]) boost performance a lot, pass 7 out of 8 tests.
+// Step 2. Add adjustment per block to speed up update command
 class HillJump {
     long A[];
-    int  blocksize=0;
+    int  blocksize=1;
     int  blocks=0;
-    long adj[];  // adjustment of A, per block
+    long adjBlock[];  // adjustment of A, per block
     int  next[]; // next hill it can jump to
-    int  nextInBlobk[];  // last hill it can jjump to within the same block
+    int  nextInBlobk[];  // last hill it can jump to within the same block
     int  jumpsInBlock[]; // how many jumps is needed to reach end of block
     HillJump()
     {
         int N=sc.nextInt(); // 1 ≤ N, Q ≤ 100,000
-        blocksize=(int)ceil(sqrt(N));
-        blocks = (N+blocksize-1)/blocksize;
-        //out.println("blocks "+blocks+" size "+blocksize);
-        adj = new long[blocks];
         int Q=sc.nextInt();
+        init(N, Q);
         A=sc.rla(N);  // hill height, 1 ≤ Ai ≤ 1,000,000
-        next=new int[N];
         calcNext(0, N-1);
+        StringBuilder sb=new StringBuilder();
         for (int i=0; i<Q;i++) {
             int type =sc.nextInt();
-            if (type==1)
-                out.println(jump2(sc.nextInt()-1, sc.nextInt())+1);
-            else {
+            if (type==1) {
+                sb.append(jump2(sc.nextInt()-1, sc.nextInt())+1);
+                sb.append('\n');
+            } else {
                 int L=sc.nextInt();
                 int R=sc.nextInt();
                 int X=sc.nextInt(); // -1,000,000 ≤ X ≤ 1,000,000
                 update2(L, R, X);
             }
         }
+        out.print(sb.toString());
+    }
+    
+    HillJump(long[] a, int cmd[], int Q)
+    {
+        init(a.length, Q);
+        A=a;
+        calcNext(0, a.length-1);
+        StringBuilder sb=new StringBuilder();
+        int j=0;
+        for (int i=0; i<Q;i++) {
+            if (cmd[j++]==1) {
+                sb.append(jump2(cmd[j++]-1, cmd[j++])+1);
+                sb.append('\n');                
+            } else {
+                update2(cmd[j++], cmd[j++], cmd[j++]);                
+            }
+        }
+        out.print(sb.toString());
+    }
+    
+    void init(int N, int Q)
+    {
+        blocksize=(int)ceil(sqrt(N));
+        blocks = (N+blocksize-1)/blocksize;
+        //out.println("blocks "+blocks+" size "+blocksize);
+        adjBlock = new long[blocks];
+        next=new int[N];        
     }
     
     // pre calculate next jump between from and to, inclusive
@@ -66,7 +94,7 @@ class HillJump {
                 if (j-i>100) {
                     break;
                 }
-                if (A[j]>A[i]) {
+                if (A[j]+adjBlock[j/blocksize]>A[i]+adjBlock[i/blocksize]) {
                     next[i]=j;
                     break;
                 }
@@ -117,14 +145,38 @@ class HillJump {
         } 
         out.println(Arrays.toString(A)); 
     }
-    void update2(int L, int R, int X)
+    void updateBlock(int L, int R, int X)
     {
+        if (R-L+1<blocksize || blocksize<2)
+            return;
+        int startBlock=ceilingBlocks(L-1); // block size 10, 1..10 ->0,1, 2..10->1,1, 1..9->0,0
+        int endBlock=R/blocksize;
+        for (int i=startBlock; i<endBlock; i++)
+            adjBlock[i] +=X;
+    }
+    void updateCell(int L, int R, int X) 
+    {        
         for (int j=L-1; j<R; j++)
         {
             A[j] += X;
         }  
+    }
+    void update2(int L, int R, int X)
+    {
+        updateBlock(L,R,X);
+        if ( blocksize<2 || R-L<(blocksize<<1))
+            updateCell(L,R,X);
+        else {
+            if (L%blocksize!=1)
+                updateCell(L, ceilingBlocks(L-1)*blocksize, X);
+            if (R%blocksize!=1)
+                updateCell(R/blocksize*blocksize+1, R, X);
+        }
         calcNext(max(0, L-101), L-2);  // L-100 ≤ i < L
         calcNext(max(0, R-100), R-1);  // R-100 < i ≤ R
+        out.println(Arrays.toString(adjBlock));
+        out.println(Arrays.toString(A));
+        out.println(Arrays.toString(next));
     }
     
     int jump(int i, int k) {
@@ -151,10 +203,17 @@ class HillJump {
         return i;
     }
     
+    public static void test()
+    {
+        new HillJump(new long[]{1,2,3,4,5}, new int[]{1,1,2,2,3,4,-1,1,1,2}, 3);
+        new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,4,6,-1,1,1,3}, 3);
+    }
+    
     static MyScanner sc = new MyScanner();
     public static void main(String[] args)
     {    
-        new HillJump();
+        //new HillJump();
+        test();
     }
 }
 
