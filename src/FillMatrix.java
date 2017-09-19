@@ -12,21 +12,28 @@ import java.util.StringTokenizer;
 class FillMatrix {
     
     int parity[];
-    int N;
     int q[];
     DSUx dsu;
     GraphWeightedX g;
     List<EdgeX>  edges=new ArrayList<>();
     FillMatrix()
     {
-        N=sc.ni();
-        parity=new int[N];
-        Arrays.fill(parity,-1);
+        init(sc.ni());
         int Q=sc.ni();
         q=sc.ria(3*Q);
         //out.println(Arrays.toString(q));
-        dsu =new DSUx(N);
-        g=new GraphWeightedX(N);
+    }
+    FillMatrix(int n, int q[])
+    {
+        init(n);
+        this.q=q;
+    }
+    private void init(int n)
+    {
+        parity=new int[n];
+        Arrays.fill(parity,-1);
+        dsu =new DSUx(n);
+        g=new GraphWeightedX(n);        
     }
     boolean solve()
     {
@@ -55,7 +62,7 @@ class FillMatrix {
         for (EdgeX e: edges) {
             int u=e.from();
             int v=e.to();
-            if ((parity[u] ^parity[v] ^ (int)e.weight())==1)
+            if ((parity[u] ^ parity[v] ^ (int)e.weight())==1)
                 return false;
         }
         return true;
@@ -74,13 +81,24 @@ class FillMatrix {
         }         
     }
     
-    static MyScannerX sc=new MyScannerX();
-    public static void main(String[] args)
-    {    
+    public static void test()
+    {
+        out.println(new FillMatrix(3, new int[]{1,2,1,2,3,1,1,3,1}).solve()==false);
+        out.println(new FillMatrix(3, new int[]{1,2,1,2,3,1,1,3,0}).solve()==true);
+        out.println(new FillMatrix(4, new int[]{1,2,1,2,3,1,1,4,1}).solve()==true);
+        out.println(new FillMatrix(4, new int[]{1,2,1,2,3,1,1,4,1,2,4,1}).solve()==false);
+    }
+    public static void judge()
+    {
         int T=sc.ni();
         while (T-->0) {
             out.println(new FillMatrix().solve()?"yes":"no");
-        }
+        }        
+    }
+    static MyScannerX sc=new MyScannerX();
+    public static void main(String[] args)
+    {    
+        judge();
     }
 }
 
