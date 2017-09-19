@@ -42,6 +42,7 @@ class HillJump {
         adj = new long[blocks];
         int Q=sc.nextInt();
         A=sc.rla(N);  // hill height, 1 ≤ Ai ≤ 1,000,000
+        next=new int[N];
         calcNext(0, N-1);
         for (int i=0; i<Q;i++) {
             int type =sc.nextInt();
@@ -59,7 +60,6 @@ class HillJump {
     // pre calculate next jump between from and to, inclusive
     void calcNext(int from, int to)
     {
-        next=new int[A.length];
         for (int i=from; i<=to; i++) {
             next[i]=i;  // initial value, no jump
             for (int j=i+1; j<A.length; j++) {
