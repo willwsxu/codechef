@@ -52,13 +52,17 @@ class FillMatrix {
                     dsu.union(q[i]-1, q[j]-1);
                     g.addEdge(new EdgeX(q[i]-1, q[j]-1, q[v]));
                 }
-                else
+                else {
                     edges.add(new EdgeX(q[i]-1, q[j]-1, q[v]));
+                }
             }
         }
         if (edges.isEmpty())
             return true;
-        dfs(q[0]-1, -1, 0);
+        for (int i=0; i<parity.length; i++)
+            dfs(i, -1, 0);   // in case graph is not al connected
+        //out.println(Arrays.toString(parity));
+        //out.println(edges.size());
         for (EdgeX e: edges) {
             int u=e.from();
             int v=e.to();
@@ -70,10 +74,12 @@ class FillMatrix {
     
     void dfs(int u, int parent, int weight)
     {
-        if (parity[u]>=0)
+        if (parity[u]>=0 || g.adj(u).isEmpty()) // already visited, or not connected vertex
             return;
-        if ( parent ==-1)
+        if ( parent ==-1) {
+            //out.println("new tree "+(u+1));
             parity[u]=0;  // set default to even
+        }
         else
             parity[u] = parity[parent] ^ weight;  // weight =0, same parity, else opposite parity
         for (EdgeX v: g.adj(u))    {
@@ -86,7 +92,8 @@ class FillMatrix {
         out.println(new FillMatrix(3, new int[]{1,2,1,2,3,1,1,3,1}).solve()==false);
         out.println(new FillMatrix(3, new int[]{1,2,1,2,3,1,1,3,0}).solve()==true);
         out.println(new FillMatrix(4, new int[]{1,2,1,2,3,1,1,4,1}).solve()==true);
-        out.println(new FillMatrix(4, new int[]{1,2,1,2,3,1,1,4,1,2,4,1}).solve()==false);
+        out.println(new FillMatrix(10, new int[]{1,2,1,2,3,1,1,4,1,2,4,1}).solve()==false);
+        out.println(new FillMatrix(10, new int[]{1,2,1,2,3,1,5,4,1,4,5,0}).solve()==false);//not connected graph
     }
     public static void judge()
     {
