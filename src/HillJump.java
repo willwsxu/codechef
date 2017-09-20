@@ -101,57 +101,32 @@ class HillJump {
             }  
         }
     }
+    
+    // assume m count from 1
+    // if m=10, blocksize=10, return 1, if m=11 return 2
     int ceilingBlocks(int m)
     {
         return (m+blocksize-1)/blocksize;
     }
     int getBlockEnd(int L)
     {
-        int m=L/blocksize;
-        return (L%blocksize==0?m:m+1)*blocksize;// L=30, block size=10, end=30
+        return ceilingBlocks(L)*blocksize;// L=21 to 30, block size=10, end=30
     }
     int getBlockStart(int R)
     {
-        int m=ceilingBlocks(R);
-        return (m-1)*blocksize;// R=30, block size=10, begin=20
+        return (ceilingBlocks(R)-1)*blocksize+1;// R=21 to 30, block size=10, begin=21
     }
     void update(int L, int R, int X) // brute force
     {
-        int endBlock=getBlockEnd(L);
-        for (int j=L-1; j<min(R,endBlock); j++)
-        {
-            A[j] += X;
-        }  
-        out.println("endBlock "+endBlock);
-        out.println(Arrays.toString(A));
-        if (R<endBlock)
-            return;
-        int start = getBlockStart(R);
-        out.println("start "+start);
-        if (start<endBlock) {
-            out.println("error getBlockStart");
-            return;
-        }
-        for (int j=start; j<R; j++)
-        {
-            A[j] += X;
-        }  
-        out.println(Arrays.toString(A)); 
-        if (start==endBlock)
-            return;
-        for (int j=endBlock; j<start; j++)
-        {
-            A[j] += X;
-        } 
-        out.println(Arrays.toString(A)); 
+        updateCell(L,R,X);
     }
     
     boolean updateBlock(int L, int R, int X)
     {
         if ( blocksize<2)
             return false;
-        int startBlock=ceilingBlocks(L-1); // block size 10, 1..10 ->0,1, 2..10->1,1, 1..9->0,0
-        int endBlock=R/blocksize;
+        int startBlock=ceilingBlocks(L-1); // block size 10, L=2 to 11, start at 1
+        int endBlock=R/blocksize;          // block size 10, R=10 to 19, end at 1
         for (int i=startBlock; i<endBlock; i++)
             adjBlock[i] +=X;
         return startBlock<endBlock;
@@ -170,9 +145,9 @@ class HillJump {
             updateCell(L,R,X);
         else {
             if (L%blocksize!=1)
-                updateCell(L, ceilingBlocks(L-1)*blocksize, X);
-            if (R%blocksize!=0)   // R is not 
-                updateCell(R/blocksize*blocksize+1, R, X);
+                updateCell(L, getBlockEnd(L), X);
+            if (R%blocksize!=0)   // R is not end of block
+                updateCell(getBlockStart(R), R, X);
         }
         calcNext(max(0, L-101), L-2);  // L-100 ≤ i < L
         calcNext(max(0, R-100), R-1);  // R-100 < i ≤ R
@@ -211,7 +186,7 @@ class HillJump {
         new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,4,6,-1,1,1,3}, 3);  // result 3, 5
         new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,3,5,-1,1,1,3}, 3);  // result 3, 5
         new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,1,4,1,1,1,4}, 3);  // result 3, 4
-        new HillJump(new long[]{1,2,3,4,5,4,3,2,1,6}, new int[]{1,1,2,2,3,10,1,1,1,5}, 3);  // result 3, 9
+        new HillJump(new long[]{1,2,3,4,5,4,3,2,1,6}, new int[]{1,1,2,2,3,10,1,1,1,5}, 3);  // result 3, 10
     }
     
     static MyScanner sc = new MyScanner();
