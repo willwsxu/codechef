@@ -115,7 +115,7 @@ class HillJump {
         int m=ceilingBlocks(R);
         return (m-1)*blocksize;// R=30, block size=10, begin=20
     }
-    void update(int L, int R, int X)
+    void update(int L, int R, int X) // brute force
     {
         int endBlock=getBlockEnd(L);
         for (int j=L-1; j<min(R,endBlock); j++)
@@ -145,17 +145,20 @@ class HillJump {
         } 
         out.println(Arrays.toString(A)); 
     }
-    void updateBlock(int L, int R, int X)
+    
+    boolean updateBlock(int L, int R, int X)
     {
-        if (R-L+1<blocksize || blocksize<2)
-            return;
+        if ( blocksize<2)
+            return false;
         int startBlock=ceilingBlocks(L-1); // block size 10, 1..10 ->0,1, 2..10->1,1, 1..9->0,0
         int endBlock=R/blocksize;
         for (int i=startBlock; i<endBlock; i++)
             adjBlock[i] +=X;
+        return startBlock<endBlock;
     }
     void updateCell(int L, int R, int X) 
     {        
+        //out.println("update cell L="+L+" R="+R+" X="+X);
         for (int j=L-1; j<R; j++)
         {
             A[j] += X;
@@ -163,23 +166,22 @@ class HillJump {
     }
     void update2(int L, int R, int X)
     {
-        updateBlock(L,R,X);
-        if ( blocksize<2 || R-L<(blocksize<<1))
+        if ( !updateBlock(L,R,X))
             updateCell(L,R,X);
         else {
             if (L%blocksize!=1)
                 updateCell(L, ceilingBlocks(L-1)*blocksize, X);
-            if (R%blocksize!=1)
+            if (R%blocksize!=0)   // R is not 
                 updateCell(R/blocksize*blocksize+1, R, X);
         }
         calcNext(max(0, L-101), L-2);  // L-100 ≤ i < L
         calcNext(max(0, R-100), R-1);  // R-100 < i ≤ R
-        out.println(Arrays.toString(adjBlock));
-        out.println(Arrays.toString(A));
-        out.println(Arrays.toString(next));
+        //out.println(Arrays.toString(adjBlock));
+        //out.println(Arrays.toString(A));
+        //out.println(Arrays.toString(next));
     }
     
-    int jump(int i, int k) {
+    int jump(int i, int k) { // brute force
         //out.println(Arrays.toString(A));
         int j=i+1;
         for (; j<A.length; j++) {
@@ -206,14 +208,17 @@ class HillJump {
     public static void test()
     {
         new HillJump(new long[]{1,2,3,4,5}, new int[]{1,1,2,2,3,4,-1,1,1,2}, 3);
-        new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,4,6,-1,1,1,3}, 3);
+        new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,4,6,-1,1,1,3}, 3);  // result 3, 5
+        new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,3,5,-1,1,1,3}, 3);  // result 3, 5
+        new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,1,4,1,1,1,4}, 3);  // result 3, 4
+        new HillJump(new long[]{1,2,3,4,5,4,3,2,1,6}, new int[]{1,1,2,2,3,10,1,1,1,5}, 3);  // result 3, 9
     }
     
     static MyScanner sc = new MyScanner();
     public static void main(String[] args)
     {    
-        //new HillJump();
-        test();
+        new HillJump();
+        //test();
     }
 }
 
