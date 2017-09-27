@@ -26,7 +26,8 @@ should be increased by X (it may be negative).
 */
 // HillJUMP, medium, square root sqrt decomposition
 // pre-calculation next[] (i jump to next[i]) boost performance a lot, pass 7 out of 8 tests.
-// Step 2. Add adjustment per block to speed up update command
+// Step 2. Add adjustment per block to speed up update command (minor improvement)
+// step 3. jumps in a block
 class HillJump {
     long A[];
     int  blocksize=1;
