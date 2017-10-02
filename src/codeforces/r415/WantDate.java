@@ -1,22 +1,49 @@
-package r415;
+package codeforces.r415;
 
 
 import static java.lang.Integer.min;
 import static java.lang.System.out;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * N points on a line, coordinate 1 ≤ xi ≤ 10^9
+ * a is none empty subset of A - all points
+ * F(a) = max distance of any two points in a
+ * Find sum of F(a) of all possible subsets
  */
-
+// e.g N=3, X=1 3 4
+// dist 1-3: subsets 1 3, 1 4, 1 3 4  
+// dist 3-4: subsets      1 4, 1 3 4, 3 4
 //contest r415, 809A
 public class WantDate {
     
     static final int  MOD=1000000007;    // 10^9 + 7
+
+    static int power2[]=new int[300000+5];
+    static
+    {
+        power2[0]=1;
+        for (int i=1; i< power2.length; i++) {
+            power2[i] = (2 * power2[i-1])%MOD;
+        }
+        //out.println(Arrays.toString(power2));
+    }
+    WantDate(int x[])
+    {
+        x = sortIaR(x);
+        //out.println(Arrays.toString(x));
+        long total=0;
+        for (int i=0; i<x.length-1; i++) {
+            int dist=x[i]-x[i+1];
+            dist = (dist * (power2[i+1]-1))%MOD;
+            dist = (dist * (power2[x.length-i-1]-1))%MOD;
+            total = (total+dist)%MOD;
+        }
+        out.println(total);        
+    }
     static long sum1(int x[], int i, int n) {
         long diff=x[i]-x[n];
         int power=n-i-1;
@@ -50,10 +77,11 @@ public class WantDate {
     }
     static void test()
     {
-        sum(new int[]{400000000,100000000,300000000});
-        sum(new int[]{400000000,100000000,300000000,1});
-        sum(new int[]{1, 2, 3, 4, 5});
-        sum(new int[]{100000000, 200000000, 300000000, 400000000, 500000000});
+        new WantDate(new int[]{4, 7}); // 3
+        new WantDate(new int[]{400000000,100000000,300000000});  //900000000
+        new WantDate(new int[]{400000000,100000000,300000000,1});       // 999999979
+        new WantDate(new int[]{1, 2, 3, 4, 5}); // 66
+        new WantDate(new int[]{100000000, 200000000, 300000000, 400000000, 500000000}); //599999958
     }
         
     static int[] sortIaR(int a[])  // sort int array reverse
@@ -71,9 +99,9 @@ public class WantDate {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //test();
-        int N=sc.nextInt();     // 1 ≤ n ≤ 3·10^5
-        int x[]=ria(N);         // 1 ≤ xi ≤ 10^9
-        sum(x);
+        //int N=sc.nextInt();     // 1 ≤ n ≤ 3·10^5
+        //int x[]=ria(N);         // 1 ≤ xi ≤ 10^9
+        //sum(x);
+        new WantDate(ria(sc.nextInt()));
     }
 }
