@@ -1,12 +1,9 @@
 package codeforces.r415;
 
 
-import static java.lang.Integer.min;
+import codechef.Calculation;
+import codechef.IOR;
 import static java.lang.System.out;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Scanner;
-import java.util.stream.IntStream;
 
 /*
  * N points on a line, coordinate 1 ≤ xi ≤ 10^9, 1 ≤ n ≤ 3·10^5
@@ -17,6 +14,7 @@ import java.util.stream.IntStream;
 // e.g N=3, X=1 3 4
 // dist 1-3: subsets 1 3, 1 4, 1 3 4  
 // dist 3-4: subsets      1 4, 1 3 4, 3 4
+// IDEA: only calc distanc eof neibouring points after sorting, multiply how many times it below to a subset
 //contest r415, 809A
 public class WantDate {
     
@@ -33,7 +31,7 @@ public class WantDate {
     }
     WantDate(int x[])
     {
-        x = sortIaR(x);
+        x = Calculation.reverse(x);
         //out.println(Arrays.toString(x));
         long total=0;
         for (int i=0; i<x.length-1; i++) {
@@ -52,22 +50,9 @@ public class WantDate {
         new WantDate(new int[]{1, 2, 3, 4, 5}); // 66
         new WantDate(new int[]{100000000, 200000000, 300000000, 400000000, 500000000}); //599999958
     }
-        
-    static int[] sortIaR(int a[])  // sort int array reverse
-    {
-        return IntStream.of(a).boxed()
-                .sorted(Comparator.reverseOrder())
-                .mapToInt(i->i).toArray();        
-    }
-    static int[] ria(int N) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
-    }
-    static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args)
     {      
-        new WantDate(ria(sc.nextInt()));
+        new WantDate(IOR.ria(IOR.ni()));
     }
 }
