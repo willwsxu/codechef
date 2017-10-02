@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.stream.IntStream;
 
 /*
- * N points on a line, coordinate 1 ≤ xi ≤ 10^9
+ * N points on a line, coordinate 1 ≤ xi ≤ 10^9, 1 ≤ n ≤ 3·10^5
  * a is none empty subset of A - all points
  * F(a) = max distance of any two points in a
  * Find sum of F(a) of all possible subsets
@@ -37,43 +37,12 @@ public class WantDate {
         //out.println(Arrays.toString(x));
         long total=0;
         for (int i=0; i<x.length-1; i++) {
-            int dist=x[i]-x[i+1];
+            long dist=x[i]-x[i+1];
             dist = (dist * (power2[i+1]-1))%MOD;
             dist = (dist * (power2[x.length-i-1]-1))%MOD;
             total = (total+dist)%MOD;
         }
         out.println(total);        
-    }
-    static long sum1(int x[], int i, int n) {
-        long diff=x[i]-x[n];
-        int power=n-i-1;
-        //out.println("diff="+diff+" power="+power);
-        if (power==0) {
-            return diff%MOD;
-        }
-        long total=0;
-        while (power>0) {
-            int p=min(power, 30);
-            power -= p;
-            diff *= (1<<p);
-            total = (total+diff%MOD)%MOD;
-        }
-        //out.println("new total="+total);
-        return total;
-    }
-    static void sum(int x[])
-    {
-        x = sortIaR(x);
-        int n=x.length-1;
-        long total=0;
-        for (int i=0; i<n; i++)
-        {
-            total =(total+sum1(x, i, n))%MOD;
-            if (i==0)
-                continue;
-            total =(total+sum1(x, 0, i))%MOD;
-        }
-        out.println(total);
     }
     static void test()
     {
@@ -99,9 +68,6 @@ public class WantDate {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {      
-        //int N=sc.nextInt();     // 1 ≤ n ≤ 3·10^5
-        //int x[]=ria(N);         // 1 ≤ xi ≤ 10^9
-        //sum(x);
         new WantDate(ria(sc.nextInt()));
     }
 }
