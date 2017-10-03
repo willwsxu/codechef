@@ -35,7 +35,7 @@ public class FindBone796B {
             last = other;
             if (holes.contains(other)) {
                 out.println(other);
-                break;
+                return;
             }
         }
         out.println(last);
