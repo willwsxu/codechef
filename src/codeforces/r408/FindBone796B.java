@@ -14,13 +14,16 @@ public class FindBone796B {
     static Scanner scan = new Scanner(System.in);
     FindBone796B(Set<Integer> holes, IntPair[] m )
     {
+        solve(holes, m);
+    }
+    void solve(Set<Integer> holes, IntPair[] m)
+    {
         if ( holes.contains(1) ) {
             out.println(1);
             return;
         }
         int last=1;
         for (int i=0; i<m.length; i++) {
-            out.println("loop "+i);
             int other=0;
             if (m[i].first==last)  {
                 other = m[i].second;
@@ -34,10 +37,8 @@ public class FindBone796B {
                 out.println(other);
                 break;
             }
-            if (i==m.length-1) 
-                out.println(other);
         }
-        out.println("done");
+        out.println(last);
     }
     FindBone796B()
     {
@@ -47,11 +48,7 @@ public class FindBone796B {
         Set<Integer> holes = new HashSet<>();
         for (int i=0; i<m; i++)
             holes.add(scan.nextInt());
-        if ( holes.contains(1) ) {
-            out.println(1);
-            return;
-        }
-        int last=1;
+        IntPair[] move=new IntPair[k];
         for (int i=0; i<k; i++) {
             String line = scan.nextLine();
             if (line.isEmpty())
@@ -59,41 +56,29 @@ public class FindBone796B {
             String[] swap = line.split(" ");
             int c1 = Integer.parseInt(swap[0]);
             int c2 = Integer.parseInt(swap[1]);
-            int other=0;
-            if (c1==last)  {
-                other = c2;
-            } else if (c2==last)  {
-                other = c1;
-            }
-            else // no bones
-                continue;
-            last = other;
-            if (holes.contains(other)) {
-                out.println(other);
-                break;
-            }
-            if (i==k-1) 
-                out.println(other);
+            move[i]=new IntPair(c1,c2);
         }
+        solve(holes, move);
     }
     public static void test()
     {
         Set<Integer> holes = new HashSet<>(Arrays.asList(new Integer[]{19, 28, 39, 82, 99, 929384, 8298, 892849, 202020, 777777, 123123}));
         IntPair[] m=new IntPair[9];
         m[0]=new IntPair(19,28);
-        m[0]=new IntPair(28,39);
-        m[0]=new IntPair(1, 123124);
-        m[0]=new IntPair(39,28);
-        m[0]=new IntPair(28,99);
-        m[0]=new IntPair(99,8298);
-        m[0]=new IntPair(123124,123122);
-        m[0]=new IntPair(2300,3200);
-        m[0]=new IntPair(8298,1000000);
+        m[1]=new IntPair(28,39);
+        m[2]=new IntPair(1, 123124);
+        m[3]=new IntPair(39,28);
+        m[4]=new IntPair(28,99);
+        m[5]=new IntPair(99,8298);
+        m[6]=new IntPair(123124,123122);
+        m[7]=new IntPair(2300,3200);
+        m[8]=new IntPair(8298,1000000);
         new FindBone796B(holes, m);
     }
     public static void main(String[] args)
     {        
-        test();
+        //test();
+        new FindBone796B();
     }
 }
 /*
