@@ -1,24 +1,34 @@
 package codeforces.r408;
 
 
+import codechef.MyScanner;
 import static java.lang.System.out;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Scanner;
 import java.util.Set;
 
-
+// N
+// Need fast IO to pass test without TLE
 public class FindBone796B {
     
-    static Scanner scan = new Scanner(System.in);
-    FindBone796B(Set<Integer> holes, IntPair[] m )
+    static MyScanner sc = new MyScanner();
+    Set<Integer> holes;
+    int position[];
+    FindBone796B(Set<Integer> holes, IntPair[] m, int N )
     {
-        solve(holes, m);
+        this.holes=holes;
+        solve(m, N);
     }
-    void solve(Set<Integer> holes, IntPair[] m)
+    boolean isHole(int pos)
     {
-        if ( holes.contains(1) ) {
+        return position[pos]==1;//holes.contains(pos);
+    }
+    void solve(IntPair[] m, int N)
+    {
+        position=new int[N+1];
+        for (int h : holes)
+            position[h]=1;  // mark hole as value 1
+        if ( isHole(1) ) {
             out.println(1);
             return;
         }
@@ -33,7 +43,7 @@ public class FindBone796B {
             else // no bones
                 continue;
             last = other;
-            if (holes.contains(other)) {
+            if (isHole(other)) {
                 out.println(other);
                 return;
             }
@@ -42,23 +52,19 @@ public class FindBone796B {
     }
     FindBone796B()
     {
-        int N = scan.nextInt();  // 2 ≤ n ≤ 10^6, 1 ≤ m ≤ n, 1 ≤ k ≤ 3·10^5
-        int m = scan.nextInt();  // hole
-        int k = scan.nextInt();  // swaps
-        Set<Integer> holes = new HashSet<>();
+        int N = sc.ni();  // 2 ≤ n ≤ 10^6, 1 ≤ m ≤ n, 1 ≤ k ≤ 3·10^5
+        int m = sc.ni();  // hole
+        int k = sc.ni();  // swaps
+        holes = new HashSet<>();
         for (int i=0; i<m; i++)
-            holes.add(scan.nextInt());
+            holes.add(sc.ni());
         IntPair[] move=new IntPair[k];
         for (int i=0; i<k; i++) {
-            String line = scan.nextLine();
-            if (line.isEmpty())
-                line = scan.nextLine();
-            String[] swap = line.split(" ");
-            int c1 = Integer.parseInt(swap[0]);
-            int c2 = Integer.parseInt(swap[1]);
+            int c1 = sc.ni();
+            int c2 = sc.ni();
             move[i]=new IntPair(c1,c2);
         }
-        solve(holes, move);
+        solve( move, N);
     }
     public static void test()
     {
@@ -73,11 +79,10 @@ public class FindBone796B {
         m[6]=new IntPair(123124,123122);
         m[7]=new IntPair(2300,3200);
         m[8]=new IntPair(8298,1000000);
-        new FindBone796B(holes, m);
+        new FindBone796B(holes, m, 1000000);
     }
     public static void main(String[] args)
     {        
-        //test();
         new FindBone796B();
     }
 }
