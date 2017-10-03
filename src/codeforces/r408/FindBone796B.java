@@ -1,6 +1,7 @@
 package codeforces.r408;
 
 
+import codechef.IntPair;
 import codechef.MyScanner;
 import static java.lang.System.out;
 import java.util.Arrays;
@@ -40,10 +41,10 @@ public class FindBone796B {
         int last=1;
         for (int i=0; i<m.length; i++) {
             int other=0;
-            if (m[i].first==last)  {
-                other = m[i].second;
-            } else if (m[i].second==last)  {
-                other = m[i].first;
+            if (m[i].int1()==last)  {
+                other = m[i].int2();
+            } else if (m[i].int2()==last)  {
+                other = m[i].int1();
             }
             else // no bones
                 continue;
@@ -99,41 +100,3 @@ public class FindBone796B {
 2 1
 4 5
 */
-
-class IntPair  // pair of int
-{
-    int first;
-    int second;
-    public IntPair(int f, int s)
-    {
-        first=f;
-        second=s;
-    }
-    public int int1()
-    {
-        return first;
-    }
-    public int int2()
-    {
-        return second;
-    }
-    @Override
-    public boolean equals(Object s)
-    {
-        if (s instanceof IntPair) {
-            IntPair other =(IntPair)s;
-            return first==other.first && second==other.second;
-        }
-        return false;
-    }
-    @Override
-    public int hashCode()
-    {
-        return (int)(first*second);
-    }
-    @Override
-    public String toString()
-    {
-        return first+":"+second;
-    }
-}
