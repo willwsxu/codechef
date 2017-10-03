@@ -7,16 +7,24 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-// N
+// N cups on position 1 to N
+// m holes in any of the position
+// swap two cups k times, with the bone, but does not move over other positions
+// if bone fall through at any moment, it stays there
+// bone is at position 1 initially. report position of bone after swap.
 // Need fast IO to pass test without TLE
+// IDEA: need to track position of the bone is under a cup during swap
+//       check if there hole when bone landed in new position
+//       swap can be ignored if there is no bone under
 public class FindBone796B {
     
     static MyScanner sc = new MyScanner();
-    Set<Integer> holes;
     int position[];
     FindBone796B(Set<Integer> holes, IntPair[] m, int N )
     {
-        this.holes=holes;
+        position=new int[N+1];
+        for (int h : holes)
+            position[h]=1;  // mark hole as value 1
         solve(m, N);
     }
     boolean isHole(int pos)
@@ -25,9 +33,6 @@ public class FindBone796B {
     }
     void solve(IntPair[] m, int N)
     {
-        position=new int[N+1];
-        for (int h : holes)
-            position[h]=1;  // mark hole as value 1
         if ( isHole(1) ) {
             out.println(1);
             return;
@@ -55,9 +60,9 @@ public class FindBone796B {
         int N = sc.ni();  // 2 ≤ n ≤ 10^6, 1 ≤ m ≤ n, 1 ≤ k ≤ 3·10^5
         int m = sc.ni();  // hole
         int k = sc.ni();  // swaps
-        holes = new HashSet<>();
+        position=new int[N+1];
         for (int i=0; i<m; i++)
-            holes.add(sc.ni());
+            position[sc.ni()]=1;
         IntPair[] move=new IntPair[k];
         for (int i=0; i<k; i++) {
             int c1 = sc.ni();
