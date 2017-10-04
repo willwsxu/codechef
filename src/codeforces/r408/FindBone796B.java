@@ -38,23 +38,23 @@ public class FindBone796B {
             out.println(1);
             return;
         }
-        int last=1;
+        int bone=1;
         for (int i=0; i<m.length; i++) {
             int other=0;
-            if (m[i].int1()==last)  {
+            if (m[i].int1()==bone)  {
                 other = m[i].int2();
-            } else if (m[i].int2()==last)  {
+            } else if (m[i].int2()==bone)  {
                 other = m[i].int1();
             }
             else // no bones
                 continue;
-            last = other;
+            bone = other;
             if (isHole(other)) {
                 out.println(other);
                 return;
             }
         }
-        out.println(last);
+        out.println(bone);
     }
     FindBone796B()
     {
