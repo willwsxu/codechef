@@ -1,9 +1,10 @@
 package codeforces.r408;
 
 
+import codechef.MyScanner;
+import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 // There are n banks, numbered from 1 to n. There are also n - 1 wires connecting the banks. 
 // All banks are initially online. Each bank i has initial strength ai.
@@ -15,22 +16,25 @@ import java.util.Scanner;
 // find the minimum strength of hacker's computer strength
 public class BankHacking796C {
     
-    static Scanner scan = new Scanner(System.in);
+    int strength[];         //- 10^9 ≤ ai ≤ 10^9, 1 ≤ n ≤ 3·10^5
+    List<List<Integer>> adj;//1 ≤ ui, vi ≤ n
+    BankHacking796C()
+    {
+        strength = sc.ria(sc.ni());
+        adj = new ArrayList<>(strength.length+1);
+        for (int i=0; i<=strength.length; i++)
+            adj.add(new ArrayList<>(10));
+        for (int i=0; i<strength.length-1; i++) {
+            int u = sc.ni();
+            int v = sc.ni();
+            adj.get(u).add(v);
+            adj.get(v).add(u);
+        } 
+        out.println(adj);
+    }
+    static MyScanner sc = new MyScanner();
     public static void main(String[] args)
-    {        
-        int N = scan.nextInt();  // 1 ≤ n ≤ 3·10^5
-        int k = scan.nextInt();  // swaps
-        List<Long> A = new ArrayList<>(300000); // strength - 10^9 ≤ ai ≤ 10^9
-        for (int i=0; i<N; i++)
-            A.add(scan.nextLong());
-        for (int i=0; i<N-1; i++) {
-            String line = scan.nextLine();
-            if (line.isEmpty())
-                line = scan.nextLine();
-            String[] conn = line.split(" ");
-            int c1 = Integer.parseInt(conn[0]);
-            int c2 = Integer.parseInt(conn[1]);
-            
-        }
+    {    
+        new BankHacking796C();
     }
 }
