@@ -23,7 +23,8 @@ public class BankHacking796C {
     
     int strength[];         //- 10^9 ≤ ai ≤ 10^9, 1 ≤ n ≤ 3·10^5
     List<List<Integer>> adj;//1 ≤ ui, vi ≤ n
-    int mV=0;
+    int MIN_VAL=-1000000000;  // 
+    int mV=MIN_VAL;
     BankHacking796C()
     {
         strength = sc.ria(sc.ni());
@@ -54,6 +55,7 @@ public class BankHacking796C {
             else if (mV-1==strength[i])
                 cntMax_1++;
         }
+        //out.println("mV="+mV+" cntMax="+cntMax+" cntMax1="+cntMax_1);
         for (int i=0; i<strength.length; i++) {
             int maxNb=0;
             int maxNb1=0;
@@ -89,3 +91,17 @@ public class BankHacking796C {
         new BankHacking796C();
     }
 }
+
+/* failed test case
+10
+-1000000000 -1000000000 -1000000000 -1000000000 -1000000000 -1000000000 -1000000000 -1000000000 -1000000000 -1000000000
+10 3
+7 4
+2 6
+9 2
+5 10
+1 8
+7 8
+7 2
+10 6
+*/
