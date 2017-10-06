@@ -23,20 +23,66 @@ public class BankHacking796C {
     
     int strength[];         //- 10^9 ≤ ai ≤ 10^9, 1 ≤ n ≤ 3·10^5
     List<List<Integer>> adj;//1 ≤ ui, vi ≤ n
+    int mV=0;
     BankHacking796C()
     {
         strength = sc.ria(sc.ni());
         adj = new ArrayList<>(strength.length+1);
-        for (int i=0; i<=strength.length; i++)
+        for (int i=0; i<strength.length; i++)
             adj.add(new ArrayList<>(10));
         for (int i=0; i<strength.length-1; i++) {
-            int u = sc.ni();
-            int v = sc.ni();
+            int u = sc.ni()-1;  // index from 0
+            int v = sc.ni()-1;
             adj.get(u).add(v);
             adj.get(v).add(u);
         } 
-        out.println(adj);
+        //out.println(adj);
+        solve();
     }
+    
+    void solve()
+    {
+        for (int i=0; i<strength.length; i++)
+            if (mV<strength[i])
+                mV=strength[i];
+        int answer=mV+2; // largest answer
+        int cntMax=0;    // count of max
+        int cntMax_1=0;  // count of max-1
+        for (int i=0; i<strength.length; i++) {
+            if (mV==strength[i])
+                cntMax++;
+            else if (mV-1==strength[i])
+                cntMax_1++;
+        }
+        for (int i=0; i<strength.length; i++) {
+            int maxNb=0;
+            int maxNb1=0;
+            List<Integer> neb = adj.get(i);
+            for (int j=0; j<neb.size(); j++) {
+                if (strength[neb.get(j)]==mV)
+                    maxNb++;
+                else if (strength[neb.get(j)]==mV-1)
+                    maxNb1++;
+            }
+            int maxOther = cntMax-maxNb;
+            int maxOther1 = cntMax_1-maxNb1;
+            if (mV==strength[i])
+                maxOther--;
+            else if (mV-1==strength[i])
+                maxOther1--;
+            int ansMax=mV;
+            if ( maxOther>0)
+                ansMax += 2;
+            else if ( maxOther1>0 || maxNb>0)
+                ansMax++;
+            if (ansMax < answer)
+                answer = ansMax;   //
+            if (answer==mV)
+                break;  // find the minmal, no need to further
+        }
+        out.println(answer);
+    }
+    
     static MyScanner sc = new MyScanner();
     public static void main(String[] args)
     {    
