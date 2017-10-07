@@ -1,6 +1,8 @@
 package codeforces.vkcup2017r1;
 
 
+
+
 import static java.lang.Math.abs;
 import static java.lang.System.out;
 import java.util.Scanner;
@@ -40,20 +42,16 @@ public class AmusementPark {
     {
         if (abs(lo-hi)<=1) {
             //out.println("first "+lo+" second "+hi+" low clost "+lowCost+" hi cost "+hiCost);
-            
-            int temp=lo;
-            while (temp>1) {
-                long c=calc(--temp);
-                if (c>lowCost)
-                    break;
-                lowCost=c;
+            // check if answer is best, if not do binary search again or just try one by one
+            if (lo>1) {
+                long c=calc(lo-1);
+                if (c<lowCost)
+                    return cost(lo-1, 1, c, calc(1));
             }
-            temp=lo;
-            while (temp<adult) {
-                long c=calc(++temp);
-                if (c>lowCost)
-                    break;
-                lowCost=c;
+            if (lo<adult) {
+                long c=calc(lo+1);
+                if (c<lowCost)
+                    return cost(lo+1, adult, c, calc(adult));                
             }
             return lowCost;
         }
@@ -82,8 +80,6 @@ public class AmusementPark {
             cost1=cost(a, 1, cost2, cost1);
         else if (cost1<cost2)
             cost1=cost(1, a, cost1, cost2);
-        //if (cost1==9343400)
-        //    out.println("adult="+a+" pupil="+p+" cost1="+calc(1)+" cost2="+cost2);
         out.println(cost1);
     }
     
