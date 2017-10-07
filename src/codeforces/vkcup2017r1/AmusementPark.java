@@ -1,17 +1,20 @@
-package vkcup2017r1;
+package codeforces.vkcup2017r1;
 
 
 import static java.lang.System.out;
 import java.util.Scanner;
 
 // 795A
+// n people, some pupil, some adult. separate into groups. a group must have 1 adult
+// if a group has x people, cost of tickets=c1+c2(x-1)^2
+// find minimal price
 public class AmusementPark {
     
     int adult;
     int pupil;
-    int n;
-    int c1;
-    int c2;
+    int n;      // 1 ≤ n ≤ 200 000
+    long c1;    // 1 ≤ c1, c2 ≤ 10^7
+    long c2;    // use long type to avoid overflow in calculation
     long minCost=0;
     
     long formula(int x)
@@ -47,8 +50,8 @@ public class AmusementPark {
         else if ( midCost < hiCost )
             return cost(lo, mid, lowCost, midCost);
         else {
-            out.println("bad mid cost "+midCost+" low clost "+lowCost+" hi cost "+hiCost);
-            return 0;
+            //out.println("bad mid cost "+midCost+" low clost "+lowCost+" hi cost "+hiCost);
+            return midCost;
         }
     }
     AmusementPark(int a, int p, int c1, int c2)
@@ -60,7 +63,6 @@ public class AmusementPark {
         this.c2 = c2;
         long cost1 = calc(1);
         long cost2 = calc(a);
-        long cost=0;
         if (cost1>cost2)
             out.println(cost(a, 1, cost2, cost1));
         else if (cost1<cost2)
@@ -94,3 +96,8 @@ public class AmusementPark {
         autoTest();
     }
 }
+/*
+10 2 2
+1111101111
+ans 20
+*/
