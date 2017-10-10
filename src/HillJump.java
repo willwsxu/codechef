@@ -34,7 +34,7 @@ class HillJump {
     int  blocks=0;
     long adjBlock[];  // adjustment of A, per block
     int  next[]; // next hill it can jump to
-    int  nextInBlobk[];  // last hill it can jump to within the same block
+    int  nextInBlock[];  // last hill it can jump to within the same block
     int  jumpsInBlock[]; // how many jumps is needed to reach end of block
     HillJump()
     {
@@ -83,7 +83,9 @@ class HillJump {
         blocks = (N+blocksize-1)/blocksize;
         //out.println("blocks "+blocks+" size "+blocksize);
         adjBlock = new long[blocks];
-        next=new int[N];        
+        next=new int[N]; 
+        nextInBlock = new int[N]; 
+        jumpsInBlock = new int[N]; 
     }
     
     // pre calculate next jump between from and to, inclusive
@@ -101,6 +103,33 @@ class HillJump {
                 }
             }  
         }
+        // update per block counter
+        int blk = from/blocksize;
+        int blkTotal=to/blocksize;
+        int blockStart=blk*blocksize;
+        for (; blk<=blkTotal; blk++) {
+            int blockEnd = min((blk+1)*blocksize, A.length);
+            int start=blockStart;
+            int cnt=0;
+            while (blockStart<blockEnd) {
+                if (next[blockStart]==blockStart) {  // no next jump
+                    break;
+                }
+                else {
+                    blockStart=next[blockStart];
+                    cnt++;
+                }
+            }
+            nextInBlock[start]=blockStart;
+            jumpsInBlock[start]=cnt;
+            if (next[blockStart]==blockStart) {  // no next jump
+                blockStart= blockEnd;
+                if (blockStart==A.length)
+                    blockStart--;
+            }
+        }
+        //out.println(Arrays.toString(nextInBlock));
+        //out.println(Arrays.toString(jumpsInBlock));
     }
     
     // assume m count from 1
@@ -175,8 +204,14 @@ class HillJump {
         while (i<A.length&&k>0) {
             if (next[i]==i)
                 return i;
-            i=next[i];
-            k--;
+            if (jumpsInBlock[i]>0 && jumpsInBlock[i]<=k ) {
+                k -= jumpsInBlock[i];
+                i=nextInBlock[i];
+            } else
+            {
+                i=next[i];
+                k--;
+            }
         }
         return i;
     }
@@ -194,7 +229,6 @@ class HillJump {
     public static void main(String[] args)
     {    
         new HillJump();
-        //test();
     }
 }
 
