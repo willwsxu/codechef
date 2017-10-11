@@ -6,6 +6,14 @@ import static java.lang.System.out;
 import java.util.Arrays;
 
 //SEACO easy (if you know difference array well) process from back
+//m commands over int Array A size N. Two tyes of comands
+//l r (l ≤ l ≤ r ≤ n) — Increase all elements of the array by one, whose indices belongs to the range [l, r]
+//l r (1 ≤ l ≤ r ≤ m) — Execute all the commands whose indices are in the range [l, r]. 
+//output values of A after all commands,  modulo 10^9 + 7
+//IDEA:
+// use one difference array for command count
+// Use another difference array for A
+// process from back as later commands can loop through previous ones
 //can implement with segment tree or fenwick tree
 class SerejaCommands {
     int cmdsFr[];  // 
@@ -77,19 +85,19 @@ class SerejaCommands {
         diffCount = new int[cmdsFr.length];
         diffA = new int[A.length];
         for (int i=cmdsFr.length-1; i>=0; i--) {
-            cmdsCount[i]=(diffCount[i]+cmdsCount[i+1])%MOD;
-            if (cmdsType[i]==2) {
-                diffCount[cmdsTo[i]-1] = (diffCount[cmdsTo[i]-1]+cmdsCount[i])%MOD;
+            cmdsCount[i]=(diffCount[i]+cmdsCount[i+1])%MOD;  // calc count of command i from difference array
+            if (cmdsType[i]==2) { // apply count to command difference array between from and to.
+                diffCount[cmdsTo[i]-1] = (diffCount[cmdsTo[i]-1]+cmdsCount[i])%MOD;  // add to index at cmdsTo
                 if ( cmdsFr[i]>1 )
-                    diffCount[cmdsFr[i]-2] = (diffCount[cmdsFr[i]-2]-cmdsCount[i]+MOD)%MOD;
-            } else {
+                    diffCount[cmdsFr[i]-2] = (diffCount[cmdsFr[i]-2]-cmdsCount[i]+MOD)%MOD; // subtract from index at cmdsFr
+            } else { // apply count to difference array between from and to
                 diffA[cmdsTo[i]-1] = (diffA[cmdsTo[i]-1]+cmdsCount[i])%MOD;
                 if (cmdsFr[i]>1)
                     diffA[cmdsFr[i]-2] = (diffA[cmdsFr[i]-2] - cmdsCount[i]+MOD)%MOD;
             }
         }
         A[A.length-1] = diffA[A.length-1]%MOD;
-        for (int i=A.length-2; i>=0; i--) {
+        for (int i=A.length-2; i>=0; i--) { // compute A from difference array
             A[i] = (diffA[i]+A[i+1])%MOD;
         }
         
