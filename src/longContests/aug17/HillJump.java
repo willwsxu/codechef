@@ -1,16 +1,13 @@
+package longContests.aug17;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import codechef.MyScanner;
 import static java.lang.Integer.max;
 import static java.lang.Integer.min;
 import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
 import static java.lang.System.out;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+// August 2017 long challenge
 /*There are N hills located on a straight line. The height of the ith one is denoted by Hi. 
   A participant standing at the top of the ith hill jumps to the nearest hill to the right 
   which is strictly higher than the one he is standing on. If the nearest one is further 
@@ -40,21 +37,21 @@ class HillJump {
     int  jumpsInBlock[]; // how many jumps is needed to reach end of block
     HillJump()
     {
-        int N=sc.nextInt(); // 1 ≤ N, Q ≤ 100,000
-        int Q=sc.nextInt();
+        int N=sc.ni(); // 1 ≤ N, Q ≤ 100,000
+        int Q=sc.ni();
         init(N, Q);
         A=sc.rla(N);  // hill height, 1 ≤ Ai ≤ 1,000,000
         calcNext(0, N-1);
         StringBuilder sb=new StringBuilder();
         for (int i=0; i<Q;i++) {
-            int type =sc.nextInt();
+            int type =sc.ni();
             if (type==1) {
-                sb.append(jump2(sc.nextInt()-1, sc.nextInt())+1);
+                sb.append(jump2(sc.ni()-1, sc.ni())+1);
                 sb.append('\n');
             } else {
-                int L=sc.nextInt();
-                int R=sc.nextInt();
-                int X=sc.nextInt(); // -1,000,000 ≤ X ≤ 1,000,000
+                int L=sc.ni();
+                int R=sc.ni();
+                int X=sc.ni(); // -1,000,000 ≤ X ≤ 1,000,000
                 update2(L, R, X);
             }
         }
@@ -240,77 +237,5 @@ class HillJump {
     public static void main(String[] args)
     {    
         new HillJump();
-    }
-}
-
-class MyScanner {
-    BufferedReader br;
-    StringTokenizer st;
-
-    MyScanner(String f)
-    {
-        try {
-            br = new BufferedReader(new FileReader(new File(f)));
-        } catch (IOException e)
-        {
-            out.println("MyScanner bad file "+f);
-        }
-    }
-    public MyScanner() {
-        br = new BufferedReader(new InputStreamReader(System.in));
-    }
-
-    String next() {
-        while (st == null || !st.hasMoreElements()) {
-            try {
-                st = new StringTokenizer(br.readLine());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return st.nextToken();
-    }
-
-    int nextInt() {
-        return Integer.parseInt(next());
-    }
-
-    long nextLong() {
-        return Long.parseLong(next());
-    }
-
-    double nextDouble() {
-        return Double.parseDouble(next());
-    }
-
-    String nextLine(){
-        String str = "";
-        try {
-           str = br.readLine();
-        } catch (IOException e) {
-           e.printStackTrace();
-        }
-        return str;
-    }
-    
-    public int ni()
-    {
-        return nextInt();
-    }     
-    public long nl()
-    {
-        return nextLong();
-    }   
-    public int[] ria(int N) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=nextInt();
-        return L;
-    }
-    public long[] rla(int N) { // read long array
-        long L[]=new long[N];
-        for (int i=0; i<N; i++)
-            L[i]=nextLong();
-        return L;
     }
 }
