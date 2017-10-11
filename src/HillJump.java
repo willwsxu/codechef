@@ -27,7 +27,9 @@ should be increased by X (it may be negative).
 // HillJUMP, medium, square root sqrt decomposition
 // pre-calculation next[] (i jump to next[i]) boost performance a lot, pass 7 out of 8 tests.
 // Step 2. Add adjustment per block to speed up update command (minor improvement)
-// step 3. jumps in a block
+// step 3. Count jumps from beginning of a block to start of next
+//         update need to re-compute all blocks impacted. Must clear out old values
+//         jump by block if 0<cnt<k. else jump one at a time.
 class HillJump {
     long A[];
     int  blocksize=1;
@@ -103,14 +105,21 @@ class HillJump {
                 }
             }  
         }
+        if (to<0)
+            return;
         // update per block counter
         int blk = from/blocksize;
-        int blkTotal=to/blocksize;
+        int blkTotal=(next[to]+1)/blocksize;
         int blockStart=blk*blocksize;
         for (; blk<=blkTotal; blk++) {
             int blockEnd = min((blk+1)*blocksize, A.length);
             int start=blockStart;
             int cnt=0;
+            // must clear out old values
+            for (int i=blk*blocksize; i<blockEnd; i++) {
+                jumpsInBlock[i]=0;
+                jumpsInBlock[i]=0;
+            }
             while (blockStart<blockEnd) {
                 if (next[blockStart]==blockStart) {  // no next jump
                     break;
@@ -128,6 +137,7 @@ class HillJump {
                     blockStart--;
             }
         }
+        //out.println(Arrays.toString(A));
         //out.println(Arrays.toString(nextInBlock));
         //out.println(Arrays.toString(jumpsInBlock));
     }
@@ -218,6 +228,7 @@ class HillJump {
     
     public static void test()
     {
+        new HillJump(new long[]{1}, new int[]{2,1,1,100,1,1,1}, 2); // 1
         new HillJump(new long[]{1,2,3,4,5}, new int[]{1,1,2,2,3,4,-1,1,1,2}, 3);
         new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,4,6,-1,1,1,3}, 3);  // result 3, 5
         new HillJump(new long[]{1,2,3,4,5,4,3,2,1}, new int[]{1,1,2,2,3,5,-1,1,1,3}, 3);  // result 3, 5
