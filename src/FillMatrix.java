@@ -8,7 +8,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
-
+// Sept 2017 long challenge, Easy medium
+// disjoint set union, bipartite graph, spanning forest
+// A NxN matrix B (of integers) is said to be good if there exists an array A such that B[i][j] = |A[i] - A[j]|, where |x| denotes absolute value of integer x.
+// Give Q entries of B with values 0 or 1, is it possible to have valid B to fill rest of entries with any values
+// Idea
+// The answer is "yes" if and only if you can assign every number in [1,n][1,n] even or odd, such that:
+//   When Bi,j=0, i and j have the same label;
+//   When Bi,j=1, i and j have different label.
+// Use DSU to check if i and j is already connected, directly or indirectly
+// use dfs to calculate parity, set first to 0, then per Bij weight
+// if there is redundant edges left, we need to check if it conflicts exisitng parity
+//   smart use of ^ to calculate parity
 class FillMatrix {
     
     int parity[];
