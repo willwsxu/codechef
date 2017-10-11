@@ -104,7 +104,11 @@ class HillJump {
         }
         if (to<0)
             return;
-        // update per block counter
+        // update per block counter, from hill 1 block 1 to first reachable hill in next bloock
+        // it is continuous initially except when no jump due to rule of max 100 hills
+        // may become less continuous as updates only recompute impacted blockes, may require jump by one to catch next block
+        // starting hill of a block may not be the first one, depdening on the hill height
+        // maintain only one jump counter per block, there can be staled counter as starting point may change
         int blk = from/blocksize;
         int blkTotal=(next[to]+1)/blocksize;
         int blockStart=blk*blocksize;
@@ -129,7 +133,7 @@ class HillJump {
             nextInBlock[start]=blockStart;
             jumpsInBlock[start]=cnt;
             if (next[blockStart]==blockStart) {  // no next jump
-                blockStart= blockEnd;
+                blockStart= blockEnd;  // improtant to reset to start of next block
                 if (blockStart==A.length)
                     blockStart--;
             }
@@ -152,10 +156,6 @@ class HillJump {
     int getBlockStart(int R)
     {
         return (ceilingBlocks(R)-1)*blocksize+1;// R=21 to 30, block size=10, begin=21
-    }
-    void update(int L, int R, int X) // brute force
-    {
-        updateCell(L,R,X);
     }
     
     boolean updateBlock(int L, int R, int X)
@@ -193,8 +193,11 @@ class HillJump {
         //out.println(Arrays.toString(next));
     }
     
-    int jump(int i, int k) { // brute force
-        //out.println(Arrays.toString(A));
+    void updateBruteforce(int L, int R, int X)
+    {
+        updateCell(L,R,X);
+    }
+    int jumpBruteforce(int i, int k) {
         int j=i+1;
         for (; j<A.length; j++) {
             if (j-i>100)
@@ -207,14 +210,15 @@ class HillJump {
         }
         return i;
     }
+    
     int jump2(int i, int k) {
         while (i<A.length&&k>0) {
             if (next[i]==i)
                 return i;
-            if (jumpsInBlock[i]>0 && jumpsInBlock[i]<=k ) {
+            if (jumpsInBlock[i]>0 && jumpsInBlock[i]<=k ) {  // jump over the block
                 k -= jumpsInBlock[i];
                 i=nextInBlock[i];
-            } else
+            } else  // jump one at a time
             {
                 i=next[i];
                 k--;
