@@ -7,7 +7,7 @@ import static java.lang.Integer.min;
 import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
 import static java.lang.System.out;
-// August 2017 long challenge
+// August 2017 long challenge, Medium
 /*There are N hills located on a straight line. The height of the ith one is denoted by Hi. 
   A participant standing at the top of the ith hill jumps to the nearest hill to the right 
   which is strictly higher than the one he is standing on. If the nearest one is further 
