@@ -1,7 +1,7 @@
 
 import java.util.Scanner;
 
-// easy
+// easy, CENTREE, Jun cook off
 public class Centeroid {
     Centeroid(int n, int b)
     { // 2 ≤ n ≤ 100, 0 ≤ b ≤ n-1

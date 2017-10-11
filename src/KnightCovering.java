@@ -1,12 +1,15 @@
 
-//import codechef.IGraph;
 import static java.lang.Integer.min;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// EASY, DP, bit mask
+// EASY, DP, bit mask, KNICOV Jun cook off
+// find minmal knights needed to cover all m x n board
+// IDEA
+// 2 rows (N=2): easy to find packing pattern
+// 3 rows: harder to find some tricky case for repeating pattern
 class KnightCovering {
     int n,m;
     KnightCovering(int n, int m)
@@ -34,6 +37,10 @@ class KnightCovering {
             return m;
         if (n==2)
             return solve2r(m);
+        return solve3r(m);
+    }
+    int solve3r(int m)
+    {
         int sixpack=m/6;
         m %=6;
         int ans = sixpack*4;
@@ -46,6 +53,7 @@ class KnightCovering {
         else
             return ans+4;
     }
+    
     static void test()
     {
         out.println(new KnightCovering(1, 1).solve()==1);
@@ -68,7 +76,11 @@ class KnightCovering {
     
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
-    {      
+    {    
+        judge();
+    }
+    static void judge()
+    {
         int T = sc.nextInt();  // 1 ≤ T ≤ 150
         while (T-->0)
             out.println(new KnightCovering(sc.nextInt(), sc.nextInt()).solve());
