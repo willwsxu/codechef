@@ -107,7 +107,7 @@ class KnightCoveringDp3
     }
     void computeAll()
     {
-        for (m=4; m>MAX_COL; m++) {
+        for (m=4; m<MAX_COL; m++) {
             ans[m]=MAX_VAL;
             for (int i=0; i<8; i++) {
                 int count=popcount(i);
@@ -118,6 +118,7 @@ class KnightCoveringDp3
                 }
             }
         }
+        //out.println(Arrays.toString(ans));
     }
 }
 class KnightCovering {
@@ -149,8 +150,10 @@ class KnightCovering {
             return m;
         if (n==2)
             return solve2r(m);
-        //return dp.ans[m];
-        return solve3r(m);
+        if (m<=4)
+            return 4;
+        return dp.ans[m];
+        //return solve3r(m);
     }
     int solve3r(int m)
     {
@@ -190,7 +193,7 @@ class KnightCovering {
     static Scanner sc = new Scanner(System.in);
     public static void main(String[] args)
     {    
-        test();
+        judge();
     }
     static void judge()
     {
