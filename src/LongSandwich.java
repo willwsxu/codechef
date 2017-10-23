@@ -2,15 +2,17 @@
 import static java.lang.System.out;
 import java.util.Scanner;
 
-/*
-
+/* cut long sandwich N len into pieces, len of each piece is 1<=len<=K
+   Output minimal # of pieces, how many ways to cut mod M
  */
-// SANDWICH, medium
+// SANDWICH, medium, May 2017 long challenge
+// formular: n+n∗K−N−1Cn−1, n is ceil(N/K)
+// Chinese remainder theorem
 class LongSandwich {
     
     static long recurse(long N, long count, long K)
     {
-        out.println("N "+N+" count "+count+" K="+K);
+        //out.println("N "+N+" count "+count+" K="+K);
         if ( N<=K)
             return 1;
         if ( count*K==N)
