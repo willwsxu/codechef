@@ -5,6 +5,8 @@
 import static java.lang.System.out;
 import java.util.Scanner;
 
+// PLUSMUL, Smackdown 2017 online elimination round. dp
+// https://discuss.codechef.com/questions/100802/how-to-solve-the-question-plusmul-from-snackdown-elimination-round
 class AddMultiply {
     int a[];
     static final int MOD=1000000007;
