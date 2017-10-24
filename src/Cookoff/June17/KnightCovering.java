@@ -58,7 +58,7 @@ class KnightCoveringDp3
         return attack;
     }
     
-    // compute how columns are attacked
+    // compute how columns are attacked, current and previous column
     int[] computeAttacked(int ppreKnight, int preKnight, int preAttack, int now)
     {
         int [] attacked=new int[]{preAttack, now};
@@ -73,7 +73,7 @@ class KnightCoveringDp3
         attacked[1] = attackPre(preKnight, attacked[1]);// pre knight attack now column
         return attacked;
     }
-    int popcount(int p) {
+    int popcount(int p) { // count of bit 1
         int c=0;
         if ((p&ROW1)>0)
             c++;
@@ -83,6 +83,8 @@ class KnightCoveringDp3
             c++;
         return c;
     }
+    // compute knights needed to cover column 3 to m
+    // col decrease from m-3 to 0, seems to indicate actual column 3 to m
     int compute(int col, int ppreAttack, int preAttack, int ppreKnight, int preKnight)
     {
         if (col<0) {
@@ -99,7 +101,7 @@ class KnightCoveringDp3
             for (int now=0; now<8; now++) {  // go through all knight positions
                 if (!possible(now, pos))  // invalid knights 
                     continue;
-                // attack on cureent and pre column
+                // attack on current and pre column, move 1 column ro right
                 int attack[]=computeAttacked(ppreKnight, preKnight, preAttack, now);
                 ret=min(ret, popcount(now)+compute(col-1, attack[0],attack[1], preKnight, now));
             }
@@ -115,8 +117,7 @@ class KnightCoveringDp3
                 int count=popcount(i);
                 for (int j=0; j<8; j++) {
                     int attack[]=computeAttacked(0, i, 0, j);
-                    count += popcount(j);
-                    ans[m]=min(ans[m], count+compute(m-3, attack[0], attack[1], i,j));
+                    ans[m]=min(ans[m], count+popcount(j)+compute(m-3, attack[0], attack[1], i,j));
                 }
             }
         }
