@@ -41,11 +41,26 @@ class AddMultiply {
         n=a.length;
     }
     
-    long recurse(int i)
+    // f(i)=g(i-1)+h(i)
+    long f(int i)
     {
-        if (i==n-1)
+        if (i==0)
             return a[i];
-        return recurse(i+1);  // no good
+        return g(i-1)+h(i);
+    }
+    // g(i)=g(i-1)+f(i)
+    long g(int i)
+    {
+        if (i==0)
+            return a[i];
+        return g(i-1)+f(i);
+    }
+    // h(i)=h(i-1)xai + (2^i-1)ai
+    long h(int i)
+    {
+        if (i==0)
+            return a[i];
+        return h(i-1)*a[i]+Power2.get(i-1)*a[i];
     }
     
     // pattern 
@@ -60,9 +75,9 @@ class AddMultiply {
     // algorithm to finish up multiply first, working down the numbers
     // each outter loop would reduce number by 1 from left, and 
     // i=0, inner: j=0, m2=2, add up 4 1s; j=1, m2=1, add up 2 1x2; j=2, add 1x2x3; j=3, add 1x2x3x4
-    // i=1, inner: j=1, m2=1, add up 2 2s; j=2, add up 2X3;         j=3, add up 2x3x4
+    // i=1, inner: j=1, m2=1, add up 2 2s; j=2, add up 2x3;         j=3, add up 2x3x4
     // i=2, inner: j=2, m1=1, add up 2 3s (one at top half, one at bottom half);    j=3, add 2 3x4
-    // i=3, inner: j=3, m1=2, add up 4 4s (one from each quater)
+    // i=3, inner: j=3, m1=2, add up 4 4s (one from each quarter)
     long solve()
     {
         long ans=0;
