@@ -4,27 +4,12 @@ package smackdown.qualifier2017.elimination;
  * Brief Description: N numbers in a expression with 2 operators + x
  * Find sum of result of all possible expressions
 */
+import codechef.IOR;
+import codechef.Power2;
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.Scanner;
 
-class Power2
-{
-    static final int  MOD=1000000007;    // 10^9 + 7
-
-    private static int power2[]=new int[300000+5];
-    static
-    {
-        power2[0]=1;
-        for (int i=1; i< power2.length; i++) {
-            power2[i] = (2 * power2[i-1])%MOD;
-        }
-        //out.println(Arrays.toString(power2));
-    }
-    public static int get(int i) {
-        return power2[i];
-    }
-}
 // PLUSMUL, Smackdown 2017 online elimination round. dp
 // Use Thread class to provide a large call stack for recursion
 // https://discuss.codechef.com/questions/100802/how-to-solve-the-question-plusmul-from-snackdown-elimination-round
@@ -37,7 +22,7 @@ class AddMultiply implements Runnable {
     long dp_h[];
     AddMultiply(int n)
     {
-        this(ria(n, sc));
+        this(IOR.ria(n));
     }
     AddMultiply(int a[])
     {
@@ -114,7 +99,17 @@ class AddMultiply implements Runnable {
             }
         }
         return ans;
-    }
+    }    
+
+    // pattern 
+    // 1+2+3+4
+    // 1x2+3+4
+    // 1+2x3+4
+    // 1x2x3+4
+    // 1+2+3x4
+    // 1x2+3x4
+    // 1+2x3x4
+    // 1x2x3x4
     long dp()
     {
         return f(n-1);
@@ -143,15 +138,7 @@ class AddMultiply implements Runnable {
         threadSetup(new AddMultiply(a));
         threadSetup(new AddMultiply(new int[]{200000000,300000000,500000000,700000000}));
     }
-      
-    public static int[] ria(int N, Scanner sc) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
-    }
-    
-    static Scanner sc = new Scanner(System.in);
+          
     public static void main(String[] args)
     {      
         judge();
@@ -169,9 +156,9 @@ class AddMultiply implements Runnable {
     }
     static void judge()
     {
-        int T=sc.nextInt(); // 1 ≤ T ≤ 500
+        int T=IOR.ni(); // 1 ≤ T ≤ 500
         while (T-->0) {
-            int n=sc.nextInt(); // 1 ≤ n ≤ 100000
+            int n=IOR.ni(); // 1 ≤ n ≤ 100000
             if (n<1000)
                 out.println(new AddMultiply(n).dp());
             else
