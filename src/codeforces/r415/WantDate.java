@@ -3,6 +3,7 @@ package codeforces.r415;
 
 import codechef.Calculation;
 import codechef.IOR;
+import codechef.Power2;
 import static java.lang.System.out;
 
 /*
@@ -20,15 +21,6 @@ public class WantDate {
     
     static final int  MOD=1000000007;    // 10^9 + 7
 
-    static int power2[]=new int[300000+5];
-    static
-    {
-        power2[0]=1;
-        for (int i=1; i< power2.length; i++) {
-            power2[i] = (2 * power2[i-1])%MOD;
-        }
-        //out.println(Arrays.toString(power2));
-    }
     WantDate(int x[])
     {
         x = Calculation.reverse(x);
@@ -36,8 +28,8 @@ public class WantDate {
         long total=0;
         for (int i=0; i<x.length-1; i++) {
             long dist=x[i]-x[i+1];
-            dist = (dist * (power2[i+1]-1))%MOD;
-            dist = (dist * (power2[x.length-i-1]-1))%MOD;
+            dist = (dist * (Power2.get(i+1)-1))%MOD;
+            dist = (dist * (Power2.get(x.length-i-1)-1))%MOD;
             total = (total+dist)%MOD;
         }
         out.println(total);        
