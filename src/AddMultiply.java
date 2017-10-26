@@ -131,7 +131,15 @@ class AddMultiply implements Runnable {
         out.println(new AddMultiply(new int[]{1,2,4}).dp()==30);
         out.println(new AddMultiply(new int[]{1,1,1,1}).dp()==20);
         out.println(new AddMultiply(new int[]{2,3,5,7}).dp()==494);
-        out.println(new AddMultiply(new int[]{200000000,300000000,500000000,700000000}).dp());
+        out.println(new AddMultiply(new int[]{200000000,300000000,500000000,700000000}).dp()==822000021);
+    }
+    static void testbig()
+    {
+        int a[]=new int[100000];
+        for (int i=0; i<a.length; i++)
+            a[i]=i+1;
+        threadSetup(new AddMultiply(a));
+        threadSetup(new AddMultiply(new int[]{200000000,300000000,500000000,700000000}));
     }
       
     public static int[] ria(int N, Scanner sc) { // read int array
@@ -146,20 +154,26 @@ class AddMultiply implements Runnable {
     {      
         judge();
     }
+    static void threadSetup( AddMultiply am)
+    {
+        Thread t =new Thread(null, am, "whatever", 1<<28);
+        t.start();
+        try {
+            t.join();
+        } catch (Exception e)
+        {
+
+        }        
+    }
     static void judge()
     {
         int T=sc.nextInt(); // 1 ≤ T ≤ 500
         while (T-->0) {
             int n=sc.nextInt(); // 1 ≤ n ≤ 100000
-            //out.println(new AddMultiply(n).dp());  
-            Thread t =new Thread(null, new AddMultiply(n), "whatever", 1<<28);
-            t.start();
-            try {
-                t.join();
-            } catch (Exception e)
-            {
-                
-            }
+            if (n<1000)
+                out.println(new AddMultiply(n).dp());
+            else
+                threadSetup(new AddMultiply(n));
         }
     }
 }
