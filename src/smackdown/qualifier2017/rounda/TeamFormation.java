@@ -1,4 +1,4 @@
-package smackdown.rounda;
+package smackdown.qualifier2017.rounda;
 
 
 import static java.lang.System.out;

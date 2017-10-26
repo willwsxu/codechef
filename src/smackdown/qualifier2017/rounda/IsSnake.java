@@ -1,4 +1,4 @@
-package smackdown.rounda;
+package smackdown.qualifier2017.rounda;
 
 /* 
  * Snake imprint as 2xN cells on a plate, # is snake boday, . is not

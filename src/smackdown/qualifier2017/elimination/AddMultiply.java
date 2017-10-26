@@ -1,3 +1,5 @@
+package smackdown.qualifier2017.elimination;
+
 /*
  * Brief Description: N numbers in a expression with 2 operators + x
  * Find sum of result of all possible expressions

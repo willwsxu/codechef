@@ -1,4 +1,4 @@
-package smackdown.roundb;
+package smackdown.qualifier2017.roundb;
 /*
  * Brief Description: snake and mongoose line up to cast vote, each mongoose will eat at most one of its neighbor snakes
  * find out which animal would win

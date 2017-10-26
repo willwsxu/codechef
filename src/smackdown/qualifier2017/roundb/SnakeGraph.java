@@ -1,4 +1,4 @@
-package smackdown.roundb;
+package smackdown.qualifier2017.roundb;
 /*
  * Open Letter to vinaykandy2k16 at codechef who stole my code for Smackdown 2017
  * I am not going to lecture you about honesty. If someone wants to cheat, please
