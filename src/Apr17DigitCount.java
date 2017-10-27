@@ -1,4 +1,4 @@
-/* Description
+/* Description, April 2017 long challenge
    Given 10 integers a0 to a9. An integer x is said to be bad if any of its digit i
    show up exactly ai times.
 */
@@ -10,8 +10,8 @@ import java.util.Scanner;
 // inclusion-exclusion principle, dp - bitmask and digit dp
 class Apr17DigitCount extends io {
     
-    int A[];
-    long L, R;
+    int A[];    //0 ≤ ai ≤ 18
+    long L, R;  // 1 ≤ L ≤ R ≤ 10^18
     // count digits
     boolean digitsCheck(long num)
     {
