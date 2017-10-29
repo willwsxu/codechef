@@ -9,7 +9,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
+// C
+// n train stations, Pi is the only destination from i,
+// for each station i, there exists only one station j such that pj=i
+// The convenience is the number of ordered pairs (x, y) such that person can start at station x and, 
+//   after taking some subway trains (possibly zero), arrive at station y (1 ≤ x, y ≤ n).
+// output max convenience, after switch at most two destination
+// IDEA
+// each station can only have one way to go in or out. 
+// stations form a forest of connected components
+// convenience of each component is s^2, if component size is s
+// Use DSU to find all components
+// save the edges with two nodes already connected
+// find components with extra edges, sort by size in rreverse, combine the top two by switch destination of two stations in each
+// sum convenience of all components
 public class BertownSubway {
     
     DSU dsu;
@@ -36,9 +49,9 @@ public class BertownSubway {
             for (int i=0; i<p.length; i++) {
                 if (used[i])
                     continue;
-                merge.add(dsu.getSize(i));
+                merge.add(dsu.getSize(i));  // store components with extra unused edge
             }
-            if (merge.size()>=2) {
+            if (merge.size()>=2) {  // combine size of top two components
                 Collections.sort(merge, Collections.reverseOrder());
                 int newSize=merge.get(0)+merge.get(1);
                 sizes.remove(merge.get(0));
