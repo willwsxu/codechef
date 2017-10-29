@@ -1,4 +1,6 @@
+package codeforces.edu31;
 
+// Oct 27, 2017 Education round 31
 import codechef.DSU;
 import codechef.IOR;
 import static java.lang.System.out;
