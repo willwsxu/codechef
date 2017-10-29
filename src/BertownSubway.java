@@ -1,11 +1,11 @@
 
+import codechef.DSU;
+import codechef.IOR;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
 
 
 public class BertownSubway {
@@ -14,19 +14,37 @@ public class BertownSubway {
     
     BertownSubway(int p[])
     {
+        boolean used[]=new boolean[p.length];
+        Arrays.fill(used, false);
         dsu = new DSU(p.length);
         for (int i=0; i<p.length; i++) {
-            dsu.union(i, p[i]-1);
+            if (dsu.find(i)!=dsu.find(p[i]-1)) {
+                dsu.union(i, p[i]-1);
+                used[i]=true;  // edge is used in dsu
+            }
         }
+        //dsu.printComponents();
         List<Integer> sizes = dsu.componentSize();
-        out.println(sizes);
-        int total=0;
+        //out.println(sizes);
+        long total=0;  // use long to prevent overflow
         if (sizes.size()==1)
-            total =  sizes.get(0)*sizes.get(0);
+            total =  (long)sizes.get(0)*sizes.get(0);
         else {
-            total = (sizes.get(0)+sizes.get(1))*(sizes.get(0)+sizes.get(1));
-            for (int i=2; i<sizes.size(); i++)
-                total += sizes.get(i)*sizes.get(i);
+            List<Integer> merge=new ArrayList<>();
+            for (int i=0; i<p.length; i++) {
+                if (used[i])
+                    continue;
+                merge.add(dsu.getSize(i));
+            }
+            if (merge.size()>=2) {
+                Collections.sort(merge, Collections.reverseOrder());
+                int newSize=merge.get(0)+merge.get(1);
+                sizes.remove(merge.get(0));
+                sizes.remove(merge.get(1));
+                sizes.add(newSize);
+            }
+            for (int i=0; i<sizes.size(); i++)
+                total += (long)sizes.get(i)*sizes.get(i);
         }
         out.println(total);
     }
@@ -39,117 +57,11 @@ public class BertownSubway {
     }
     public static  void judge()
     {
-        int n=IORxx.ni();
-        new BertownSubway(IORxx.ria(n));
+        int n=IOR.ni();
+        new BertownSubway(IOR.ria(n));
     }
     public static void main(String[] args)
     {      
-        test();
-    }
-}
-
-
-class IORxx {
-    
-    private static Scanner sc = new Scanner(System.in);    
-        
-    public static int ni()
-    {
-        return sc.nextInt();
-    }
-    public static long nl()
-    {
-        return sc.nextLong();
-    }
-    public static String ns()
-    {
-        return sc.next();
-    }
-    
-    public static List<Integer> riL(int N) { // read int array list
-        List<Integer> L=new ArrayList<>();
-        for (int i=0; i<N; i++)
-            L.add(sc.nextInt());
-        return L;
-    }
-    
-    public static int[] ria(int N) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
-    }
-    
-    public static int[] ria1(int N) { // read int array, from 1
-        int L[]=new int[N];
-        for (int i=1; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
-    }
-    
-    public static int[][] fillMatrix(int n, int m)
-    {
-        int a[][]=new int[n][m];
-        for (int i=0; i<a.length; i++)
-            for (int j=0; j<a[i].length; j++) {
-                a[i][j]=sc.nextInt();
-            }
-        return a;
-    }
-}
-
-class DSU //Union Find
-{
-    private int sz[];  // dual purpose, for component id and is visited
-    private int id[];
-    private int comp;
-    public DSU(int n)
-    {
-        sz = new int[n];
-        id = new int[n];
-        Arrays.fill(sz, 1);
-        comp=n;
-        for (int s = 0; s < n; s++)
-            id[s]=s;
-    }
-    public int find(int p) {
-        while (p!=id[p])
-            p=id[p];
-        return p;
-    }
-    public void union(int u, int v)
-    {
-        u=find(u);
-        v=find(v);
-        if (u==v)
-            return;
-        if (sz[u]<sz[v]) {  // add small component to larger one
-            id[u]=v;
-            sz[v] += sz[u];
-        } else {
-            id[v]=u;
-            sz[u] += sz[v];            
-        }
-        comp--;
-    }
-    
-    public int numCompoments()  // components with id=ID
-    {
-        return comp;
-    }    
-    public boolean connected(int v, int w)
-    {
-        return find(w)==find(v);
-    }
-    public List<Integer> componentSize()
-    {
-        HashSet<Integer> comp = new HashSet<>();
-        for (int i=0; i<id.length; i++)
-            comp.add(id[i]);
-        List<Integer> sizes=new ArrayList<>(comp.size());
-        for (int c: comp)
-            sizes.add(sz[c]);
-        Collections.sort(sizes, Collections.reverseOrder());
-        return sizes;
+        judge();
     }
 }
