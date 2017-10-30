@@ -9,9 +9,14 @@ import java.util.PriorityQueue;
 // each move pick all balls in 1 box and distrubute to k boxes, k=2 or 3
 // pentalty is the balls on each move
 // output minimal total penalty
+// IDEA
+// reverse processing, merge from n items to 1
+// combine least 2 or 3 depend on if size is even or odd
+// add sub total back, use priority queue to improve speed
+// same as the algorithm of building a Huffman code with the alphabet of size 3
 public class BoxBalls {
     
-    PriorityQueue<Long> pq = new PriorityQueue<>();
+    PriorityQueue<Long> pq = new PriorityQueue<>(); // TLE if use SortedList
     BoxBalls(int []a)
     {
         for (int i:a)
