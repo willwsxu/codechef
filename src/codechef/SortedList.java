@@ -14,11 +14,11 @@ import java.util.List;
 
 // ArrayList is 25x faster than linkedlist for sorted list
 // ArrayList is also faster than int[] impl, up to 3 times
-class SortedList
+public class SortedList
 {
-    private List<Integer> ls;
-    Comparator<Integer> cmp;
-    SortedList(boolean reverseOrder, int capacity)
+    private List<Long> ls;
+    Comparator<Long> cmp;
+    public SortedList(boolean reverseOrder, int capacity)
     {
         if (reverseOrder)
             cmp = Comparator.reverseOrder();
@@ -26,7 +26,7 @@ class SortedList
             cmp = Comparator.naturalOrder();
         ls = new ArrayList<>(capacity);
     }
-    public boolean add(int e)
+    public boolean add(long e)
     {
         int i=Collections.binarySearch(ls, e, cmp);
         if (i<0)
@@ -34,12 +34,12 @@ class SortedList
         ls.add(i, e);
         return true;
     }
-    public int peek()
+    public long peek()
     {
         return ls.get(0);
     }
     
-    public boolean remove(int e)
+    public boolean remove(long e)
     {
         int i=Collections.binarySearch(ls, e, cmp);
         if (i>=0) {
@@ -47,6 +47,18 @@ class SortedList
             return true;
         }
         return false;
+    }
+    public boolean removeAll(int count) {
+        while (count-->0) {
+            ls.remove(0);
+        }
+        return true;
+    }
+    public long get(int i) {
+        return ls.get(i);
+    }
+    public int size() {
+        return ls.size();
     }
     public static void test()
     {
