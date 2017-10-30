@@ -1,5 +1,6 @@
 package Cookoff.CookOffMar17;
 
+import codechef.ContestHelper;
 import codechef.IOR;
 import static java.lang.System.out;
 import java.time.Instant;
@@ -101,7 +102,7 @@ class CookOffMar17Rainbow {
     }
     public static void unit_test()
     {
-        IOR.fileScanner("rainbow0317.txt");
+        IOR.fileScanner(ContestHelper.getFileScanner("rainbow0317.txt"));
         Instant start = Instant.now();
         autoTest();
         Instant end = Instant.now();

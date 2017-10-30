@@ -54,9 +54,9 @@ public class IOR {
             }
         return a;
     }
-    
-    public static void fileScanner(String f)
+
+    public static void fileScanner(Scanner s)
     {
-        sc = ContestHelper.getFileScanner(f);
+        sc = s;
     }
 }
