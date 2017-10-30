@@ -59,7 +59,7 @@ public class DSU //Union Find
     {
         return sz[find(u)];
     }
-    public List<Integer> componentSize()
+    public List<Integer> componentSize() // size of each component
     {
         HashSet<Integer> comp = new HashSet<>();
         for (int i=0; i<id.length; i++)
@@ -70,6 +70,7 @@ public class DSU //Union Find
         Collections.sort(sizes, Collections.reverseOrder());
         return sizes;
     }
+    // map id to component of nodes
     public Map<Integer, List<Integer>> components(){
         Map<Integer, List<Integer>> ret = new HashMap<>();
         for (int i=0; i<id.length; i++) {

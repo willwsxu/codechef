@@ -4,7 +4,9 @@ package codeforces.edu31;
 import codechef.IOR;
 import static java.lang.System.out;
 
-
+// 884A, simple
+// Give time in seconds to read a book, how many seconds she is busy each day
+// find minimal days needed to finish reading
 public class BookReading {
     
     BookReading(int t, int[]days)

@@ -4,7 +4,11 @@ package codeforces.edu31;
 import codechef.IOR;
 import static java.lang.System.out;
 
-
+// 884B easy
+// corssword 011010 is encoded as {2,1}, how many segments of 1s
+// Given encoded int, and len of crossword
+// Print YES if there exists exaclty one crossword with chosen length and encoding. Otherwise, print NO.
+// count 1 from encoded, plus n-1 separator. YES if it is same as crossword length
 public class JapanCrosswords {
     JapanCrosswords(int len, int encode[])
     {

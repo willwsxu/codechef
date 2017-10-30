@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-// C
+// 884C, easy medium
 // n train stations, Pi is the only destination from i,
 // for each station i, there exists only one station j such that pj=i
 // The convenience is the number of ordered pairs (x, y) such that person can start at station x and, 
