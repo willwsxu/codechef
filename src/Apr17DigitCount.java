@@ -1,6 +1,7 @@
 /* Description, April 2017 long challenge
    Given 10 integers a0 to a9. An integer x is said to be bad if any of its digit i
    show up exactly ai times.
+   Find all good numbers between L and R
 */
 import static java.lang.System.out;
 import java.util.Arrays;
@@ -83,9 +84,19 @@ class Apr17DigitCount extends io {
         out.println(good);        
     }
     
+    public static void test()
+    {
+        new Apr17DigitCount(21, 28, new int[]{5, 4, 3, 2, 1, 1, 2, 3, 4, 5}).solve();
+        new Apr17DigitCount(233, 23333, new int[]{2, 3, 3, 3, 3, 2, 3, 3, 3, 3}).solve();
+    }
+    
     public static void main(String[] args)
-    {        
-        //sc = codechef.ContestHelper.getFileScanner("digitscount-t.txt");
+    {   
+        test();
+    }
+     
+    public static void judge()
+    {
         int TC = ni();  // between 1 and 20
         while (TC-- > 0)
             new Apr17DigitCount().solve();
