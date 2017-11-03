@@ -13,17 +13,17 @@ class Apr17DigitCount extends io {
     
     int A[];    //0 ≤ ai ≤ 18
     long L, R;  // 1 ≤ L ≤ R ≤ 10^18
+    int digits[]=new int[10];
     // count digits
     boolean digitsCheck(long num)
     {
-        int a[]=new int[10];
-        Arrays.fill(a, 0);
+        Arrays.fill(digits, 0);
         while (num>0) {
-            a[(int)(num%10)]++;
+            digits[(int)(num%10)]++;
             num /=10;
         }
         for (int i=0; i<10; i++)
-            if (A[i]==a[i])
+            if (A[i]==digits[i])
                 return false;  // bad if there is a match
         return true;
     }
