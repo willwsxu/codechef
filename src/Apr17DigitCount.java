@@ -49,13 +49,11 @@ class Apr17DigitCount extends io {
     long dp[][][]=new long[MAX_DIGITS][MAX_MASK][2];
     long dp(int d, int tight, int mask, int []ndigit)
     {
-        if (d<0) {
-            if (mask == MAX_MASK-1)
-                return 1;
-            return 0;
-        }
         if (mask == MAX_MASK-1) {
-            return pow10(d+1);
+            return pow10(ndigit.length-d);
+        }
+        if (d>=ndigit.length) {
+            return 0;
         }
         int k=9;
         if (tight>0) {
@@ -67,7 +65,7 @@ class Apr17DigitCount extends io {
             int newMask=mask;
             if (i>0 || mask>0)
                 newMask=mask|(1<<i);
-            total +=dp(d-1, newtight, newMask, ndigit);
+            total +=dp(d+1, newtight, newMask, ndigit);
         }
         return total;
     }
@@ -85,9 +83,11 @@ class Apr17DigitCount extends io {
         if (R<1023456789) // 1023456798 1023456879 1023456897 1023456978 1023456987 1023457689
             return 0;//9 81 18 81 9 702
         int [] d=digits(R);
-        long cnt1=dp(d.length-1, 1, 0, d);
+        out.println(Arrays.toString(d));
+        long cnt1=dp(0, 1, 0, d);
+        out.println(cnt1);
         d=digits(L-1);
-        long cnt2=dp(d.length-1, 1, 0, d);
+        long cnt2=dp(0, 1, 0, d);
         return cnt1-cnt2;
     }
     Apr17DigitCount()
@@ -116,10 +116,10 @@ class Apr17DigitCount extends io {
     
     public static void test()
     {
-        new Apr17DigitCount(21, 28, new int[]{5, 4, 3, 2, 1, 1, 2, 3, 4, 5}).solve();
-        new Apr17DigitCount(233, 23333, new int[]{2, 3, 3, 3, 3, 2, 3, 3, 3, 3}).solve();
         int []m2=new int[]{0,0,0,0,0,0,0,0,0,0};
         new Apr17DigitCount(233, 1023456798, m2).solve();
+        new Apr17DigitCount(21, 28, new int[]{5, 4, 3, 2, 1, 1, 2, 3, 4, 5}).solve();
+        new Apr17DigitCount(233, 23333, new int[]{2, 3, 3, 3, 3, 2, 3, 3, 3, 3}).solve();
     }
     
     public static void main(String[] args)
