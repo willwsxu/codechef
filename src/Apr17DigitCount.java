@@ -47,6 +47,14 @@ class Apr17DigitCount extends io {
     final int MAX_DIGITS=18;
     final int MAX_MASK=1<<10;
     long dp[][][]=new long[MAX_DIGITS][MAX_MASK][2];
+    {
+        for (long[][] d1: dp) {
+            for (long [] d2: d1) {
+                for (int i=0; i<d2.length; i++)
+                    d2[i]=-1;
+            }            
+        }
+    }
     long dp(int d, int tight, int mask, int []ndigit)
     {
         if (mask == MAX_MASK-1) {
@@ -55,6 +63,8 @@ class Apr17DigitCount extends io {
         if (d>=ndigit.length) {
             return 0;
         }
+        if ( dp[d][mask][tight]>=0 && tight==0)
+            return dp[d][mask][tight];
         int k=9;
         if (tight>0) {
             k=ndigit[d];
@@ -67,6 +77,7 @@ class Apr17DigitCount extends io {
                 newMask=mask|(1<<i);
             total +=dp(d+1, newtight, newMask, ndigit);
         }
+        dp[d][mask][tight]=total;
         return total;
     }
     
@@ -80,12 +91,11 @@ class Apr17DigitCount extends io {
     // all digits must appreat at least once
     long subtask2(long L, long R)
     {
-        if (R<1023456789) // 1023456798 1023456879 1023456897 1023456978 1023456987 1023457689
-            return 0;//9 81 18 81 9 702
+        if (R<1023456789)
+            return 0;
         int [] d=digits(R);
-        out.println(Arrays.toString(d));
+        //out.println(Arrays.toString(d));
         long cnt1=dp(0, 1, 0, d);
-        out.println(cnt1);
         d=digits(L-1);
         long cnt2=dp(0, 1, 0, d);
         return cnt1-cnt2;
@@ -117,7 +127,7 @@ class Apr17DigitCount extends io {
     public static void test()
     {
         int []m2=new int[]{0,0,0,0,0,0,0,0,0,0};
-        new Apr17DigitCount(233, 1023456798, m2).solve();
+        new Apr17DigitCount(1023456798, 1023457689, m2).solve();  // 7-1=6
         new Apr17DigitCount(21, 28, new int[]{5, 4, 3, 2, 1, 1, 2, 3, 4, 5}).solve();
         new Apr17DigitCount(233, 23333, new int[]{2, 3, 3, 3, 3, 2, 3, 3, 3, 3}).solve();
     }
