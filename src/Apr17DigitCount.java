@@ -44,21 +44,51 @@ class Apr17DigitCount extends io {
         return p;
     }
     
-    long dp(int d, long tight, long n, int mask)
+    final int MAX_DIGITS=18;
+    final int MAX_MASK=1<<10;
+    long dp[][][]=new long[MAX_DIGITS][MAX_MASK][2];
+    long dp(int d, int tight, int mask, int []ndigit)
     {
-        for (int i=0; i<10; i++) {
-            
+        if (d<0) {
+            if (mask == MAX_MASK-1)
+                return 1;
+            return 0;
         }
-        return 0;
+        if (mask == MAX_MASK-1) {
+            return pow10(d+1);
+        }
+        int k=9;
+        if (tight>0) {
+            k=ndigit[d];
+        }
+        long total=0;
+        for (int i=0; i<=k; i++) {
+            int newtight=(i==k)?tight:0;
+            int newMask=mask;
+            if (i>0 || mask>0)
+                newMask=mask|(1<<i);
+            total +=dp(d-1, newtight, newMask, ndigit);
+        }
+        return total;
     }
     
+    int[] digits(long n) {
+        String s=Long.toString(n);
+        int []v=new int[s.length()];
+        for (int i=0; i<s.length();i++)
+            v[i]=s.charAt(i)-'0';
+        return v;
+    }
     // all digits must appreat at least once
     long subtask2(long L, long R)
     {
         if (R<1023456789) // 1023456798 1023456879 1023456897 1023456978 1023456987 1023457689
             return 0;//9 81 18 81 9 702
-        long cnt=dp(0, 0, R, 0);
-        return cnt;
+        int [] d=digits(R);
+        long cnt1=dp(d.length-1, 1, 0, d);
+        d=digits(L-1);
+        long cnt2=dp(d.length-1, 1, 0, d);
+        return cnt1-cnt2;
     }
     Apr17DigitCount()
     {
@@ -88,6 +118,8 @@ class Apr17DigitCount extends io {
     {
         new Apr17DigitCount(21, 28, new int[]{5, 4, 3, 2, 1, 1, 2, 3, 4, 5}).solve();
         new Apr17DigitCount(233, 23333, new int[]{2, 3, 3, 3, 3, 2, 3, 3, 3, 3}).solve();
+        int []m2=new int[]{0,0,0,0,0,0,0,0,0,0};
+        new Apr17DigitCount(233, 1023456798, m2).solve();
     }
     
     public static void main(String[] args)
