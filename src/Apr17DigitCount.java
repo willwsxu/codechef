@@ -128,6 +128,7 @@ class Apr17DigitCount extends io {
     {
         int []m2=new int[]{0,0,0,0,0,0,0,0,0,0};
         new Apr17DigitCount(1023456798, 1023457689, m2).solve();  // 7-1=6
+        new Apr17DigitCount(1023456798, 1023457689, m2).solve();  // 7-1=6
         new Apr17DigitCount(21, 28, new int[]{5, 4, 3, 2, 1, 1, 2, 3, 4, 5}).solve();
         new Apr17DigitCount(233, 23333, new int[]{2, 3, 3, 3, 3, 2, 3, 3, 3, 3}).solve();
     }
