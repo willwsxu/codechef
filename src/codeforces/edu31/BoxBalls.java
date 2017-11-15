@@ -4,6 +4,7 @@ import codechef.MyScanner;
 import static java.lang.System.out;
 import java.util.PriorityQueue;
 
+// 884D http://www.geeksforgeeks.org/greedy-algorithms-set-3-huffman-coding/
 // n boxes, n colors of balls, each color may have 1 to 10^9 balls, 1 ≤ n ≤ 200000
 // initially all balls in 1st box, goal is to group balls per color 
 // each move pick all balls in 1 box and distrubute to k boxes, k=2 or 3
