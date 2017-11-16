@@ -4,6 +4,9 @@ package acsl.c1;
 import static java.lang.System.out;
 import java.util.Scanner;
 
+// BridgeScoring class creates 2 team objects, provide play method to process input
+// Team class stores state of team so points can be accumulated.
+// Team also contain opponent  to calculate penalty.
 public class BridgeScoring {
     class Team
     {
@@ -27,6 +30,9 @@ public class BridgeScoring {
             return 0;  // never should happen
         }
         
+        // check if bidding team won the game
+        // if so, caculate underline points, and overline points if ther is over trick
+        // if lost, update opponent overline points, with proper vulnerable
         void game(int bid, int tricks, char suit) {
             if (tricks>=bid+6) {  // bidding team won
                 underline_points += score(bid, suit, true);
@@ -34,7 +40,7 @@ public class BridgeScoring {
                     overline_points += score(tricks-bid-6, suit, false);
                 //out.println("won "+underline_points+" bid "+bid+suit+" trick above " +(tricks-bid-6));
             } else {  // bidding team lose game, award other team over the line points
-                other.update_penalty(bid+6-tricks, underline_points>0);
+                other.update_penalty(bid+6-tricks, underline_points>0);  // vunerable if bidding team ever won underline points
             }                
         }
         //The penalty differs depending upon whether the bidding team has won a game in that match or not
@@ -55,25 +61,33 @@ public class BridgeScoring {
             underline_points=0;
             other.underline_points=0;
         }
+        String getPoints()
+        {
+            return underline_points+","+overline_points;
+        }
     }
     
-    Team players[]=new Team[2];
+    Team teams[]=new Team[2];
     BridgeScoring()
     {
-        players[0]=new Team();  // create two players at start
-        players[1]=new Team();
-        players[0].setOpponent(players[1]);
-        players[1].setOpponent(players[0]);
+        teams[0]=new Team();  // create two teams at start
+        teams[1]=new Team();
+        teams[0].setOpponent(teams[1]);
+        teams[1].setOpponent(teams[0]);
     }
+    // parse input fields, 3 int, one char
+    // calculate points
+    // print current cumulative points of boh teams
+    // reset if bidding won
     void play(String game_info[])
     {
-        int p=Integer.parseInt(game_info[0]);   // player 1 or 2
+        int p=Integer.parseInt(game_info[0]);   // team 1 or 2
         int bid=Integer.parseInt(game_info[1]); // # of bids
         int tricks=Integer.parseInt(game_info[2]);// total tricks won by bidding team
-        players[p-1].game(bid, tricks, game_info[3].charAt(0));  // set score, cumulative
-        out.println(players[0].underline_points+","+players[0].overline_points+","+players[1].underline_points+","+players[1].overline_points);
-        if (players[p-1].won())   // reset underline points of both teams after a match
-            players[p-1].matchReset();
+        teams[p-1].game(bid, tricks, game_info[3].charAt(0));  // set score, cumulative
+        out.println(teams[0].getPoints()+","+teams[1].getPoints());
+        if (teams[p-1].won())   // reset underline points of both teams after a match
+            teams[p-1].matchReset();
     }
     public static void test()
     {
