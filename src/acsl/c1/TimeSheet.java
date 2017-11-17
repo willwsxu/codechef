@@ -8,21 +8,21 @@ import java.util.Scanner;
 
 public class TimeSheet {
     int timeperiod[]=new int[14]; // start and stop time, for a week, from Sun to Sat
-    int timeCode(char code) {
+    int timeCode(char code) {  // convert time code to int
         if (code >='1' && code <='9')
             return code -'0';
         return code -'A'+10;  // code A to H
     }
-    double totalPeriods(int day1, int day2)
+    double totalHours(int day1, int day2)  // hours from day1 (inclusive) to day2 (exclusive)
     {
         int p=0;
         for (int i=day1; i<day2; i++) {
             p+=timeperiod[2*i+1]-timeperiod[2*i];
         }
-        return p/2.0;
+        return p/2.0;  // each period is .5 hours
     }
     double calculatePay(int location){
-        double total=totalPeriods(0, 7);
+        double total=totalHours(0, 7);  // total hours per week
         double cents=0;
         //out.println("hours "+total);
         int rate1=0, rate2=0, threshold=0;
@@ -64,10 +64,12 @@ public class TimeSheet {
         cents += total*rate1;
         return cents;
     }
+    // rount to nearest cent, 1 dp precision
     int round(double cents) {
-        cents *= 10;
+        cents *= 10;  // convert cent to 10th cent
         return ((int)cents+5)/10;  // .5 or up to 1
     }
+    // format cents as dollar with 2 dp
     String toDollar(int cents)
     {
         DecimalFormat df = new DecimalFormat("#.00");
@@ -79,10 +81,10 @@ public class TimeSheet {
     TimeSheet(String[] entry)
     {
         for (int i=1; i<entry.length; i++) {
-            timeperiod[i-1]=timeCode(entry[i].charAt(0));
+            timeperiod[i-1]=timeCode(entry[i].charAt(0));  // convert time code to into
         }
-        int cents = round(calculatePay(Integer.parseInt(entry[0])));
-        out.println(toDollar(cents));
+        int cents = round(calculatePay(Integer.parseInt(entry[0])));  // calculate pay, round to cents
+        out.println(toDollar(cents)); // format output
     }
     public static void test()
     {
