@@ -6,6 +6,11 @@ import static java.lang.System.out;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
+// Time sheet with location and start/stop time each day from Sun to Sat, a week
+// Time code is 30 min period
+// calculate pay per rule specific to location
+// use double for time
+// need to round cents correctly
 public class TimeSheet {
     int timeperiod[]=new int[14]; // start and stop time, for a week, from Sun to Sat
     int timeCode(char code) {  // convert time code to int
@@ -80,8 +85,9 @@ public class TimeSheet {
     }
     TimeSheet(String[] entry)
     {
+        // first elem is location, rest is start and stop period for 7 days
         for (int i=1; i<entry.length; i++) {
-            timeperiod[i-1]=timeCode(entry[i].charAt(0));  // convert time code to into
+            timeperiod[i-1]=timeCode(entry[i].charAt(0));  // convert time code to int for easy calculation of time
         }
         int cents = round(calculatePay(Integer.parseInt(entry[0])));  // calculate pay, round to cents
         out.println(toDollar(cents)); // format output
