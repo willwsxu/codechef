@@ -21,7 +21,7 @@ public class TimeSheet {
         }
         return p/2.0;
     }
-    int calculatePay(int location){
+    double calculatePay(int location){
         double total=totalPeriods(0, 7);
         double cents=0;
         //out.println("hours "+total);
@@ -43,7 +43,8 @@ public class TimeSheet {
             weekend += timeperiod[13]-timeperiod[12];
             weekend /= 2.0;
             cents = weekend*1350 + (total-weekend)*675;
-            return (int)cents;
+            //out.println("weekend hours "+weekend+" pay "+cents);
+            return cents;
         } else {//$8.00 per hour for the first 6 hours per day and $12.00 per hour after that
             for (int i=0; i<timeperiod.length/2; i++) {
                 double hour = (timeperiod[2*i+1]-timeperiod[2*i])/2.0; // 30 min periods
@@ -53,7 +54,7 @@ public class TimeSheet {
                 }
                 cents += 800*hour;
             }
-            return (int)cents;
+            return cents;
         }
         // first 3 rate is on weekly basis
         if (total>threshold) {
@@ -61,7 +62,11 @@ public class TimeSheet {
             total = threshold;
         }
         cents += total*rate1;
-        return (int)cents;
+        return cents;
+    }
+    int round(double cents) {
+        cents *= 10;
+        return ((int)cents+5)/10;  // .5 or up to 1
     }
     String toDollar(int cents)
     {
@@ -76,7 +81,7 @@ public class TimeSheet {
         for (int i=1; i<entry.length; i++) {
             timeperiod[i-1]=timeCode(entry[i].charAt(0));
         }
-        int cents = calculatePay(Integer.parseInt(entry[0]));
+        int cents = round(calculatePay(Integer.parseInt(entry[0])));
         out.println(toDollar(cents));
     }
     public static void test()
