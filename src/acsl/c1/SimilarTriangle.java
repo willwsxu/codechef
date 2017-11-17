@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 // Two triangles are similar if their sides are proportional
+// Given sides of two triangles, find if they are similar
+//   if they, print the second triangle in correct order to match side of first triangle
 // triangle sides a, b, c, triangle d, e, f are similar if a/d=b/e=c/f
 // Divide into smaller steps:
 // Define a Triangle class to store its sides, and labels
@@ -158,10 +160,8 @@ public class SimilarTriangle {
     }
     static Scanner sc=new Scanner(System.in).useDelimiter("\\s*[,\n]\\s*");
     public static void main(String[] args)
-    {  
-        //test();
-        
-        int T=5;
+    {          
+        int T=5;  // 5 lines of input
         while(T-->0) {
             int sides[]=new int[6];
             for (int i=0; i<sides.length; i++)
