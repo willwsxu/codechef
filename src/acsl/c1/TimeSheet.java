@@ -1,7 +1,6 @@
 
 package acsl.c1;
 
-import static acsl.c1.SimilarTriangle.sc;
 import static java.lang.System.out;
 import java.text.DecimalFormat;
 import java.util.Scanner;
