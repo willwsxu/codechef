@@ -1,32 +1,33 @@
+package codeforces.edu33;
+
 /*
+ * edu round 33, C
  * Given n people, some are friends with each other will share any info
  * Vova wants to spread a rumor to all people. She can bribe someone to start the rumor
  * What is the minimal bribe she has to pay
  */
-package codeforces.edu33;
 
-import codechef.DSU;
-import java.util.ArrayList;
-import java.util.List;
 
-class Rumor {
-    DSU dsu;
+import codechef.GraphSimple;
+import codechef.IOR;
+import static java.lang.System.out;
+
+public class Rumor {
     int bribe[];
     
     Rumor(int b[]) //1 ≤ n ≤ 10^5, 0 ≤ m ≤ 10^5
     {
         bribe=b;
-        dsu=new DSU(b.length+1);
+        g=new GraphSimple(b.length+1);
     }
-    void readEdge()
+    void addEdges(int [][]e)
     {
-        
-    }
-    static void test()
-    {
-        Rumor r=new Rumor(new int[]{2,5,3,4,8});
-        r.dsu.union(1,4);
-        r.dsu.union(4,5);
+        if (e!=null) {
+            for (int r=0; r<e.length; r++) {
+                g.addEdge(e[r][0], e[r][1]);
+            }
+        }
+        dfsAll();
     }
     
     GraphSimple g;
@@ -34,50 +35,59 @@ class Rumor {
     void dfsAll()
     {
         visited = new boolean[g.V()];
-        for (int i=0; i<g.V(); i++) {
-            
+        long total=0;  // use long type to avoid overflow
+        int MAX_BRIBE=1000000000;
+        for (int i=1; i<g.V(); i++) {  // vertex start from 1
+            if (visited[i])
+                continue;
+            total += dfs(i, MAX_BRIBE);
         }
+        out.println(total);
     }
+    
+    // dfs and find minimal bribe value
     int dfs(int u, int b)
     {
-        if (visited[u])
-            return b;
+        visited[u]=true;
+        if (b>bribe[u-1])  // bribe index start from 0
+            b=bribe[u-1];
         for (int v: g.adj(u)) {
-            
+            if (!visited[v]) {
+                int b2=dfs(v, b); 
+                if (b2<b)
+                    b=b2;
+            }
         }
+        return b;
     }
-}
-class GraphSimple{ // unweighted, bidirectional
-    protected int   V; // number of vertices
-    private   int   E; // number of edges
-
-    private List<List<Integer>> adj;
-    public GraphSimple(int V)
+    static void test()
     {
-        adj=new ArrayList<>(V);
-        this.V = V;
-        E=0;
-        for (int v = 0; v < V; v++) // Initialize all lists
-            adj.add( new ArrayList<>(10));
+        Rumor r=new Rumor(new int[]{2,5,3,4,8});
+        r.g.addEdge(1, 4);
+        r.g.addEdge(4, 5);
+        r.dfsAll(); //10
+        
+        r=new Rumor(new int[]{1,2,3,4,5,6,7,8,9,10});
+        r.dfsAll(); //55
+        
+        r=new Rumor(new int[]{1,6,2,7,3,8,4,9,5,10});
+        r.g.addEdge(1, 2);
+        r.g.addEdge(3, 4);
+        r.g.addEdge(5, 6);
+        r.g.addEdge(7, 8);
+        r.g.addEdge(9, 10);
+        r.dfsAll();
     }
-    public int V() { return V; }
-    public int E() { return E; }
-    
-    public void addEdge(int u, int v)
-    {
-        //out.println("add edge "+u+","+v);
-        adj.get(u).add(v);
-        adj.get(v).add(u);
-        E++;
+    public static void main(String[] args)
+    {      
+        judge();
     }
-    public void addEdgeDirect(int u, int v)
-    {
-        //out.println("add edge "+u+","+v);
-        adj.get(u).add(v);
-        E++;
-    }
-    public List<Integer> adj(int u)
-    {
-        return adj.get(u);
+    static void judge()
+    {        
+        int n=IOR.ni();  // 1 ≤ n ≤ 10^5, 0 ≤ m ≤ 10^5
+        int m=IOR.ni();
+        int c[]=IOR.ria(n); // bribe, 0 ≤ ci ≤ 10^9
+        int edges[][]=IOR.fillMatrix(m, 2);
+        new Rumor(c).addEdges(edges);
     }
 }
