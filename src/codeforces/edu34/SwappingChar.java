@@ -1,107 +1,148 @@
+package codeforces.edu34;
 /*
  * start with k identical string, swap exactly 2 char in each string, s1...sk
  * find a string that can be transformed to s1 to sk per rule above
  * string len=n. 1 ≤ k ≤ 2500, 2 ≤ n ≤ 5000, k · n ≤ 5000
  */
-package codeforces.edu34;
 
+import codechef.IOR;
 import static java.lang.System.out;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class SwappingChar {
     
-    TreeSet<String> unique=new TreeSet<>();
+    String[] unique;
     SwappingChar(List<String> ss )
     {
-        for(String s:ss)
-            unique.add(s);
+        TreeSet<String> u=new TreeSet<>();
+        for(String s:ss)  // only store unique string
+            u.add(s);
+        unique = u.toArray(new String[u.size()]);
+    }
+    private String swap(String s, int pos1, int pos2)  // sway char at 2 pos
+    {        
+        StringBuilder sb=new StringBuilder();
+        sb.append(s);
+        sb.setCharAt(pos1, s.charAt(pos2));
+        sb.setCharAt(pos2, s.charAt(pos1));
+        return sb.toString();
     }
     String solve()
     {
-        if (unique.size()==1) {
-            String ans = unique.first();  // swap last 2 char
+        if (unique.length==1) {  // all string are same, swap any 2 char
+            String ans = unique[0];  // swap last 2 char
             return ans.substring(0, ans.length()-2)+ans.charAt(ans.length()-1)+ans.charAt(ans.length()-2);
         }
         // compare 1st string to rest, validate same length, diff position is <=4, chars are same
-        String[] u= unique.toArray(new String[unique.size()]);
-        for (int i=1; i<u.length; i++) {
-            if (u[0].length()!=u[i].length())  // string must be of same length
+        for (int i=1; i<unique.length; i++) {
+            if (unique[0].length()!=unique[i].length())  // string must be of same length
                 return "-1";
             ArrayList<Character> diff1=new ArrayList<>();
             ArrayList<Character> diff2=new ArrayList<>();
             int count=0;
-            for (int j=0; j<u[0].length(); j++) {
-                if (u[0].charAt(j) !=u[i].charAt(j)) {
-                    diff1.add(u[0].charAt(j));
-                    diff2.add(u[i].charAt(j));
-                    if (++count>4)  // difference char position should exceed 4
-                        return "-2";
+            for (int j=0; j<unique[0].length(); j++) {
+                if (unique[0].charAt(j) !=unique[i].charAt(j)) {
+                    diff1.add(unique[0].charAt(j));
+                    diff2.add(unique[i].charAt(j));
+                    if (++count>4)  // difference char position should NOT exceed 4
+                        return "-1";
                 }
             }
             Collections.sort(diff1);  // char that diffs between 2 string must be same
             Collections.sort(diff2);
             for (int k=0; k<diff1.size(); k++) {
-                if (diff1.get(k)!=diff2.get(k))
-                    return "-3";
+                if (!diff1.get(k).equals(diff2.get(k)))
+                    return "-1";
             }
         }
         // find position of diff char of first 2 string
         ArrayList<Integer> diff1=new ArrayList<>();
-        for (int j=0; j<u[0].length(); j++) {
-            if (u[0].charAt(j) !=u[1].charAt(j))
+        for (int j=0; j<unique[0].length(); j++) {
+            if (unique[0].charAt(j) !=unique[1].charAt(j))
                 diff1.add(j);
         }
         TreeSet<String> candidates=new TreeSet<>();
-        for (int k=0; k<diff1.size()-1; k++) { // go through each pair of diff pos
-            for (int j=k+1; j<diff1.size(); j++) {
-                StringBuilder sb=new StringBuilder();
-                sb.append(u[0]);
-                sb.setCharAt(diff1.get(j), u[0].charAt(diff1.get(k)));
-                sb.setCharAt(diff1.get(k), u[0].charAt(diff1.get(j)));
-                candidates.add(sb.toString());
+        for (int k=0; k<diff1.size(); k++) {
+            //for (int j=k+1; j<diff1.size(); j++) {  not enough just to swap among diff pos
+            for (int j=0; j<unique[0].length(); j++) {  // swap diff with any char in string
+                candidates.add(swap(unique[0], j, diff1.get(k)));
+                //candidates.add(swap(unique[0], diff1.get(j), diff1.get(k)));
             }
         }
         //out.println(Arrays.toString(u));
         //out.println(diff1);
         //out.println(candidates);
-        for (String s: candidates) {
-            int i=1;
-            for (; i<u.length; i++) {
+        boolean distinct=unique[0].length()<=26; // string letter not distinct if > 26
+        if (distinct) {
+            Set<Character> letters=new HashSet<>();
+            for (int i=0; i< unique[0].length(); i++)
+                letters.add(unique[0].charAt(i));
+            distinct=unique[0].length()==letters.size(); // no letter same in a string <=26
+        }
+        for (String s: candidates) {  // test each answer candidate again all string
+            int i=0;
+            for (; i<unique.length; i++) {
                 int count=0;
                 for (int j=0; j<s.length(); j++) {
-                    if (s.charAt(j) !=u[i].charAt(j))
+                    if (s.charAt(j) !=unique[i].charAt(j))
                         count++;  
                 }
-                if (count !=0 && count !=2)
-                    break;           
+                if (count !=0 && count !=2)  // diff pos must be 0 or 2
+                    break;    
+                if (count==0 && distinct)
+                    break;  // diff cannot be 0 if all letters are distinct
             }
-            if (i==u.length)
+            if (i==unique.length)  // found answer
                 return s;
         }
-        return "-5";
+        return "-1";
     }
     static void test()
     {
         ArrayList<String> in=new ArrayList<>();
         in.add("te");
-        out.println(new SwappingChar(in).solve());
+        out.println(new SwappingChar(in).solve()); // et
         in.add("ab");
-        out.println(new SwappingChar(in).solve());
+        out.println(new SwappingChar(in).solve()); // -1
         in.set(1, "tetete");
-        out.println(new SwappingChar(in).solve());
+        out.println(new SwappingChar(in).solve()); // -1
         in.set(0, "etetet");
-        out.println(new SwappingChar(in).solve());
+        out.println(new SwappingChar(in).solve()); // -1
         in.set(0, "abac");
         in.set(1, "caab");
         in.add("acba");
-        out.println(new SwappingChar(in).solve());
+        out.println(new SwappingChar(in).solve()); // acab
+        in.set(0, "kbbu");
+        in.set(1, "kbub");
+        in.set(2,"ubkb");
+        out.println(new SwappingChar(in).solve()); // kbub
+        in.set(0, "clo");
+        in.set(1, "col");
+        in.set(2, "lco");
+        out.println(new SwappingChar(in).solve()); // -1
+        in.set(0, "eellh");
+        in.set(1, "ehlle");
+        in.set(2, "helle");
+        in.add("hlele");
+        out.println(new SwappingChar(in).solve()); // helle
     }
     public static void main(String[] args)
     {      
-        test();
+        judge();
+    }
+    static void judge()
+    {        
+        int k=IOR.ni();  // 1 to2500 
+        int n=IOR.ni(); // 2 to 5000
+        ArrayList<String> s=new ArrayList<>(k);
+        for (int i=0; i<k; i++) {
+            s.add(IOR.ns());
+        }
+        out.println(new SwappingChar(s).solve());
     }
 }
