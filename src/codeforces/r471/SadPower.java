@@ -1,14 +1,17 @@
+package codeforces.r471;
 
+
+import codechef.MyScanner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
 /*
  * For each query you have to find the number of such x that L ≤ x ≤ R and there exist integer numbers a > 0, p > 1 such that x = a^p
  * 1 ≤ L ≤ R ≤ 10^18
+ * local test on large file is ok, but TLE on test 3 online
  */
 
 
@@ -28,8 +31,8 @@ public class SadPower {
                 //System.out.println("skip square "+base);
                 continue;
             }
-            if (powerSet.contains(base))   // remove duplicates
-                continue;
+            //if (powerSet.contains(base))   // remove duplicates
+            //    continue;
             long square = (long)base*base;  // need cast to avoid overflow
             long max=MAX/square;
             long p=base;
@@ -81,7 +84,7 @@ public class SadPower {
         if (high<0)
             high = (-high)-1;
         long ans = high-low+1;
-        System.out.println("ans before square "+ans);
+        //System.out.println("ans before square "+ans);
         long r1=root(L);
         ans += root(R)-r1;
         if (r1*r1==L)
@@ -90,12 +93,13 @@ public class SadPower {
     }
     public static void testSqrt()
     {
-        System.out.println(SadPower.root(571));
-        System.out.println(SadPower.root(137));
-        System.out.println(SadPower.root(100)==10);
-        System.out.println(SadPower.root(99)==9);
-        System.out.println(SadPower.root(4)==2);
-        System.out.println(SadPower.root(1)==1);        
+        System.out.println(root(571));
+        System.out.println(root(137));
+        System.out.println(root(100)==10);
+        System.out.println(root(99)==9);
+        System.out.println(root(4)==2);
+        System.out.println(root(1)==1);        
+        System.out.println(root(789126942561822236L)==888328172);
     }
     public static void testPower()
     {
@@ -106,76 +110,34 @@ public class SadPower {
         System.out.println(SadPower.powers(5,7)==0);
         System.out.println(SadPower.powers(12,29)==3);
         System.out.println(SadPower.powers(137, 591)==17);
-        System.out.println(SadPower.powers(1,1000000)==1111);        
+        System.out.println(SadPower.powers(1,1000000)==1111);  
+        System.out.println(SadPower.powers(789126942561822236L,978550298073181934L));            
     }
      
+    static MyScanner sc = new MyScanner();//"power-large.txt");
     static void judge()
     {
-        int q=IORx.ni();
+        int q=sc.ni();
+        StringBuilder sb=new StringBuilder();
         while (q-->0) {
-            long L=IORx.nl();
-            long R=IORx.nl();
-            System.out.println(SadPower.powers(L,R));     
-        }        
+            long L=sc.nl();
+            long R=sc.nl();
+            sb.append(SadPower.powers(L,R));
+            sb.append("\n");
+        } 
+        System.out.print(sb.toString());            
+    }
+    static void perTest()
+    {
+        StringBuilder sb=new StringBuilder();
+        for (int i=0; i<10000000; i++) {
+            sb.append(powers(1L,978550298073181934L));
+            sb.append("\n");
+        }
+        //System.out.print(sb.toString());
     }
     public static void main(String[] args)
     {
-        System.out.println(SadPower.root(789126942561822236L));
-        System.out.println(SadPower.powers(789126942561822236L,978550298073181934L));      
-    }
-}
-
-
-class IORx {
-    
-    private static Scanner sc = new Scanner(System.in);    
-        
-    public static int ni()
-    {
-        return sc.nextInt();
-    }
-    public static long nl()
-    {
-        return sc.nextLong();
-    }
-    public static String ns()
-    {
-        return sc.next();
-    }
-    
-    public static List<Integer> riL(int N) { // read int array list
-        List<Integer> L=new ArrayList<>();
-        for (int i=0; i<N; i++)
-            L.add(sc.nextInt());
-        return L;
-    }
-    
-    public static int[] ria(int N) { // read int array
-        int L[]=new int[N];
-        for (int i=0; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
-    }
-    
-    public static int[] ria1(int N) { // read int array, from 1
-        int L[]=new int[N];
-        for (int i=1; i<N; i++)
-            L[i]=sc.nextInt();
-        return L;
-    }
-    
-    public static int[][] fillMatrix(int n, int m)
-    {
-        int a[][]=new int[n][m];
-        for (int i=0; i<a.length; i++)
-            for (int j=0; j<a[i].length; j++) {
-                a[i][j]=sc.nextInt();
-            }
-        return a;
-    }
-
-    public static void fileScanner(Scanner s)
-    {
-        sc = s;
+        judge();
     }
 }
